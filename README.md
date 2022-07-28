@@ -309,7 +309,7 @@
 ตัวนี้ดึง part ซ้ำนะเพราะต้องเรียกใช้แยกกัน
 
 - 1 GET
-    - :heavy_check_mark: เชื่อมกับ เชื่อมกับ $url/api/group/me/member
+    - :heavy_check_mark: เชื่อมกับ เชื่อมกับ $url/api/group/me/member *เสร็จเมื่อ (28/07/2565)*
         - ส่งค่าเพื่อไปขอข้อมูล
             - token (String)
         - นำมาแสดง (ของหัวหน้ากลุ่ม)
@@ -318,7 +318,7 @@
             - email (String)
 
 - 1 GET
-    - :heavy_check_mark: เชื่อมกับ เชื่อมกับ $url/api/group/me/member
+    - :heavy_check_mark: เชื่อมกับ เชื่อมกับ $url/api/group/me/member *เสร็จเมื่อ (28/07/2565)*
         - ส่งค่าเพื่อไปขอข้อมูล
             - token (String)
         - นำมาแสดง (สมาชิก)
