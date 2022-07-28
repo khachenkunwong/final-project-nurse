@@ -309,7 +309,7 @@
 ตัวนี้ดึง part ซ้ำนะเพราะต้องเรียกใช้แยกกัน
 
 - 1 GET
-    - :hourglass: เชื่อมกับ เชื่อมกับ $url/api/group/me/member
+    - :heavy_check_mark: เชื่อมกับ เชื่อมกับ $url/api/group/me/member
         - ส่งค่าเพื่อไปขอข้อมูล
             - token (String)
         - นำมาแสดง (ของหัวหน้ากลุ่ม)
@@ -318,7 +318,7 @@
             - email (String)
 
 - 1 GET
-    - :hourglass: เชื่อมกับ เชื่อมกับ $url/api/group/me/member
+    - :heavy_check_mark: เชื่อมกับ เชื่อมกับ $url/api/group/me/member
         - ส่งค่าเพื่อไปขอข้อมูล
             - token (String)
         - นำมาแสดง (สมาชิก)
@@ -346,3 +346,5 @@ v1.3.1 (อัพเดต README.md)
 1.3.2 (อัพเดต README.md เหลืออีก 4 หน้าที่ยังไม่ได้เพิ่ม)
 
 1.3.3 (อัพเดต README.md เหลืออีก 4 หน้าที่ยังไม่ได้เพิ่ม แก้ภาพ)
+
+1.4 (อัพเดตเชื่อม api หน้า กลุ่มแล้วนำมาแสดง)
