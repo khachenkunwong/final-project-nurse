@@ -137,7 +137,7 @@
 - 2 GET
     - :heavy_check_mark: เชื่อมกับ $url/api/group/schedule/without/me *เสร็จแล้วเมื่อ (31/07/2565)*
         - ส่งค่าเพื่อไปขอข้อมูล
-            - :x: nameGroup (String) (ต้องการเชื่อมด่วน)
+            - nameGroup (String)
             - token (String)
         - นำมาแสดง
             - frist_name (String)
@@ -354,3 +354,5 @@ v1.3.1 (อัพเดต README.md)
 1.5 (แสดงเวรของเพื่อน)
 
 1.5.1 (อัพเดต README.md)
+
+1.5.2 (อัพเดต README.md)
