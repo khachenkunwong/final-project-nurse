@@ -210,18 +210,18 @@ class _LoginWidgetState extends State<LoginWidget> {
                                       'เข้าสู่ระบบสำเร็จ',
                                     );
 
-                                  stateCreateTable =
-                                      await CreateTableCall.call();
-                                  if (((stateCreateTable?.statusCode ?? 200)) ==
-                                          200 
-                                      //     &&
-                                      // ((getpresentoutput?.statusCode ?? 200)) ==
-                                      //     200
-                                          ) {
-                                    await actions.notifica(
-                                      context,
-                                      'สร้างตารางสำเร็จ',
-                                    );
+                                  // stateCreateTable =
+                                  //     await CreateTableCall.call();
+                                  // if (((stateCreateTable?.statusCode ?? 200)) ==
+                                  //         200 
+                                  //     //     &&
+                                  //     // ((getpresentoutput?.statusCode ?? 200)) ==
+                                  //     //     200
+                                  //         ) {
+                                    // await actions.notifica(
+                                    //   context,
+                                    //   'สร้างตารางสำเร็จ',
+                                    // );
                                     // setState(() {
                                     //   FFAppState().namegroup =
                                     //       GetPresentCall.oneNameGroup(
@@ -236,12 +236,12 @@ class _LoginWidgetState extends State<LoginWidget> {
                                             initialPage: 'workschedule'),
                                       ),
                                     );
-                                  } else {
-                                    await actions.notifica(
-                                      context,
-                                      'สร้างตารางไม่สำเร็จ',
-                                    );
-                                  }
+                                  // } else {
+                                  //   await actions.notifica(
+                                  //     context,
+                                  //     'สร้างตารางไม่สำเร็จ',
+                                  //   );
+                                  // }
                                 } else {
                                   await actions.notifica(
                                     context,

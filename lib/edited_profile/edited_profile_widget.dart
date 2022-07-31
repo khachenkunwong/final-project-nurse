@@ -181,7 +181,7 @@ class _EditedProfileWidgetState extends State<EditedProfileWidget> {
                                       lastnametextController!.text != '')) {
                                     stateUpdateProfile =
                                         await UpdateProfileCall.call(
-                                          token: FFAppState().tokenStore,
+                                      token: FFAppState().tokenStore,
                                       fristName: fristnametextController!.text,
                                       lastName: lastnametextController!.text,
                                     );

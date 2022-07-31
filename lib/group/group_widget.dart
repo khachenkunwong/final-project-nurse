@@ -90,8 +90,7 @@ class _GroupWidgetState extends State<GroupWidget> {
   //           .member!
   //           .map((member) => member.email)
   //           .toList();
-        
-        
+
   //     });
 
   //     print("listSearchEmail$listSearchEmail1");
@@ -189,66 +188,60 @@ class _GroupWidgetState extends State<GroupWidget> {
                                               .title2,
                                         ),
                                       ),
-                                       Expanded(
-                                              child: Padding(
-                                                padding: EdgeInsetsDirectional
-                                                    .fromSTEB(10, 0, 0, 0),
-                                                child: TextFormField(
-                                                  controller: textController,
-                                                  onChanged: (string) {
-                                                    listSearchEmail1 = listSearchEmail2
-                                                        .where((u) => u
-                                                            .toString()
-                                                            .contains(string))
-                                                        .toList();
-                                                    print(listSearchEmail1);
-                                                    setState(() {});
-                                                  },
-                                                  obscureText: false,
-                                                  decoration: InputDecoration(
-                                                    isDense: true,
-                                                    hintText: 'ค้นหา',
-                                                    enabledBorder:
-                                                        OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .secondaryText,
-                                                        width: 1,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                    ),
-                                                    focusedBorder:
-                                                        OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .secondaryText,
-                                                        width: 1,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                    ),
-                                                    filled: true,
-                                                    fillColor: Colors.white,
-                                                    prefixIcon: Icon(
-                                                      Icons.search,
-                                                      size: 16,
-                                                    ),
-                                                  ),
-                                                  style: FlutterFlowTheme.of(
+                                      Expanded(
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  10, 0, 0, 0),
+                                          child: TextFormField(
+                                            controller: textController,
+                                            onChanged: (string) {
+                                              listSearchEmail1 =
+                                                  listSearchEmail2
+                                                      .where((u) => u
+                                                          .toString()
+                                                          .contains(string))
+                                                      .toList();
+                                              print(listSearchEmail1);
+                                              setState(() {});
+                                            },
+                                            obscureText: false,
+                                            decoration: InputDecoration(
+                                              isDense: true,
+                                              hintText: 'ค้นหา',
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
                                                           context)
-                                                      .title3,
-                                                  textAlign: TextAlign.center,
+                                                      .secondaryText,
+                                                  width: 1,
                                                 ),
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .secondaryText,
+                                                  width: 1,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                              filled: true,
+                                              fillColor: Colors.white,
+                                              prefixIcon: Icon(
+                                                Icons.search,
+                                                size: 16,
                                               ),
                                             ),
-                                          
+                                            style: FlutterFlowTheme.of(context)
+                                                .title3,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   Builder(
@@ -351,52 +344,64 @@ class _GroupWidgetState extends State<GroupWidget> {
                                           itemBuilder: (context, indexMember) {
                                             final itemMember =
                                                 ItemGroup.member![indexMember];
-                                            return Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(0, 10, 0, 0),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Container(
-                                                    width: 45,
-                                                    height: 45,
-                                                    clipBehavior:
-                                                        Clip.antiAlias,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
+                                            return InkWell(
+                                              onTap: () {
+                                                print(
+                                                    "คลิกแล้ว item ที่ $indexMember");
+                                                print(itemMember.fristName);
+                                                print(itemMember.lastName);
+                                                print(itemMember.email);
+                                                print(itemMember.location);
+                                                print(itemMember.actor);
+                                              },
+                                              child: Padding(
+                                                padding: EdgeInsetsDirectional
+                                                    .fromSTEB(0, 10, 0, 0),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  children: [
+                                                    Container(
+                                                      width: 45,
+                                                      height: 45,
+                                                      clipBehavior:
+                                                          Clip.antiAlias,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                      child: Image.network(
+                                                        'https://picsum.photos/seed/180/600',
+                                                      ),
                                                     ),
-                                                    child: Image.network(
-                                                      'https://picsum.photos/seed/180/600',
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsetsDirectional
+                                                              .fromSTEB(
+                                                                  20, 0, 0, 0),
+                                                      child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            "${itemMember.fristName} ${itemMember.lastName}",
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .title2,
+                                                          ),
+                                                          Text(
+                                                            '${itemMember.email}',
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .title3,
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsetsDirectional
-                                                            .fromSTEB(
-                                                                20, 0, 0, 0),
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          "${itemMember.fristName} ${itemMember.lastName}",
-                                                          style: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .title2,
-                                                        ),
-                                                        Text(
-                                                          '${itemMember.email}',
-                                                          style: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .title3,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             );
                                           },

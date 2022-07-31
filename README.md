@@ -135,7 +135,7 @@
             - night (int)
             - count (int)
 - 2 GET
-    - :hourglass: เชื่อมกับ $url/api/group/schedule/without/me (nameGroup ใส่ตรงไหนใน part)
+    - :heavy_check_mark: เชื่อมกับ $url/api/group/schedule/without/me *เสร็จแล้วเมื่อ (31/07/2565)*
         - ส่งค่าเพื่อไปขอข้อมูล
             - :x: nameGroup (String) (ต้องการเชื่อมด่วน)
             - token (String)
@@ -348,3 +348,7 @@ v1.3.1 (อัพเดต README.md)
 1.3.3 (อัพเดต README.md เหลืออีก 4 หน้าที่ยังไม่ได้เพิ่ม แก้ภาพ)
 
 1.4 (อัพเดตเชื่อม api หน้า กลุ่มแล้วนำมาแสดง)
+
+1.4.1 (อัพเดต README.md)
+
+1.5 (แสดงเวรของเพื่อน)

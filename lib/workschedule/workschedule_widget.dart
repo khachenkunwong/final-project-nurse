@@ -14,6 +14,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+
+import '../model/without_model.dart';
 // เหลือเวรของเพื่อน
 
 class WorkscheduleWidget extends StatefulWidget {
@@ -30,12 +32,15 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
   Completer<ApiCallResponse>? _apiRequestCompleter2;
   DateTimeRange? calendarSelectedDay;
   Future<List<DutyPresent>>? futurePresent;
+  Future<List<DutyWithOutModel>>? futureWithOut;
   late Future<List<dynamic>> futureMeAll;
   List dayDuty = ["เช้า", "บ่าย", "ดึก"];
-  // List listViewGetPresentResponse1 = [];
+  var index1 = 0;
+
   var test;
   late String calendarSelectedDayString;
   late String calendarSelectedmonthString;
+  late String calendarSelectedyearString;
   Future<List<dynamic>> getMeAllModel(
       {required String token, required String nameGroup}) async {
     try {
@@ -48,8 +53,8 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
           "x-access-token": "$token"
         },
       );
-      print("res.body1 ${res.statusCode}");
-      print("res.body1 ${res.body}");
+      // print("res.body1 ${res.statusCode}");
+      // print("res.body1 ${res.body}");
 
       final data = convert.json.decode(res.body) as List<dynamic>;
       // print("data ${data}");
@@ -105,22 +110,24 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
     return [];
   }
 
-  Future<List<dynamic>> getWithOutModel(
-      {required String token, required String nameGroup}) async {
+  Future<List<DutyWithOutModel>> getWithOutModel(
+      {required String token}) async {
     try {
-      print("เข้าฟังชัน allme แล้ว");
+      print("เข้าฟังชัน getWithOutModel แล้ว");
       final res = await http.get(
-        Uri.parse("$url/api/group/schedule/me/all/$nameGroup"),
+        Uri.parse("$url/api/group/schedule/without/me"),
         headers: {
           "Accept": "application/json",
           "Access-Control_Allow_Origin": "*",
           "x-access-token": "$token"
         },
       );
-      print("res.body11 ${res.statusCode}");
-      print("res.body11 ${res.body}");
+      // print("res.body11 ${res.statusCode}");
+      // print("res.body11 ${res.body}");
 
-      final data = convert.json.decode(res.body) as List<dynamic>;
+      final body = convert.json.decode(res.body) as Map<String, dynamic>;
+      final _futureWithOut = WithOutCall.fromJson(body as Map<String, dynamic>);
+      final futureWithOut = _futureWithOut.duty as List<DutyWithOutModel>;
       // print("data ${data}");
       // for (var dutylist in data) {
       //   // list ออกมาทั้ง index
@@ -132,7 +139,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
       //     listViewGetPresentResponse1.add(_futurePresent);
       //   });
       // }
-      return data;
+      return futureWithOut;
     } catch (error) {
       print(error);
     }
@@ -144,20 +151,20 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
     super.initState();
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      try {
-        crateTableOutput = await CreateTableCall.call();
-        if (((crateTableOutput?.statusCode ?? 200)) == 200) {
-          await actions.notifica(
-            context,
-            'สร้างตารางเสร็จสิ้น',
-          );
-        } else {
-          await actions.notifica(
-            context,
-            'สร้างตารางไม่สำเร็จ',
-          );
-        }
-      } catch (error) {}
+      // try {
+      // crateTableOutput = await CreateTableCall.call();
+      //   if (((crateTableOutput?.statusCode ?? 200)) == 200) {
+      //     await actions.notifica(
+      //       context,
+      //       'สร้างตารางเสร็จสิ้น',
+      //     );
+      //   } else {
+      //     await actions.notifica(
+      //       context,
+      //       'สร้างตารางไม่สำเร็จ',
+      //     );
+      //   }
+      // } catch (error) {}
     });
 
     calendarSelectedDay = DateTimeRange(
@@ -170,6 +177,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
     // เพื่อเอาไว้ใช้การกับ เวรของฉัน
     futureMeAll = getMeAllModel(
         token: FFAppState().tokenStore, nameGroup: "AAA-โรงพยาบาลบ้านม่วง");
+    futureWithOut = getWithOutModel(token: FFAppState().tokenStore);
     // futureMeAll = getMeAllModel(
     //     token: FFAppState().tokenStore, nameGroup: "AAA-โรงพยาบาลบ้านม่วง");
     // print("FFAppState().namegroup${FFAppState().namegroup}1");
@@ -247,11 +255,16 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                             .split(" ")[0]
                             .split("-")[1]
                             .split("0")[1];
+                        calendarSelectedyearString = calendarSelectedDay
+                            .toString()
+                            .split(" - ")[0]
+                            .split(" ")[0]
+                            .split("-")[0];
                         print(
                             "calendarSelectedmonthString ${calendarSelectedmonthString}");
                       });
                       print(
-                          "newSelectedDate ${calendarSelectedDay.toString().split(" - ")[0].split(" ")[0].split("-")[2].runtimeType}");
+                          "newSelectedDate ${calendarSelectedDay.toString().split(" - ")[0].split(" ")[0].split("-")[0]}");
                     },
                     titleStyle: GoogleFonts.getFont(
                       'Mitr',
@@ -318,66 +331,38 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                         ),
                       );
                     }
-                    final listViewGetPresentResponse = snapshot.data!;
-                    // var indexMonth = 0;
-
-                    // print("snapshot.data ${listViewGetPresentResponse.length}");
-                    //   print(e[0]);
-                    // var listViewGetPresentResponse1 = MeAll.fromJson(data);
-                    // for (var vv in listViewGetPresentResponse) {
-                    //   var data1 = MeAllModel.fromJson(vv);
-                    //   var datatoint = data1
-                    //       .duty![int.parse(calendarSelectedDayString) - 1]
-                    //       .month;
-
-                    //   print("tyep ${datatoint.runtimeType}");
-                    //   if (datatoint == calendarSelectedmonthString) {
-                    //     print(
-                    //         "aa ${data1.duty![int.parse(calendarSelectedDayString) - 1].month}");
-                    //     indexMonth -= 1;
-                    //   }
-                    //   indexMonth += 1;
-                    // }
-                    // })}");
-                    // print("indexMonth $indexMonth");
-                    // print(
-                    //     "listViewGetPresentResponse1 ${listViewGetPresentResponse[0]["_duty"][0]["morning"]}");
-
+                    final listViewMeAll = snapshot.data!;
+                    
                     return Builder(
                       builder: (context) {
-                        // calendarSelectedDayint = calendarSelectedDayString;
-                        // print(
-                        //     "calendarSelectedDayString ${int.parse(calendarSelectedDayString).runtimeType}");
-                        // print(listViewGetPresentResponse[
-                        //         int.parse(calendarSelectedDayString) - 1]
-                        //     .id);
+                        
                         try {
                           // ตัวนี้คือนำเวรเช้า บ่าย ดึก มาเก็บไว้ใน list
                           List<dynamic> getMyduty = [
-                            listViewGetPresentResponse[
+                            listViewMeAll[
                                         int.parse(calendarSelectedmonthString) -
-                                            6]["_duty"]
+                                            7]["_duty"]
                                     [int.parse(calendarSelectedDayString) - 1]
                                 ["morning"],
-                            listViewGetPresentResponse[
+                            listViewMeAll[
                                         int.parse(calendarSelectedmonthString) -
-                                            6]["_duty"]
+                                            7]["_duty"]
                                     [int.parse(calendarSelectedDayString) - 1]
                                 ["noon"],
-                            listViewGetPresentResponse[
+                            listViewMeAll[
                                         int.parse(calendarSelectedmonthString) -
-                                            6]["_duty"]
+                                            7]["_duty"]
                                     [int.parse(calendarSelectedDayString) - 1]
                                 ["night"]
                           ];
-                          int? count = listViewGetPresentResponse[
+                          int? count = listViewMeAll[
                                       int.parse(calendarSelectedmonthString) -
-                                          6]["_duty"]
+                                          7]["_duty"]
                                   [int.parse(calendarSelectedDayString) - 1]
                               ["count"];
                           print(
                               "month1 ${int.parse(calendarSelectedmonthString) - 6} ${int.parse(calendarSelectedDayString) - 1}");
-                          print("getMyduty $getMyduty");
+                          // print("getMyduty $getMyduty");
 
                           // List<dynamic> getMyduty = GetPresentCall.oneListDuty(
                           //       (listViewGetPresentResponse.jsonBody ?? ''),
@@ -395,6 +380,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                           //   return Text("เดือนนี้ยังไม่ได้จัด");
                           // }
                           // ถ้าไม่มีเวร
+                          print("getMyduty = ${getMyduty}");
                           if (count == 0) {
                             return Container(
                                 height: 50.0,
@@ -405,85 +391,110 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                           //         int.parse(calendarSelectedDayString) - 1]
                           //     .morning);
                           // เมื่อปัดลงจะทำการโหลดค่าข้างในใหม่
-                          return RefreshIndicator(
-                            onRefresh: () async {
-                              setState(() => _apiRequestCompleter2 = null);
-                              await waitForApiRequestCompleter2();
-                            },
-                            child: ListView.builder(
-                              padding: EdgeInsets.zero,
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              itemCount: 3,
-                              itemBuilder: (context, getMydutyIndex) {
-                                final getMydutyItem = getMyduty[getMydutyIndex];
-                                print(
-                                    "getMydutyItem $getMydutyItem $calendarSelectedmonthString");
-
-                                // ถ้า เช้า บ่าย ดึก ไม่มีก็จะแสดงเป็น box ว่าง แต่ถ้า เช้ามีแต่บ่ายกับดึกไม่มีก็จะแสดงแต่เช้า
-                                if (getMydutyItem == 0) {
-                                  return SizedBox(
-                                    width: 1.0,
-                                  );
-                                }
-
-                                return Card(
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryBlue02,
-                                  elevation: 2,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        10, 5, 10, 5),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          width: 56,
-                                          height: 56,
-                                          clipBehavior: Clip.antiAlias,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Image.network(
-                                            'https://picsum.photos/seed/260/600',
-                                          ),
+                          return Column(
+                            children: [
+                              Align(
+                                alignment: AlignmentDirectional(-1, 0),
+                                child: Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      5, 5, 0, 0),
+                                  child: Text(
+                                    '${listViewMeAll[int.parse(calendarSelectedmonthString) - 6]["_duty"][int.parse(calendarSelectedDayString) - 1]["group"]}',
+                                    style: FlutterFlowTheme.of(context)
+                                        .bodyText1
+                                        .override(
+                                          fontFamily: 'Mitr',
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryButtonDarkBlue,
                                         ),
-                                        Row(
+                                  ),
+                                ),
+                              ),
+                              RefreshIndicator(
+                                onRefresh: () async {
+                                  setState(() => _apiRequestCompleter2 = null);
+                                  await waitForApiRequestCompleter2();
+                                },
+                                child: ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: 3,
+                                  itemBuilder: (context, IndexMeAll) {
+                                    // ไสไลเอา [0,1,0] ออกมาโดยดึงมาจาก api
+                                    // ค่าอยู่ใน ItemMeAll
+                                    final ItemMeAll = getMyduty[IndexMeAll];
+                                    print("listview222222");
+                                    // print(
+                                    //     "getMydutyItem $getMydutyItem $calendarSelectedmonthString");
+
+                                    // ถ้า เช้า บ่าย ดึก ไม่มีก็จะแสดงเป็น box ว่าง แต่ถ้า เช้ามีแต่บ่ายกับดึกไม่มีก็จะแสดงแต่เช้า
+                                    if (ItemMeAll == 0) {
+                                      return SizedBox(
+                                        width: 1.0,
+                                      );
+                                    }
+
+                                    return Card(
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryBlue02,
+                                      elevation: 2,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            10, 5, 10, 5),
+                                        child: Row(
                                           mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                              'Jonh',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
+                                            Container(
+                                              width: 56,
+                                              height: 56,
+                                              clipBehavior: Clip.antiAlias,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Image.network(
+                                                'https://picsum.photos/seed/260/600',
+                                              ),
+                                            ),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Text(
+                                                  'Jonh',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
                                                       .title2,
+                                                ),
+                                                Text(
+                                                  ' liam',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .title2,
+                                                ),
+                                              ],
                                             ),
                                             Text(
-                                              ' liam',
+                                              // dayDuty คือ list เช้า บ่าย ดึกที่เตรียมไว้
+                                              // getMydutyIndex คือ index การ loop ของ listview
+                                              '${dayDuty[IndexMeAll]}',
                                               style:
                                                   FlutterFlowTheme.of(context)
                                                       .title2,
                                             ),
                                           ],
                                         ),
-                                        Text(
-                                          // dayDuty คือ list เช้า บ่าย ดึกที่เตรียมไว้
-                                          // getMydutyIndex คือ index การ loop ของ listview
-                                          '${dayDuty[getMydutyIndex]}',
-                                          style: FlutterFlowTheme.of(context)
-                                              .title2,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
                           );
                         } on RangeError {
                           return Container(
@@ -499,6 +510,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                     );
                   },
                 ),
+                // เวรของเพื่อน
                 Align(
                   alignment: AlignmentDirectional(-1, 0),
                   child: Padding(
@@ -517,16 +529,16 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                   thickness: 1,
                   color: FlutterFlowTheme.of(context).stokeLightGray,
                 ),
-                FutureBuilder<ApiCallResponse>(
-                  future:
-                      (_apiRequestCompleter1 ??= Completer<ApiCallResponse>()
-                            ..complete(GetPresentCall.call(
-                              token: FFAppState().tokenStore,
-                            )))
-                          .future,
-                  builder: (context, snapshot) {
+                FutureBuilder<List<DutyWithOutModel>>(
+                  future: futureWithOut,
+                  // (_apiRequestCompleter1 ??= Completer<ApiCallResponse>()
+                  //       ..complete(GetPresentCall.call(
+                  //         token: FFAppState().tokenStore,
+                  //       )))
+                  //     .future,
+                  builder: (context, snapshotWithOutMe) {
                     // Customize what your widget looks like when it's loading.
-                    if (!snapshot.hasData) {
+                    if (!snapshotWithOutMe.hasData) {
                       return Center(
                         child: SizedBox(
                           width: 50,
@@ -537,81 +549,183 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                         ),
                       );
                     }
-                    final listViewGetPresentResponse = snapshot.data!;
-                    return Builder(
-                      builder: (context) {
-                        final getMyduty = GetPresentCall.oneListDuty(
-                              (listViewGetPresentResponse.jsonBody ?? ''),
-                            )?.toList() ??
-                            [];
-                        return RefreshIndicator(
-                          onRefresh: () async {
-                            setState(() => _apiRequestCompleter1 = null);
-                            await waitForApiRequestCompleter1();
+                    final listViewWithOut = snapshotWithOutMe.data!;
+
+                    return Builder(builder: (context) {
+                      // final getMyduty = GetPresentCall.oneListDuty(
+                      //       (listViewGetPresentResponse.jsonBody ?? ''),
+                      //     )?.toList() ??
+
+                      try {
+                        // if (listViewWithOut[
+                        //             int.parse(calendarSelectedmonthString) - 7]
+                        //         .duty![int.parse(calendarSelectedDayString) - 1]
+                        //         .count ==
+                        //     0) {
+                        //   return Container(
+                        //       height: 50.0,
+                        //       child:
+                        //           Center(child: Text("ไม่มีเวรของคุณวันนี้")));
+                        // }
+
+                        return ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemCount: listViewWithOut.length,
+                          itemBuilder: (context, indexWithOut) {
+                            final itemWithOut = listViewWithOut[indexWithOut];
+                            final itemFristName = itemWithOut.user!.fristName;
+                            final itemLastName = itemWithOut.user!.lastName;
+                            print("itemFristName $itemFristName");
+                            print("itemLastName $itemLastName");
+
+                            return Builder(builder: (context) {
+                              return ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: itemWithOut.duty!.length,
+                                  itemBuilder: (context, indexWithOutMeDuty) {
+                                    print("วันที่ $indexWithOutMeDuty");
+                                    final itemWityOutMeDuty =
+                                        itemWithOut.duty![indexWithOutMeDuty];
+                                    print(
+                                        "itemWityOutMeDuty ${itemWityOutMeDuty.year}");
+                                    if (int.parse(itemWityOutMeDuty.year
+                                                .toString()) ==
+                                            int.parse(
+                                                calendarSelectedyearString) &&
+                                        int.parse(itemWityOutMeDuty.month
+                                                .toString()) ==
+                                            int.parse(
+                                                calendarSelectedmonthString) &&
+                                        int.parse(itemWityOutMeDuty.day
+                                                .toString()) ==
+                                            int.parse(
+                                                calendarSelectedDayString)) {
+                                      if (itemWityOutMeDuty.count == 0) {
+                                        if (index1 == 0) {
+                                          index1 += 1;
+                                          return Container(
+                                            height: 100.0,
+                                            width: 100.0,
+                                            child: Center(
+                                              child: Text('ไม่มีเวรวันนี้'),
+                                            ),
+                                          );
+                                        }
+                                        index1 += 1;
+                                        return SizedBox();
+                                      }
+                                      final dutylist = [
+                                        itemWityOutMeDuty.morning,
+                                        itemWityOutMeDuty.noon,
+                                        itemWityOutMeDuty.night
+                                      ];
+                                      return Builder(builder: (context) {
+                                        print("object");
+                                        return ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: 3,
+                                            itemBuilder:
+                                                (context, indexDutyList) {
+                                              if (dutylist[indexDutyList] ==
+                                                  0) {
+                                                return SizedBox();
+                                              }
+                                              return Container(
+                                                child: Card(
+                                                  clipBehavior: Clip
+                                                      .antiAliasWithSaveLayer,
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .secondaryWhite,
+                                                  elevation: 2,
+                                                  shape:
+                                                      RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        EdgeInsetsDirectional
+                                                            .fromSTEB(
+                                                                10, 5, 10, 5),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Container(
+                                                          width: 56,
+                                                          height: 56,
+                                                          clipBehavior:
+                                                              Clip.antiAlias,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            shape: BoxShape
+                                                                .circle,
+                                                          ),
+                                                          child:
+                                                              Image.network(
+                                                            'https://picsum.photos/seed/260/600',
+                                                          ),
+                                                        ),
+                                                        Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize
+                                                                  .max,
+                                                          children: [
+                                                            Text(
+                                                              '${itemFristName}',
+                                                              style: FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .title2,
+                                                            ),
+                                                            Text(
+                                                              ' ${itemLastName}',
+                                                              style: FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .title2,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Text(
+                                                          "${dayDuty[indexDutyList]}",
+                                                          // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                                                          // '${dayDuty[IndexWithOutList]}',
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .title2,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            });
+                                      });
+                                    }
+                                    return SizedBox();
+                                  });
+                            });
                           },
-                          child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: getMyduty.length,
-                            itemBuilder: (context, getMydutyIndex) {
-                              final getMydutyItem = getMyduty[getMydutyIndex];
-                              return Card(
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                color:
-                                    FlutterFlowTheme.of(context).primaryBlue02,
-                                elevation: 2,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      10, 5, 10, 5),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        width: 56,
-                                        height: 56,
-                                        clipBehavior: Clip.antiAlias,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Image.network(
-                                          'https://picsum.photos/seed/260/600',
-                                        ),
-                                      ),
-                                      Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Text(
-                                            'Jonh',
-                                            style: FlutterFlowTheme.of(context)
-                                                .title2,
-                                          ),
-                                          Text(
-                                            ' liam',
-                                            style: FlutterFlowTheme.of(context)
-                                                .title2,
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                        'เช้า',
-                                        style:
-                                            FlutterFlowTheme.of(context).title2,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
                         );
-                      },
-                    );
+                      } on RangeError {
+                        return Container(
+                            height: 50.0,
+                            child: Center(
+                                child: Text(
+                                    "ตารางเวรเดือนนี้ยังไม่ได้สร้างหรือจัด")));
+                      } catch (error) {
+                        print("error 2 $error");
+                        return Text("เกิดข้อผิดพลาด");
+                      }
+                    });
                   },
                 ),
               ],
