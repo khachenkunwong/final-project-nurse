@@ -119,7 +119,7 @@
 ### Application Program Interface(API) ที่เชื่อมต่อ
 
 - 1 GET
-    - :hourglass: เชื่อมกับ $url/api/group/schedule/me/all/$nameGroup (รอเชื่อมต่อ)
+    - :heavy_check_mark: เชื่อมกับ $url/api/group/schedule/me/all/$nameGroup *เสร็จแล้วเมื่อ (01/08/2565)*
         - ส่งค่าเพื่อไปขอข้อมูล
             - nameGroup (String)
             - token (String)
@@ -169,7 +169,7 @@
 ### Application Program Interface(API) ที่เชื่อมต่อ
 
 - 1 GET
-    - :hourglass: เชื่อมกับ $url/api/group/schedule/me/all/$nameGroup (รอเชื่อมต่อ)
+    - :heavy_check_mark: เชื่อมกับ $url/api/group/schedule/me/all/$nameGroup (รอเชื่อมต่อ)
         - ส่งค่าเพื่อไปขอข้อมูล
             - nameGroup (String)
             - token (String)
@@ -185,7 +185,7 @@
             - night (int)
             - count (int)
 - 2 GET
-    - :hourglass: เชื่อมกับ $url/api/group/schedule/without/me (nameGroup ใส่ตรงไหนใน part)
+    - :heavy_check_mark: เชื่อมกับ $url/api/group/schedule/without/me (nameGroup ใส่ตรงไหนใน part)
         - ส่งค่าเพื่อไปขอข้อมูล
             - :x: nameGroup (String) (ต้องการเชื่อมด่วน)
             - token (String)
@@ -213,7 +213,7 @@
 ### Application Program Interface(API) ที่เชื่อมต่อ
 
 - 1 GET (ดูภาที่ 1 , 2 มาเป็นตัวอย่างในการเขียน)
-    - :x: เชื่อมกับ (ยังไม่ part)
+    - :hourglass: เชื่อมกับ (ยังไม่ part)
         - ส่งค่าเพื่อไปขอข้อมูล
             - ตอนนี้ยังไม่มี
         - นำมาแสดง
@@ -232,7 +232,7 @@
             - they_nameGroup (String) (ทำไว้กรณีแลกเวรนอกกลุ่ม)
             - they_duty (`List[int]`) (ใน List คือ 0,1 ของ เช้า บ่าย ดึก ของวันที่แลกเวร) 
 - 1 PATCH (ดูภาที่ 1 , 2 มาเป็นตัวอย่างในการเขียน)
-    - :x: เชื่อมกับ (ยังไม่ part)
+    - :hourglass: เชื่อมกับ (ยังไม่ part)
         - ส่งค่าเพื่อไปขอข้อมูล
             - ตอนนี้ยังไม่มี
         - นำมาแสดง
@@ -253,7 +253,7 @@
             - they_nameGroup (String) (ทำไว้กรณีแลกเวรนอกกลุ่ม)
             - they_duty (`List[int]`) (ใน List คือ 0,1 ของ เช้า บ่าย ดึก ของวันที่แลกเวร) 
 - 1 PATCH (ดูภาที่ 3 มาเป็นตัวอย่างในการเขียน)
-    - :x: เชื่อมกับ (ยังไม่ part)
+    - :hourglass: เชื่อมกับ (ยังไม่ part)
         - ส่งค่าเพื่อไปขอข้อมูล
             - ตอนนี้ยังไม่มี
         - นำมาแสดง
@@ -358,3 +358,5 @@ v1.3.1 (อัพเดต README.md)
 1.5.2 (อัพเดต README.md)
 
 1.6.0 (แสดงข้อมูลหน้าตารางงานและปฏิทิน)
+
+1.6.1 (อัพเดต README.md)
