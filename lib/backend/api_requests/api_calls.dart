@@ -77,6 +77,27 @@ class PostLoginCall {
       );
 }
 
+// http://localhost:5501/api/invite/invite
+class GetInviteCall {
+  static Future<ApiCallResponse> call({
+    required String token,
+  }) {
+    return ApiManager.instance.makeApiCall(
+      callName: 'getInvite',
+      apiUrl: '$url/api/invite/invite',
+      callType: ApiCallType.GET,
+      headers: {
+        'content-type': 'application/json',
+        'Access-Control_Allow_Origin': '*',
+      },
+      params: {
+        'token': token,
+      },
+      returnBody: true,
+    );
+  }
+}
+
 class GetProfileCall {
   static Future<ApiCallResponse> call({
     required String token,
@@ -236,7 +257,7 @@ class GetPresentCall {
     String? token,
   }) {
     token = token ?? FFAppState().tokenStore;
-    
+
     return ApiManager.instance.makeApiCall(
       callName: 'getPresent',
       apiUrl: '$url/api/schedule/me/present',
