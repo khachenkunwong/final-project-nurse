@@ -37,12 +37,11 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
   List dayDuty = ["เช้า", "บ่าย", "ดึก"];
   var index1 = 0;
 
-  var test;
   late String calendarSelectedDayString;
   late String calendarSelectedmonthString;
   late String calendarSelectedyearString;
-  Future<List<dynamic>> getMeAllModel(
-      {required String token, required String nameGroup}) async {
+
+  Future<List<dynamic>> getMeAllModel({required String token, required String nameGroup}) async {
     try {
       print("เข้าฟังชัน allme แล้ว");
       final res = await http.get(
@@ -110,8 +109,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
     return [];
   }
 
-  Future<List<DutyWithOutModel>> getWithOutModel(
-      {required String token}) async {
+  Future<List<DutyWithOutModel>> getWithOutModel( {required String token}) async {
     try {
       print("เข้าฟังชัน getWithOutModel แล้ว");
       final res = await http.get(
@@ -175,8 +173,9 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
     // getMeAllModel(
     //     token: FFAppState().tokenStore, nameGroup: 'AAA-โรงพยาบาลบ้านม่วง');
     // เพื่อเอาไว้ใช้การกับ เวรของฉัน
-    futureMeAll = getMeAllModel(
-        token: FFAppState().tokenStore, nameGroup: "AAA-โรงพยาบาลบ้านม่วง");
+    futurePresent = getPresentModel(token: FFAppState().tokenStore);
+    // futureMeAll = getMeAllModel(
+    //     token: FFAppState().tokenStore, nameGroup: "AAA-โรงพยาบาลบ้านม่วง");
     futureWithOut = getWithOutModel(token: FFAppState().tokenStore);
     // futureMeAll = getMeAllModel(
     //     token: FFAppState().tokenStore, nameGroup: "AAA-โรงพยาบาลบ้านม่วง");
@@ -239,6 +238,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                     weekFormat: true,
                     weekStartsMonday: true,
                     onChange: (DateTimeRange? newSelectedDate) {
+
                       setState(() {
                         calendarSelectedDay = newSelectedDate;
                         // ทุกครั้งที่กดวันที่ในปฏิทิน จะได้วันที่มา
@@ -254,17 +254,20 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                             .split(" - ")[0]
                             .split(" ")[0]
                             .split("-")[1]
-                            .split("0")[1];
+                            .split("0")[1]
+                            .toString();
                         calendarSelectedyearString = calendarSelectedDay
                             .toString()
                             .split(" - ")[0]
                             .split(" ")[0]
-                            .split("-")[0];
+                            .split("-")[0]
+                            .toString();
                         print(
                             "calendarSelectedmonthString ${calendarSelectedmonthString}");
                       });
-                      print(
-                          "newSelectedDate ${calendarSelectedDay.toString().split(" - ")[0].split(" ")[0].split("-")[0]}");
+                      
+                      // print(
+                      //     "newSelectedDate ${calendarSelectedDay.toString().split(" - ")[0].split(" ")[0].split("-")[0]}");
                     },
                     titleStyle: GoogleFonts.getFont(
                       'Mitr',
@@ -293,6 +296,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                     ),
                   ),
                 ),
+                // ตารางเวรของฉัน
                 Align(
                   alignment: AlignmentDirectional(-1, 0),
                   child: Padding(
@@ -311,16 +315,16 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                   thickness: 1,
                   color: FlutterFlowTheme.of(context).stokeLightGray,
                 ),
-                FutureBuilder<List<dynamic>>(
-                  future: futureMeAll,
+                FutureBuilder<List<DutyPresent>>(
+                  future: futurePresent,
                   // (_apiRequestCompleter2 ??= Completer<ApiCallResponse>()
                   //       ..complete(GetPresentCall.call(
                   //         token: FFAppState().tokenStore,
                   //       )))
                   //     .future,
-                  builder: (context, snapshot) {
+                  builder: (context, snapshotPresent) {
                     // Customize what your widget looks like when it's loading.
-                    if (!snapshot.hasData) {
+                    if (!snapshotPresent.hasData) {
                       return Center(
                         child: SizedBox(
                           width: 50,
@@ -331,62 +335,56 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                         ),
                       );
                     }
-                    final listViewMeAll = snapshot.data!;
-                    
+                    final listViewPresent = snapshotPresent.data!;
+
                     return Builder(
                       builder: (context) {
-                        
                         try {
-                          // ตัวนี้คือนำเวรเช้า บ่าย ดึก มาเก็บไว้ใน list
-                          List<dynamic> getMyduty = [
-                            listViewMeAll[
-                                        int.parse(calendarSelectedmonthString) -
-                                            7]["_duty"]
-                                    [int.parse(calendarSelectedDayString) - 1]
-                                ["morning"],
-                            listViewMeAll[
-                                        int.parse(calendarSelectedmonthString) -
-                                            7]["_duty"]
-                                    [int.parse(calendarSelectedDayString) - 1]
-                                ["noon"],
-                            listViewMeAll[
-                                        int.parse(calendarSelectedmonthString) -
-                                            7]["_duty"]
-                                    [int.parse(calendarSelectedDayString) - 1]
-                                ["night"]
-                          ];
-                          int? count = listViewMeAll[
-                                      int.parse(calendarSelectedmonthString) -
-                                          7]["_duty"]
-                                  [int.parse(calendarSelectedDayString) - 1]
-                              ["count"];
                           print(
-                              "month1 ${int.parse(calendarSelectedmonthString) - 6} ${int.parse(calendarSelectedDayString) - 1}");
-                          // print("getMyduty $getMyduty");
-
-                          // List<dynamic> getMyduty = GetPresentCall.oneListDuty(
-                          //       (listViewGetPresentResponse.jsonBody ?? ''),
-                          //     ) ??
-                          //     [];
-                          //            FutureBuilder<PresentModel>(
-                          // future:futurePresent,
-                          // print("getMyduty :$getMyduty");
-                          // var sum = getMyduty.reduce((a, b) => a + b);
-
-                          // if (int.parse(calendarSelectedmonthString).toInt() ==
-                          //     listViewGetPresentResponse[
-                          //             int.parse(calendarSelectedDayString)]
-                          //         .month) {
-                          //   return Text("เดือนนี้ยังไม่ได้จัด");
-                          // }
-                          // ถ้าไม่มีเวร
-                          print("getMyduty = ${getMyduty}");
-                          if (count == 0) {
+                              "aaaa${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month} != ${calendarSelectedmonthString}");
+                          if (listViewPresent[int.parse(
+                                              calendarSelectedDayString
+                                                  .toString()) -
+                                          1]
+                                      .year !=
+                                  calendarSelectedyearString ||
+                              listViewPresent[int.parse(
+                                              calendarSelectedDayString
+                                                  .toString()) -
+                                          1]
+                                      .month !=
+                                  calendarSelectedmonthString) {
+                            return Center(
+                              child: Text("ไม่มีข้อมูลเวรของเดือนนี้"),
+                            );
+                          }
+                          if (listViewPresent[int.parse(
+                                          calendarSelectedDayString
+                                              .toString()) -
+                                      1]
+                                  .count ==
+                              0) {
                             return Container(
                                 height: 50.0,
                                 child: Center(
                                     child: Text("ไม่มีเวรของคุณวันนี้")));
                           }
+                          // ตัวนี้คือนำเวรเช้า บ่าย ดึก มาเก็บไว้ใน list
+                          List<dynamic> getMyduty = [
+                            listViewPresent[int.parse(
+                                        calendarSelectedDayString.toString()) -
+                                    1]
+                                .morning,
+                            listViewPresent[int.parse(
+                                        calendarSelectedDayString.toString()) -
+                                    1]
+                                .noon,
+                            listViewPresent[int.parse(
+                                        calendarSelectedDayString.toString()) -
+                                    1]
+                                .night
+                          ];
+
                           // print(listViewGetPresentResponse[
                           //         int.parse(calendarSelectedDayString) - 1]
                           //     .morning);
@@ -399,7 +397,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       5, 5, 0, 0),
                                   child: Text(
-                                    '${listViewMeAll[int.parse(calendarSelectedmonthString) - 6]["_duty"][int.parse(calendarSelectedDayString) - 1]["group"]}',
+                                    '${listViewPresent.first.group}',
                                     style: FlutterFlowTheme.of(context)
                                         .bodyText1
                                         .override(
@@ -420,74 +418,103 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                   shrinkWrap: true,
                                   scrollDirection: Axis.vertical,
                                   itemCount: 3,
-                                  itemBuilder: (context, IndexMeAll) {
-                                    // ไสไลเอา [0,1,0] ออกมาโดยดึงมาจาก api
-                                    // ค่าอยู่ใน ItemMeAll
-                                    final ItemMeAll = getMyduty[IndexMeAll];
-                                    print("listview222222");
-                                    // print(
-                                    //     "getMydutyItem $getMydutyItem $calendarSelectedmonthString");
-
+                                  itemBuilder: (context, indexPresent) {
                                     // ถ้า เช้า บ่าย ดึก ไม่มีก็จะแสดงเป็น box ว่าง แต่ถ้า เช้ามีแต่บ่ายกับดึกไม่มีก็จะแสดงแต่เช้า
-                                    if (ItemMeAll == 0) {
-                                      return SizedBox(
-                                        width: 1.0,
-                                      );
+                                    if (getMyduty[indexPresent] == 0) {
+                                      return SizedBox();
                                     }
 
-                                    return Card(
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryBlue02,
-                                      elevation: 2,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            10, 5, 10, 5),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                              width: 56,
-                                              height: 56,
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: Image.network(
-                                                'https://picsum.photos/seed/260/600',
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Text(
-                                                  'Jonh',
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .title2,
+                                    return InkWell(
+                                      onTap: () {
+                                        print(
+                                            "id ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].id}");
+                                        print(
+                                            "id user ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.id}");
+                                        print(
+                                            "fristName ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.fristName}");
+                                        print(
+                                            "lastName ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.lastName}");
+                                        print(
+                                            "actor ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.actor
+                                            }");
+                                      print(
+                                            "year ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].year
+                                            }");
+                                      print(
+                                            "month ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month
+                                            }");
+                                       print(
+                                            "day ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].day
+                                            }");
+                                      print(
+                                            "group ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].group
+                                            }");
+                                      print(
+                                            "count ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].count
+                                            }");
+                                      print(
+                                            "__v ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].v
+                                            }");
+
+                                        print("${dayDuty[indexPresent]}");
+                                      },
+                                      child: Card(
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryBlue02,
+                                        elevation: 2,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  10, 5, 10, 5),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                width: 56,
+                                                height: 56,
+                                                clipBehavior: Clip.antiAlias,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
                                                 ),
-                                                Text(
-                                                  ' liam',
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .title2,
+                                                child: Image.network(
+                                                  'https://picsum.photos/seed/260/600',
                                                 ),
-                                              ],
-                                            ),
-                                            Text(
-                                              // dayDuty คือ list เช้า บ่าย ดึกที่เตรียมไว้
-                                              // getMydutyIndex คือ index การ loop ของ listview
-                                              '${dayDuty[IndexMeAll]}',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .title2,
-                                            ),
-                                          ],
+                                              ),
+                                              Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: [
+                                                  Text(
+                                                    '${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.fristName}',
+                                                    style: FlutterFlowTheme.of(
+                                                            context)
+                                                        .title2,
+                                                  ),
+                                                  Text(
+                                                    ' ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.lastName}',
+                                                    style: FlutterFlowTheme.of(
+                                                            context)
+                                                        .title2,
+                                                  ),
+                                                ],
+                                              ),
+                                              Text(
+                                                // dayDuty คือ list เช้า บ่าย ดึกที่เตรียมไว้
+                                                // getMydutyIndex คือ index การ loop ของ listview
+                                                '${dayDuty[indexPresent]}',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .title2,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     );
@@ -503,7 +530,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                   child: Text(
                                       "ตารางเวรเดือนนี้ยังไม่ได้สร้างหรือจัด")));
                         } catch (error) {
-                          print(error);
+                          print("error = ${error}");
                           return Text("error นอกขอบเขตที่กำหนด");
                         }
                       },
@@ -642,8 +669,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                                           context)
                                                       .secondaryWhite,
                                                   elevation: 2,
-                                                  shape:
-                                                      RoundedRectangleBorder(
+                                                  shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             10),
@@ -667,29 +693,27 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                                               Clip.antiAlias,
                                                           decoration:
                                                               BoxDecoration(
-                                                            shape: BoxShape
-                                                                .circle,
+                                                            shape:
+                                                                BoxShape.circle,
                                                           ),
-                                                          child:
-                                                              Image.network(
+                                                          child: Image.network(
                                                             'https://picsum.photos/seed/260/600',
                                                           ),
                                                         ),
                                                         Row(
                                                           mainAxisSize:
-                                                              MainAxisSize
-                                                                  .max,
+                                                              MainAxisSize.max,
                                                           children: [
                                                             Text(
                                                               '${itemFristName}',
-                                                              style: FlutterFlowTheme.of(
-                                                                      context)
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
                                                                   .title2,
                                                             ),
                                                             Text(
                                                               ' ${itemLastName}',
-                                                              style: FlutterFlowTheme.of(
-                                                                      context)
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
                                                                   .title2,
                                                             ),
                                                           ],
