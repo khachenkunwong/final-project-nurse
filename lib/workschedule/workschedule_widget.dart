@@ -14,8 +14,10 @@ import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../model/without_model.dart';
+import '../select_exchange_workschedule/select_exchange_workschedule_widget.dart';
 // เหลือเวรของเพื่อน
 
 class WorkscheduleWidget extends StatefulWidget {
@@ -35,13 +37,16 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
   Future<List<DutyWithOutModel>>? futureWithOut;
   late Future<List<dynamic>> futureMeAll;
   List dayDuty = ["เช้า", "บ่าย", "ดึก"];
+  List dayDutyEnglist = ["morning", "noon", "night"];
   var index1 = 0;
+  String DutySelect = "";
 
   late String calendarSelectedDayString;
   late String calendarSelectedmonthString;
   late String calendarSelectedyearString;
 
-  Future<List<dynamic>> getMeAllModel({required String token, required String nameGroup}) async {
+  Future<List<dynamic>> getMeAllModel(
+      {required String token, required String nameGroup}) async {
     try {
       print("เข้าฟังชัน allme แล้ว");
       final res = await http.get(
@@ -85,8 +90,8 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
           "x-access-token": "$token"
         },
       );
-      print("res.body1 ${res.statusCode}");
-      print("res.body1 ${res.body}");
+      print("res.body12 ${res.statusCode}");
+      print("res.body12 ${res.body}");
 
       final body = convert.json.decode(res.body) as Map<String, dynamic>;
       final _futureMeAll = PresentModel.fromJson(body as Map<String, dynamic>);
@@ -109,7 +114,8 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
     return [];
   }
 
-  Future<List<DutyWithOutModel>> getWithOutModel( {required String token}) async {
+  Future<List<DutyWithOutModel>> getWithOutModel(
+      {required String token}) async {
     try {
       print("เข้าฟังชัน getWithOutModel แล้ว");
       final res = await http.get(
@@ -237,8 +243,13 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                     color: FlutterFlowTheme.of(context).primaryColor,
                     weekFormat: true,
                     weekStartsMonday: true,
-                    onChange: (DateTimeRange? newSelectedDate) {
+                    // yearduty: 2022,
+                    // monthduty: 8,
+                    // dayduty: 17,
+                    // แก้
+                    // rowHeight:100.0,
 
+                    onChange: (DateTimeRange? newSelectedDate) {
                       setState(() {
                         calendarSelectedDay = newSelectedDate;
                         // ทุกครั้งที่กดวันที่ในปฏิทิน จะได้วันที่มา
@@ -262,10 +273,9 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                             .split(" ")[0]
                             .split("-")[0]
                             .toString();
-                        print(
-                            "calendarSelectedmonthString ${calendarSelectedmonthString}");
+                        // print("calendarSelectedmonthString ${newSelectedDate}");
                       });
-                      
+
                       // print(
                       //     "newSelectedDate ${calendarSelectedDay.toString().split(" - ")[0].split(" ")[0].split("-")[0]}");
                     },
@@ -277,7 +287,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                     dayOfWeekStyle: GoogleFonts.getFont(
                       'Mitr',
                       color: Color(0xFF050000),
-                      fontSize: 18,
+                      fontSize: 16,
                     ),
                     dateStyle: GoogleFonts.getFont(
                       'Mitr',
@@ -294,6 +304,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                       color: Color(0xFF8E8E8E),
                       fontSize: 18,
                     ),
+                    daysOfWeekHeight: 18,
                   ),
                 ),
                 // ตารางเวรของฉัน
@@ -424,97 +435,59 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                       return SizedBox();
                                     }
 
-                                    return InkWell(
-                                      onTap: () {
-                                        print(
-                                            "id ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].id}");
-                                        print(
-                                            "id user ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.id}");
-                                        print(
-                                            "fristName ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.fristName}");
-                                        print(
-                                            "lastName ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.lastName}");
-                                        print(
-                                            "actor ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.actor
-                                            }");
-                                      print(
-                                            "year ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].year
-                                            }");
-                                      print(
-                                            "month ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month
-                                            }");
-                                       print(
-                                            "day ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].day
-                                            }");
-                                      print(
-                                            "group ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].group
-                                            }");
-                                      print(
-                                            "count ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].count
-                                            }");
-                                      print(
-                                            "__v ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].v
-                                            }");
-
-                                        print("${dayDuty[indexPresent]}");
-                                      },
-                                      child: Card(
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        color: FlutterFlowTheme.of(context)
-                                            .primaryBlue02,
-                                        elevation: 2,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  10, 5, 10, 5),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                width: 56,
-                                                height: 56,
-                                                clipBehavior: Clip.antiAlias,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
+                                    return Card(
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryBlue02,
+                                      elevation: 2,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            10, 5, 10, 5),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              width: 56,
+                                              height: 56,
+                                              clipBehavior: Clip.antiAlias,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Image.network(
+                                                'https://picsum.photos/seed/260/600',
+                                              ),
+                                            ),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Text(
+                                                  '${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.fristName}',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .title2,
                                                 ),
-                                                child: Image.network(
-                                                  'https://picsum.photos/seed/260/600',
+                                                Text(
+                                                  ' ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.lastName}',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .title2,
                                                 ),
-                                              ),
-                                              Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Text(
-                                                    '${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.fristName}',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .title2,
-                                                  ),
-                                                  Text(
-                                                    ' ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.lastName}',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .title2,
-                                                  ),
-                                                ],
-                                              ),
-                                              Text(
-                                                // dayDuty คือ list เช้า บ่าย ดึกที่เตรียมไว้
-                                                // getMydutyIndex คือ index การ loop ของ listview
-                                                '${dayDuty[indexPresent]}',
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .title2,
-                                              ),
-                                            ],
-                                          ),
+                                              ],
+                                            ),
+                                            Text(
+                                              // dayDuty คือ list เช้า บ่าย ดึกที่เตรียมไว้
+                                              // getMydutyIndex คือ index การ loop ของ listview
+                                              '${dayDuty[indexPresent]}',
+                                              style:
+                                                  FlutterFlowTheme.of(context)
+                                                      .title2,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     );
@@ -604,8 +577,9 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                             final itemWithOut = listViewWithOut[indexWithOut];
                             final itemFristName = itemWithOut.user!.fristName;
                             final itemLastName = itemWithOut.user!.lastName;
-                            print("itemFristName $itemFristName");
-                            print("itemLastName $itemLastName");
+                            // itemWithOut.id
+                            // print("itemFristName $itemFristName");
+                            // print("itemLastName $itemLastName");
 
                             return Builder(builder: (context) {
                               return ListView.builder(
@@ -614,11 +588,11 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                   scrollDirection: Axis.vertical,
                                   itemCount: itemWithOut.duty!.length,
                                   itemBuilder: (context, indexWithOutMeDuty) {
-                                    print("วันที่ $indexWithOutMeDuty");
+                                    // print("วันที่ $indexWithOutMeDuty");
                                     final itemWityOutMeDuty =
                                         itemWithOut.duty![indexWithOutMeDuty];
-                                    print(
-                                        "itemWityOutMeDuty ${itemWityOutMeDuty.year}");
+                                    // print(
+                                    //     "itemWityOutMeDuty ${itemWityOutMeDuty.year}");
                                     if (int.parse(itemWityOutMeDuty.year
                                                 .toString()) ==
                                             int.parse(
@@ -661,72 +635,121 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                                   0) {
                                                 return SizedBox();
                                               }
-                                              return Container(
-                                                child: Card(
-                                                  clipBehavior: Clip
-                                                      .antiAliasWithSaveLayer,
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryWhite,
-                                                  elevation: 2,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  child: Padding(
-                                                    padding:
-                                                        EdgeInsetsDirectional
-                                                            .fromSTEB(
-                                                                10, 5, 10, 5),
-                                                    child: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Container(
-                                                          width: 56,
-                                                          height: 56,
-                                                          clipBehavior:
-                                                              Clip.antiAlias,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            shape:
-                                                                BoxShape.circle,
+                                              return Slidable(
+                                                endActionPane: ActionPane(
+                                                  motion: const ScrollMotion(),
+                                                  children: [
+                                                    SlidableAction(
+                                                      onPressed: (context) {
+                                                        
+                                                        print(
+                                                            "ttt $itemFristName $itemLastName  เวรที่เลือก ${dutylist[indexDutyList]} เวรทั้งหมด ${dayDutyEnglist[indexDutyList]}");
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) => SelectExchangeWorkscheduleWidget(
+                                                                id: itemWityOutMeDuty.id.toString(),
+                                                                userID:itemWityOutMeDuty.user.toString(),
+                                                                year: int.parse(
+                                                                    itemWityOutMeDuty
+                                                                        .year
+                                                                        .toString()),
+                                                                month: int.parse(
+                                                                    itemWityOutMeDuty
+                                                                        .month
+                                                                        .toString()),
+                                                                day: int.parse(
+                                                                    itemWityOutMeDuty
+                                                                        .day
+                                                                        .toString()),
+                                                                group:itemWityOutMeDuty.group.toString(),
+                                                              
+                                                                v:itemWityOutMeDuty.v,
+                                                                dutyString:"${dayDutyEnglist[indexDutyList]}",
+                                                                dutyNumber: 1,
+                                                                ),
                                                           ),
-                                                          child: Image.network(
-                                                            'https://picsum.photos/seed/260/600',
+                                                        );
+                                                      },
+                                                      backgroundColor:
+                                                          Color(0xFFF00A2FD),
+                                                      foregroundColor:
+                                                          Colors.white,
+                                                      icon: Icons.change_circle,
+                                                      label: 'แลกเปลี่ยน',
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Container(
+                                                  child: Card(
+                                                    clipBehavior: Clip
+                                                        .antiAliasWithSaveLayer,
+                                                    color: FlutterFlowTheme.of(
+                                                            context)
+                                                        .secondaryWhite,
+                                                    elevation: 2,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                    child: Padding(
+                                                      padding:
+                                                          EdgeInsetsDirectional
+                                                              .fromSTEB(
+                                                                  10, 5, 10, 5),
+                                                      child: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Container(
+                                                            width: 56,
+                                                            height: 56,
+                                                            clipBehavior:
+                                                                Clip.antiAlias,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                            ),
+                                                            child:
+                                                                Image.network(
+                                                              'https://picsum.photos/seed/260/600',
+                                                            ),
                                                           ),
-                                                        ),
-                                                        Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.max,
-                                                          children: [
-                                                            Text(
-                                                              '${itemFristName}',
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .title2,
-                                                            ),
-                                                            Text(
-                                                              ' ${itemLastName}',
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .title2,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        Text(
-                                                          "${dayDuty[indexDutyList]}",
-                                                          // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
-                                                          // '${dayDuty[IndexWithOutList]}',
-                                                          style: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .title2,
-                                                        ),
-                                                      ],
+                                                          Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .max,
+                                                            children: [
+                                                              Text(
+                                                                '${itemFristName}',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .title2,
+                                                              ),
+                                                              Text(
+                                                                ' ${itemLastName}',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .title2,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Text(
+                                                            "${dayDuty[indexDutyList]}",
+                                                            // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                                                            // '${dayDuty[IndexWithOutList]}',
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .title2,
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),

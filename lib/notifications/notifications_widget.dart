@@ -1,3 +1,7 @@
+import 'package:hos_mobile2/custom_code/actions/index.dart';
+
+import '../backend/api_requests/api_calls.dart';
+import '../backend/pubilc_.dart';
 import '../components/connext_email_yes_no_widget.dart';
 import '../flutter_flow/flutter_flow_calendar.dart';
 import '../flutter_flow/flutter_flow_icon_button.dart';
@@ -6,6 +10,11 @@ import '../flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../model/changduty_model_get.dart';
+import '../model/invite_model.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 class NotificationsWidget extends StatefulWidget {
   const NotificationsWidget({Key? key}) : super(key: key);
@@ -17,6 +26,109 @@ class NotificationsWidget extends StatefulWidget {
 class _NotificationsWidgetState extends State<NotificationsWidget> {
   DateTimeRange? calendarSelectedDay;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  late Future<InviteModel> futureInvite;
+  late Future<List<Datum>> futureGetChangDuty;
+  putInvite(
+      {required String groupId,
+      required String userId,
+      required bool approve,
+      required String id}) async {
+    try {
+      final tt = {
+        "groupId": groupId,
+        "userId": userId,
+        "approve": approve,
+        "id": id
+      };
+      print(tt.runtimeType);
+      print("555");
+      final res = await http.put(Uri.parse("$url/api/invite/apporve"),
+          headers: {
+            // 'Accept': 'application/json',
+            'content-type': 'application/json',
+            'Access-Control_Allow_Origin': '*',
+            'x-access-token': '${FFAppState().tokenStore}'
+          },
+          body: jsonEncode(<String, dynamic>{
+            "groupId": groupId,
+            "userId": userId,
+            "apporve": approve,
+            "id": id
+          }));
+      print("555555 ${res.statusCode} ${res.body}");
+      if (res.statusCode == 200) {
+        await notifica(context, "อนุญาติสำเร็จ");
+      } else {
+        await notifica(context, "อนุญาติไม่สำเร็จ");
+      }
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future<InviteModel> getInviteModel({required String token}) async {
+    try {
+      print(token);
+      final res = await http.get(
+        Uri.parse("$url/api/invite/invite"),
+        headers: {
+          "Accept": "application/json",
+          "Access-Control_Allow_Origin": "*",
+          "x-access-token": "$token"
+        },
+      );
+      print("res.body1 ${res.statusCode}");
+      print("res.body1 ${res.body}");
+
+      final body = convert.json.decode(res.body) as Map<String, dynamic>;
+      final futureInvite = InviteModel.fromJson(body as Map<String, dynamic>);
+      return futureInvite;
+    } catch (error) {
+      print(error);
+    }
+    return InviteModel();
+  }
+
+  Future<List<Datum>> getChangDutyModel() async {
+    try {
+      final res = await http.get(
+        Uri.parse("$url/api/changduty/invite"),
+        headers: {
+          "Accept": "application/json",
+          "Access-Control_Allow_Origin": "*",
+          "x-access-token": "${FFAppState().tokenStore}"
+        },
+      );
+      print("getChangDutyModel code ${res.statusCode}");
+      print("getChangDutyModel  body${res.body}");
+
+      final body = convert.json.decode(res.body) as Map<String, dynamic>;
+      final _futureGetChangDuty =
+          GetChangDuty.fromJson(body as Map<String, dynamic>);
+      final futureGetChangDuty = _futureGetChangDuty.data as List<Datum>;
+      if (res.statusCode == 200) {
+        await notifica(context, "แสดงข้อมูลสำเร็จ");
+        return futureGetChangDuty;
+      } else {
+        await notifica(context, "แสดงข้อมูลไม่สำเร็จ");
+      }
+      // print("_futurePresent ${_futurePresent.duty}");
+      // for (var dutylist in data) {
+      //   // list ออกมาทั้ง index
+      //   final _futurePresent =
+      //       PresentModel.fromJson(dutylist as Map<String, dynamic>);
+      //   // aa = _dutylist.duty!.first.day;
+      //   // print("_dutylist ${aa}");
+      //   setState(() {
+      //     futurePresent.add(_futurePresent);
+      //   });
+      // }
+
+    } catch (error) {
+      print(error);
+    }
+    return [];
+  }
 
   @override
   void initState() {
@@ -25,6 +137,8 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
       start: DateTime.now().startOfDay,
       end: DateTime.now().endOfDay,
     );
+    futureInvite = getInviteModel(token: FFAppState().tokenStore);
+    futureGetChangDuty = getChangDutyModel();
   }
 
   @override
@@ -47,301 +161,647 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            scrollDirection: Axis.vertical,
-            children: [
-              Card(
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                color: FlutterFlowTheme.of(context).secondaryWhite,
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: 56,
-                        height: 56,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: Image.network(
-                          'https://picsum.photos/seed/260/600',
-                        ),
-                      ),
-                      Text(
-                        'Hannah Darlene',
-                        style: FlutterFlowTheme.of(context).title2,
-                      ),
-                      Text(
-                        'แลกทั้งหมด',
-                        textAlign: TextAlign.center,
-                        style: FlutterFlowTheme.of(context).bodyText1.override(
-                              fontFamily: 'Mitr',
-                              color: FlutterFlowTheme.of(context).primaryBlue,
-                            ),
-                      ),
-                      FlutterFlowIconButton(
-                        borderColor: Colors.transparent,
-                        borderRadius: 30,
-                        borderWidth: 1,
-                        buttonSize: 60,
-                        icon: Icon(
-                          Icons.keyboard_arrow_up,
-                          color: Colors.black,
-                          size: 30,
-                        ),
-                        onPressed: () {
-                          print('IconButton pressed ...');
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Card(
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                color: Colors.white,
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SvgPicture.asset(
-                            'assets/images/noti.svg',
-                            width: 27.89,
-                            height: 30.72,
-                            fit: BoxFit.cover,
-                          ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
+          child: Builder(builder: (context) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  FutureBuilder<InviteModel>(
+                      future: futureInvite,
+                      builder: (context, snapshot) {
+                        if (snapshot.data?.invite?.length == 0) {
+                          return Center(
                             child: Text(
-                              'แลกเปลี่ยนเวร',
-                              style:
-                                  FlutterFlowTheme.of(context).title2.override(
-                                        fontFamily: 'Mitr',
-                                        color: Color(0xFF606060),
-                                        fontSize: 18,
+                              "ไม่มีแจ้งเตือนยังไม่ได้อยู่ในกลุ่ม",
+                              style: GoogleFonts.mitr(
+                                  fontSize: 18, color: Colors.black),
+                            ),
+                          );
+                        }
+                        if (snapshot.hasData) {
+                          final listview = snapshot.data!.invite;
+                          if (listview == null) {
+                            return Text("ไม่มีค่า");
+                          }
+
+                          return ListView.builder(
+                            padding: EdgeInsets.zero,
+                            physics: NeverScrollableScrollPhysics(),
+                            // scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: listview.length,
+                            itemBuilder:
+                                (BuildContext context, int indexInvite) {
+                              final getDataLeader =
+                                  listview[indexInvite].leader;
+                              final getDataMember =
+                                  listview[indexInvite].member;
+                              final getDataGroup = listview[indexInvite].group;
+
+                              final getDataInvite = listview[indexInvite];
+                              return Column(
+                                children: [
+                                  Card(
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryWhite,
+                                    elevation: 2,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          5, 5, 5, 5),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            width: 56,
+                                            height: 56,
+                                            clipBehavior: Clip.antiAlias,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Image.network(
+                                              'https://picsum.photos/seed/260/600',
+                                            ),
+                                          ),
+                                          Text(
+                                            // '${getDataLeader!.fristName} ${getDataLeader.lastName} (${getDataLeader.actor})',
+                                            "${getDataLeader!.fristName} ${getDataLeader.lastName} (${getDataLeader.actor})",
+                                            style: FlutterFlowTheme.of(context)
+                                                .title2,
+                                          ),
+                                          // Text(
+                                          //   'แลกทั้งหมด',
+                                          //   textAlign: TextAlign.center,
+                                          //   style: FlutterFlowTheme.of(context)
+                                          //       .bodyText1
+                                          //       .override(
+                                          //         fontFamily: 'Mitr',
+                                          //         color: FlutterFlowTheme.of(context)
+                                          //             .primaryBlue,
+                                          //       ),
+                                          // ),
+                                          FlutterFlowIconButton(
+                                            borderColor: Colors.transparent,
+                                            borderRadius: 30,
+                                            borderWidth: 1,
+                                            buttonSize: 60,
+                                            icon: Icon(
+                                              Icons.keyboard_arrow_up,
+                                              color: Colors.black,
+                                              size: 30,
+                                            ),
+                                            onPressed: () {
+                                              print('IconButton pressed ...');
+                                            },
+                                          ),
+                                        ],
                                       ),
-                            ),
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                'วันนี้ 07:14 น.',
-                                style: FlutterFlowTheme.of(context).title3,
-                              ),
-                              Text(
-                                'Hannah Darlene ',
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyText1
-                                    .override(
-                                      fontFamily: 'Mitr',
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryRed,
-                                      fontWeight: FontWeight.w500,
                                     ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    FlutterFlowCalendar(
-                      color: FlutterFlowTheme.of(context).primaryColor,
-                      weekFormat: false,
-                      weekStartsMonday: false,
-                      onChange: (DateTimeRange? newSelectedDate) {
-                        setState(() => calendarSelectedDay = newSelectedDate);
-                      },
-                      titleStyle: GoogleFonts.getFont(
-                        'Mitr',
-                        color: Color(0xFF050000),
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20,
-                      ),
-                      dayOfWeekStyle: GoogleFonts.getFont(
-                        'Mitr',
-                        color: Color(0xFF050000),
-                        fontSize: 16,
-                      ),
-                      dateStyle: GoogleFonts.getFont(
-                        'Mitr',
-                        color: Color(0xFF050000),
-                        fontSize: 16,
-                      ),
-                      selectedDateStyle: GoogleFonts.getFont(
-                        'Mitr',
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                      inactiveDateStyle: GoogleFonts.getFont(
-                        'Mitr',
-                        color: Color(0xFF8E8E8E),
-                        fontSize: 16,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 15),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          InkWell(
-                            onTap: () async {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'แลกเปลี่ยนเสร็จสิ้น',
-                                    style: FlutterFlowTheme.of(context)
-                                        .subtitle1
-                                        .override(
-                                          fontFamily: 'Mitr',
-                                          fontSize: 18,
+                                  ),
+                                  Card(
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryWhite,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  50, 30, 0, 0),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            // mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                "${getDataGroup!.nameGroup}",
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyText1
+                                                        .override(
+                                                          fontFamily: 'Mitr',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryGray,
+                                                          fontSize: 16,
+                                                        ),
+                                              ),
+                                              Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  SvgPicture.asset(
+                                                    'assets/images/email.svg',
+                                                    width: 24,
+                                                    height: 19,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsetsDirectional
+                                                            .fromSTEB(
+                                                                10, 0, 0, 0),
+                                                    child: Text(
+                                                      'คำเชิญเข้ากลุ่ม',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .bodyText1
+                                                              .override(
+                                                                fontFamily:
+                                                                    'Mitr',
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .primaryGray,
+                                                                fontSize: 16,
+                                                              ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                  ),
-                                  duration: Duration(milliseconds: 4000),
-                                  backgroundColor:
-                                      FlutterFlowTheme.of(context).primaryColor,
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'แลกเปลี่ยน',
-                              style: FlutterFlowTheme.of(context)
-                                  .bodyText1
-                                  .override(
-                                    fontFamily: 'Mitr',
-                                    color: FlutterFlowTheme.of(context)
-                                        .primaryColor,
-                                  ),
-                            ),
-                          ),
-                          Text(
-                            'ยกเลิก',
-                            style: FlutterFlowTheme.of(context)
-                                .bodyText1
-                                .override(
-                                  fontFamily: 'Mitr',
-                                  color: FlutterFlowTheme.of(context).alternate,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Card(
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                color: FlutterFlowTheme.of(context).secondaryWhite,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(50, 30, 0, 0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SvgPicture.asset(
-                            'assets/images/email.svg',
-                            width: 24,
-                            height: 19,
-                            fit: BoxFit.cover,
-                          ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
-                            child: Text(
-                              'คำเชิญเข้ากลุ่ม',
-                              style: FlutterFlowTheme.of(context)
-                                  .bodyText1
-                                  .override(
-                                    fontFamily: 'Mitr',
-                                    color: FlutterFlowTheme.of(context)
-                                        .primaryGray,
-                                    fontSize: 16,
-                                  ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 10),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          InkWell(
-                            onTap: () async {
-                              await showModalBottomSheet(
-                                isScrollControlled: true,
-                                backgroundColor:
-                                    FlutterFlowTheme.of(context).secondaryWhite,
-                                context: context,
-                                builder: (context) {
-                                  return Padding(
-                                    padding: MediaQuery.of(context).viewInsets,
-                                    child: Container(
-                                      height: 200,
-                                      child: ConnextEmailYesNoWidget(),
+                                        Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  0, 10, 0, 10),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              InkWell(
+                                                onTap: () async {
+                                                  await showModalBottomSheet(
+                                                    isScrollControlled: true,
+                                                    backgroundColor:
+                                                        FlutterFlowTheme.of(
+                                                                context)
+                                                            .secondaryWhite,
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return Padding(
+                                                        padding: MediaQuery.of(
+                                                                context)
+                                                            .viewInsets,
+                                                        child: Container(
+                                                          height: 200,
+                                                          child: ConnextEmailYesNoWidget(
+                                                              userId:
+                                                                  "${getDataInvite.member!.id}",
+                                                              groupId:
+                                                                  "${getDataInvite.group!.id}",
+                                                              inviteId:
+                                                                  "${getDataInvite.id}",
+                                                              approve: true),
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                child: Text(
+                                                  'เข้ากลุ่ม',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyText1
+                                                      .override(
+                                                        fontFamily: 'Mitr',
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .primaryBlue,
+                                                      ),
+                                                ),
+                                              ),
+                                              InkWell(
+                                                onTap: () async {
+                                                  putInvite(
+                                                      approve: false,
+                                                      groupId:
+                                                          "${getDataInvite.group!.id}",
+                                                      userId:
+                                                          "${getDataInvite.member!.id}",
+                                                      id: "${getDataInvite.id}");
+                                                  // final statainvitecall =
+                                                  //     await PutInviteCall.call(
+                                                  //         inviteId:
+                                                  //             "${getDataInvite.id}",
+                                                  //         groupId:
+                                                  //             "${getDataInvite.group!.id}",
+                                                  //         userId:
+                                                  //             "${getDataInvite.member!.id}",
+                                                  //         approve: false,
+                                                  //         token: FFAppState()
+                                                  //             .tokenStore);
+                                                  // print(
+                                                  //     "stata ${statainvitecall.statusCode}");
+                                                  // if (statainvitecall.statusCode ==
+                                                  //     200) {
+                                                  //   print(
+                                                  //       "${PutInviteCall.resState(statainvitecall.jsonBody)}");
+                                                  //   await notifica(
+                                                  //       context, "ปฎิเศษสำเร็จ");
+                                                  // } else {
+                                                  //   await notifica(
+                                                  //       context, "ปฎิเศษไม่สำเร็จ");
+                                                  // }
+                                                  if (mounted) {
+                                                    setState(() {});
+                                                  }
+                                                },
+                                                child: Text(
+                                                  'ปฎิเศษ',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyText1
+                                                      .override(
+                                                        fontFamily: 'Mitr',
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .primaryRed,
+                                                      ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  );
-                                },
+                                  ),
+                                ],
                               );
                             },
-                            child: Text(
-                              'เข้ากลุ่ม',
-                              style: FlutterFlowTheme.of(context)
-                                  .bodyText1
-                                  .override(
-                                    fontFamily: 'Mitr',
-                                    color: FlutterFlowTheme.of(context)
-                                        .primaryBlue,
-                                  ),
-                            ),
-                          ),
-                          Text(
-                            'ปฎิเศษ',
-                            style: FlutterFlowTheme.of(context)
-                                .bodyText1
-                                .override(
-                                  fontFamily: 'Mitr',
-                                  color:
-                                      FlutterFlowTheme.of(context).primaryRed,
+                          );
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }),
+                  FutureBuilder<List<Datum>>(
+                      future: futureGetChangDuty,
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text("เกิดข้อผิดพลาดเกี่ยวกับแอป"),
+                          );
+                        }
+                        if (snapshot.data!.length == 0) {
+                          return Center(
+                            child: Text(""),
+                          );
+                        }
+                        if (snapshot.data!.first.memberApprove == false) {
+                          return Card(
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              color:
+                                  FlutterFlowTheme.of(context).secondaryWhite,
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Center(
+                                  child: Text(
+                                      "ปฎิเศษแล้ว"),
                                 ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                              ));
+                        }
+                        return Builder(builder: (context) {
+                          return Column(
+                            children: [
+                              Card(
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                color:
+                                    FlutterFlowTheme.of(context).secondaryWhite,
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      5, 5, 5, 5),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        width: 56,
+                                        height: 56,
+                                        clipBehavior: Clip.antiAlias,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Image.network(
+                                          'https://picsum.photos/seed/260/600',
+                                        ),
+                                      ),
+                                      Text(
+                                        // '${getDataLeader!.fristName} ${getDataLeader.lastName} (${getDataLeader.actor})',
+                                        "${snapshot.data!.first.member2!.fristName} ${snapshot.data!.first.member2!.lastName} (${snapshot.data!.first.member2!.actor})",
+                                        style:
+                                            FlutterFlowTheme.of(context).title2,
+                                      ),
+                                      // Text(
+                                      //   'แลกทั้งหมด',
+                                      //   textAlign: TextAlign.center,
+                                      //   style: FlutterFlowTheme.of(context)
+                                      //       .bodyText1
+                                      //       .override(
+                                      //         fontFamily: 'Mitr',
+                                      //         color: FlutterFlowTheme.of(context)
+                                      //             .primaryBlue,
+                                      //       ),
+                                      // ),
+                                      FlutterFlowIconButton(
+                                        borderColor: Colors.transparent,
+                                        borderRadius: 30,
+                                        borderWidth: 1,
+                                        buttonSize: 60,
+                                        icon: Icon(
+                                          Icons.keyboard_arrow_up,
+                                          color: Colors.black,
+                                          size: 30,
+                                        ),
+                                        onPressed: () {
+                                          print('IconButton pressed ...');
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  // scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount: 1,
+                                  itemBuilder: (BuildContext context,
+                                      int indexgetInvite) {
+                                    print(
+                                        "ttttttttt ${snapshot.data!.first.approve}");
+                                    return Card(
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      color: Colors.white,
+                                      elevation: 2,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                EdgeInsetsDirectional.fromSTEB(
+                                                    0, 20, 0, 0),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                SvgPicture.asset(
+                                                  'assets/images/noti.svg',
+                                                  width: 27.89,
+                                                  height: 30.72,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsetsDirectional
+                                                      .fromSTEB(10, 0, 0, 0),
+                                                  child: Text(
+                                                    'แลกเปลี่ยนเวร',
+                                                    style: FlutterFlowTheme.of(
+                                                            context)
+                                                        .title2
+                                                        .override(
+                                                          fontFamily: 'Mitr',
+                                                          color:
+                                                              Color(0xFF606060),
+                                                          fontSize: 18,
+                                                        ),
+                                                  ),
+                                                ),
+                                                Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    Text(
+                                                      'วันนี้ 07:14 น.',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .title3,
+                                                    ),
+                                                    Text(
+                                                      '${snapshot.data!.first.member2!.fristName} ${snapshot.data!.first.member2!.lastName}',
+                                                      style: FlutterFlowTheme
+                                                              .of(context)
+                                                          .bodyText1
+                                                          .override(
+                                                            fontFamily: 'Mitr',
+                                                            color: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .primaryRed,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          FlutterFlowCalendar(
+                                            color: FlutterFlowTheme.of(context)
+                                                .primaryColor,
+                                            weekFormat: false,
+                                            weekStartsMonday: false,
+                                            onChange: (DateTimeRange?
+                                                newSelectedDate) {
+                                              setState(() =>
+                                                  calendarSelectedDay =
+                                                      newSelectedDate);
+                                            },
+                                            titleStyle: GoogleFonts.getFont(
+                                              'Mitr',
+                                              color: Color(0xFF050000),
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 20,
+                                            ),
+                                            dayOfWeekStyle: GoogleFonts.getFont(
+                                              'Mitr',
+                                              color: Color(0xFF050000),
+                                              fontSize: 16,
+                                            ),
+                                            dateStyle: GoogleFonts.getFont(
+                                              'Mitr',
+                                              color: Color(0xFF050000),
+                                              fontSize: 16,
+                                            ),
+                                            selectedDateStyle:
+                                                GoogleFonts.getFont(
+                                              'Mitr',
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                            ),
+                                            inactiveDateStyle:
+                                                GoogleFonts.getFont(
+                                              'Mitr',
+                                              color: Color(0xFF8E8E8E),
+                                              fontSize: 16,
+                                            ),
+                                            daysOfWeekHeight: 20,
+                                            yearduty: int.parse(snapshot
+                                                .data!.first.duty2!.year
+                                                .toString()),
+                                            monthduty: int.parse(snapshot
+                                                .data!.first.duty2!.month
+                                                .toString()),
+                                            dayduty: int.parse(snapshot
+                                                .data!.first.duty2!.day
+                                                .toString()),
+                                            changTwoDuty: true,
+                                            yearduty2: int.parse(snapshot
+                                                .data!.first.duty1!.year
+                                                .toString()),
+                                            monthduty2: int.parse(snapshot
+                                                .data!.first.duty1!.month
+                                                .toString()),
+                                            dayduty2: int.parse(snapshot
+                                                .data!.first.duty1!.day
+                                                .toString()),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Text(
+                                              "ชื่อกลุ่ม ${snapshot.data![0].group2}",
+                                              style: GoogleFonts.mitr(
+                                                fontSize: 16,
+                                                color: Color(0xFF606060),
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding:
+                                                EdgeInsetsDirectional.fromSTEB(
+                                                    0, 0, 0, 15),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                InkWell(
+                                                  onTap: () async {
+                                                    final getState =
+                                                        await updateChangdutyCall.call(
+                                                            token: FFAppState()
+                                                                .tokenStore,
+                                                            apporve: true,
+                                                            chagnId:
+                                                                '${snapshot.data![0].id}');
+                                                    if (getState.statusCode ==
+                                                        200) {
+                                                      print(
+                                                          "getstata ${getState.jsonBody}");
+                                                      await notifica(
+                                                          context, "สำเร็จ");
+                                                    } else {
+                                                      print(
+                                                          "getstata ${getState.jsonBody}");
+                                                      await notifica(
+                                                          context, "ไม่สำเร็จ");
+                                                    }
+                                                    setState(() {});
+                                                  },
+                                                  child: Text(
+                                                    'แลกเปลี่ยน',
+                                                    style: FlutterFlowTheme.of(
+                                                            context)
+                                                        .bodyText1
+                                                        .override(
+                                                          fontFamily: 'Mitr',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryColor,
+                                                        ),
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap: () async {
+                                                    final getState =
+                                                        await updateChangdutyCall.call(
+                                                            token: FFAppState()
+                                                                .tokenStore,
+                                                            apporve: false,
+                                                            chagnId:
+                                                                '${snapshot.data![0].id}');
+                                                    if (getState.statusCode ==
+                                                        200) {
+                                                      print(
+                                                          "getstata ${getState.jsonBody}");
+                                                      await notifica(
+                                                          context, "สำเร็จ");
+                                                    } else {
+                                                      print(
+                                                          "getstata ${getState.jsonBody}");
+                                                      await notifica(
+                                                          context, "ไม่สำเร็จ");
+                                                    }
+                                                    setState(() {});
+                                                  },
+                                                  child: Text(
+                                                    'ยกเลิก',
+                                                    style: FlutterFlowTheme.of(
+                                                            context)
+                                                        .bodyText1
+                                                        .override(
+                                                          fontFamily: 'Mitr',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryRed,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                            ],
+                          );
+                        });
+                      }),
+                  Container(
+                    height: 50.0,
+                    width: 50.0,
+                  )
+                ],
               ),
-            ],
-          ),
+            );
+          }),
         ),
       ),
     );

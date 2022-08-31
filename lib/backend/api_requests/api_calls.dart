@@ -1,3 +1,4 @@
+import 'package:flutter/animation.dart';
 import 'package:hos_mobile2/backend/pubilc_.dart';
 
 import '../../flutter_flow/flutter_flow_util.dart';
@@ -5,6 +6,125 @@ import '../../flutter_flow/flutter_flow_util.dart';
 import 'api_manager.dart';
 
 export 'api_manager.dart' show ApiCallResponse;
+
+class PutInviteCall {
+  static Future<ApiCallResponse> call(
+      {required String groupId,
+      required String userId,
+      required String inviteId,
+      required bool approve,
+      required String token}) {
+    final body = '''
+{
+  "groupId": "${groupId}",
+  "userId": "${userId}",
+  "id":"${inviteId}"
+  "approve": $approve
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'PutInvite',
+      apiUrl: '$url/api/invite/apporve',
+      callType: ApiCallType.PUT,
+      headers: {
+        // 'Accept': 'application/json',
+        'content-type': 'application/json',
+        'Access-Control_Allow_Origin': '*',
+        'x-access-token': '$token'
+      },
+      params: {
+        "groupId": groupId,
+        "userId": userId,
+        "approve": approve,
+        "id": inviteId
+      },
+      body: body,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+    );
+  }
+
+  static dynamic resState(dynamic response) => getJsonField(
+        response,
+        r'''$''',
+      );
+}
+
+class ChangDutyCall {
+  static Future<ApiCallResponse> call({
+    required String idOne,
+    required String idUserOne,
+    required String yearOne,
+    required String monthOne,
+    required String dayOne,
+    required String groupOne,
+    required int vOne,
+    required String dutyChooseOne,
+    required int dutyChooseNumberOne,
+    required String idTwo,
+    required String idUserTwo,
+    required String yearTwo,
+    required String monthTwo,
+    required String dayTwo,
+    required String groupTwo,
+    required int vTwo,
+    required String dutyChooseTwo,
+    required int dutyChooseNumberTwo,
+  }) {
+    final body = '''
+{
+  "data":[
+   {
+      "_id":"$idOne",
+      "_user":"$idUserOne",
+      "year":"$yearOne",
+      "month":"$monthOne",
+      "day":"$dayOne",
+      "group":"$groupOne",
+      "__v":$vOne,
+      "shift":[
+         {
+            "$dutyChooseOne":$dutyChooseNumberOne
+         }
+      ]
+   },
+   {
+      "_id":"$idTwo",
+      "_user":"$idUserTwo",
+      "year":"$yearTwo",
+      "month":"$monthTwo",
+      "day":"$dayTwo",
+      "group":"$groupTwo",
+      "__v":$vTwo,
+      "shift":[
+         {
+            "$dutyChooseTwo":$dutyChooseNumberTwo
+         }
+      ]
+   }
+  ]
+}''';
+    print(body);
+    return ApiManager.instance.makeApiCall(
+      callName: 'ChangDuty',
+      apiUrl: '$url/api/changduty/invite',
+      callType: ApiCallType.POST,
+      headers: {
+        // 'Accept': 'application/json',
+        'content-type': 'application/json',
+        'Access-Control_Allow_Origin': '*',
+        'x-access-token': '${FFAppState().tokenStore}'
+      },
+      body: body,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+    );
+  }
+
+  static dynamic resState(dynamic response) => getJsonField(
+        response,
+        r'''$''',
+      );
+}
 
 class PostRegisterCall {
   static Future<ApiCallResponse> call({
@@ -42,6 +162,42 @@ class PostRegisterCall {
   }
 }
 
+class PostInviteCall {
+  static Future<ApiCallResponse> call(
+      {required String email,
+      required String nameGroup,
+      required String token}) {
+    final body = '''
+{
+  "email": "${email}",
+  "name_group": "${nameGroup}"
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'PostInvite',
+      apiUrl: '$url/api/invite/invite',
+      callType: ApiCallType.POST,
+      headers: {
+        'Accept': 'application/json',
+        'content-type': 'application/json',
+        'Access-Control_Allow_Origin': '*',
+        'x-access-token': '$token'
+      },
+      params: {
+        'email': email,
+        'name_group': nameGroup,
+      },
+      body: body,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+    );
+  }
+
+  static dynamic resState(dynamic response) => getJsonField(
+        response,
+        r'''$''',
+      );
+}
+
 class PostLoginCall {
   static Future<ApiCallResponse> call({
     String? email = '',
@@ -75,6 +231,10 @@ class PostLoginCall {
         response,
         r'''$.token''',
       );
+  static dynamic resActor(dynamic response) => getJsonField(
+        response,
+        r'''$.user.actor''',
+      );
 }
 
 // http://localhost:5501/api/invite/invite
@@ -96,7 +256,38 @@ class GetInviteCall {
       returnBody: true,
     );
   }
+
+  static dynamic getInvite(dynamic response) => getJsonField(
+        response,
+        r'''$''',
+      );
 }
+
+// // รอ api
+// class changDutyCall {
+//   static Future<ApiCallResponse> call({
+//     required String token,
+//   }) {
+//     return ApiManager.instance.makeApiCall(
+//       callName: 'changDuty',
+//       apiUrl: '$url',
+//       callType: ApiCallType.GET,
+//       headers: {
+//         'content-type': 'application/json',
+//         'Access-Control_Allow_Origin': '*',
+//       },
+//       params: {
+//         'token': token,
+//       },
+//       returnBody: true,
+//     );
+//   }
+
+//   static dynamic getchangDuty(dynamic response) => getJsonField(
+//         response,
+//         r'''$''',
+//       );
+// }
 
 class GetProfileCall {
   static Future<ApiCallResponse> call({
@@ -250,6 +441,40 @@ class UpdateProfileCall {
       returnBody: true,
     );
   }
+}
+class updateChangdutyCall {
+  static Future<ApiCallResponse> call({
+    required String token,
+    required bool apporve,
+    required String chagnId,
+  }) {
+    final body = '''
+{
+  "apporve": ${apporve},
+  "chagnId": "${chagnId}"
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'updateChangduty',
+      apiUrl: '$url/api/changduty/inproive',
+      callType: ApiCallType.PATCH,
+      headers: {
+        'content-type': 'application/json',
+        'Access-Control_Allow_Origin': '*',
+        'x-access-token': '$token',
+      },
+      params: {
+        'frist_name': apporve,
+        'last_name': chagnId,
+      },
+      body: body,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+    );
+  }
+  static dynamic resState(dynamic response) => getJsonField(
+        response,
+        r'''$''',
+      );
 }
 
 class GetPresentCall {

@@ -2,6 +2,7 @@ import 'package:hos_mobile2/model/member_model.dart';
 
 import '../backend/api_requests/api_calls.dart';
 import '../backend/pubilc_.dart';
+import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import 'dart:async';
@@ -37,8 +38,8 @@ class _GroupWidgetState extends State<GroupWidget> {
           "x-access-token": "$token"
         },
       );
-      print("res.body1 ${res.statusCode}");
-      print("res.body1 ${res.body}");
+      // print("res.body1 ${res.statusCode}");
+      // print("res.body1 ${res.body}");
 
       final bodyMember = convert.json.decode(res.body) as Map<String, dynamic>;
       final _futureMember =
@@ -134,7 +135,8 @@ class _GroupWidgetState extends State<GroupWidget> {
               future: futureMember,
               builder: (context, snapshotGroup) {
                 // Customize what your widget looks like when it's loading.
-                print("snapshotGroup $snapshotGroup");
+                // print("snapshotGroup ${snapshotGroup.data?.length}");
+
                 if (!snapshotGroup.hasData) {
                   print("ไม่มีข้อมูล");
                   return Center(
@@ -144,6 +146,29 @@ class _GroupWidgetState extends State<GroupWidget> {
                       child: CircularProgressIndicator(
                         color: FlutterFlowTheme.of(context).primaryColor,
                       ),
+                    ),
+                  );
+                }
+                if (snapshotGroup.data?.length == 0) {
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "ยังไม่ได้เข้ากลุ่ม",
+                          style: FlutterFlowTheme.of(context).title2,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "ย้อนกลับ",
+                            style: GoogleFonts.mitr(
+                                color: Colors.white, fontSize: 18),
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 }
@@ -162,189 +187,204 @@ class _GroupWidgetState extends State<GroupWidget> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  20, 20, 20, 20),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Text(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Align(
+                                  alignment: AlignmentDirectional(-1, 0),
+                                  child: FlutterFlowIconButton(
+                                    borderColor: Colors.transparent,
+                                    borderRadius: 30,
+                                    borderWidth: 1,
+                                    buttonSize: 60,
+                                    icon: Icon(
+                                      Icons.chevron_left,
+                                      color: Colors.black,
+                                      size: 30,
+                                    ),
+                                    onPressed: () async {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ),
+                                Center(
+                                  child: Text(
                                     'ชื่อกลุ่ม ${ItemGroup.nameGroup}',
                                     textAlign: TextAlign.center,
                                     style: FlutterFlowTheme.of(context).title2,
                                   ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            0, 0, 10, 0),
-                                        child: Text(
-                                          'ผู้ดูแล',
-                                          style: FlutterFlowTheme.of(context)
-                                              .title2,
-                                        ),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          20, 0, 10, 0),
+                                      child: Text(
+                                        'ผู้ดูแล',
+                                        style:
+                                            FlutterFlowTheme.of(context).title2,
                                       ),
-                                      Expanded(
-                                        child: Padding(
+                                    ),
+                                    // Expanded(
+                                    //   child: Padding(
+                                    //     padding:
+                                    //         EdgeInsetsDirectional.fromSTEB(
+                                    //             10, 0, 0, 0),
+                                    //     child: TextFormField(
+                                    //       controller: textController,
+                                    //       onChanged: (string) {
+                                    //         listSearchEmail1 =
+                                    //             listSearchEmail2
+                                    //                 .where((u) => u
+                                    //                     .toString()
+                                    //                     .contains(string))
+                                    //                 .toList();
+                                    //         print(listSearchEmail1);
+                                    //         setState(() {});
+                                    //       },
+                                    //       obscureText: false,
+                                    //       decoration: InputDecoration(
+                                    //         isDense: true,
+                                    //         hintText: 'ค้นหา',
+                                    //         enabledBorder: OutlineInputBorder(
+                                    //           borderSide: BorderSide(
+                                    //             color: FlutterFlowTheme.of(
+                                    //                     context)
+                                    //                 .secondaryText,
+                                    //             width: 1,
+                                    //           ),
+                                    //           borderRadius:
+                                    //               BorderRadius.circular(5),
+                                    //         ),
+                                    //         focusedBorder: OutlineInputBorder(
+                                    //           borderSide: BorderSide(
+                                    //             color: FlutterFlowTheme.of(
+                                    //                     context)
+                                    //                 .secondaryText,
+                                    //             width: 1,
+                                    //           ),
+                                    //           borderRadius:
+                                    //               BorderRadius.circular(5),
+                                    //         ),
+                                    //         filled: true,
+                                    //         fillColor: Colors.white,
+                                    //         prefixIcon: Icon(
+                                    //           Icons.search,
+                                    //           size: 16,
+                                    //         ),
+                                    //       ),
+                                    //       style: FlutterFlowTheme.of(context)
+                                    //           .title3,
+                                    //       textAlign: TextAlign.center,
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                  ],
+                                ),
+                                Builder(
+                                  builder: (context) {
+                                    return ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: ItemGroup.leader!.length,
+                                      itemBuilder: (context, indexLeader) {
+                                        final itemLeader =
+                                            ItemGroup.leader![indexLeader];
+                                        return Padding(
                                           padding:
                                               EdgeInsetsDirectional.fromSTEB(
-                                                  10, 0, 0, 0),
-                                          child: TextFormField(
-                                            controller: textController,
-                                            onChanged: (string) {
-                                              listSearchEmail1 =
-                                                  listSearchEmail2
-                                                      .where((u) => u
-                                                          .toString()
-                                                          .contains(string))
-                                                      .toList();
-                                              print(listSearchEmail1);
-                                              setState(() {});
-                                            },
-                                            obscureText: false,
-                                            decoration: InputDecoration(
-                                              isDense: true,
-                                              hintText: 'ค้นหา',
-                                              enabledBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryText,
-                                                  width: 1,
+                                                  20, 10, 0, 0),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Hero(
+                                                tag: 'profile',
+                                                transitionOnUserGestures: true,
+                                                child: Container(
+                                                  width: 45,
+                                                  height: 45,
+                                                  clipBehavior: Clip.antiAlias,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: Image.network(
+                                                    'https://picsum.photos/seed/180/600',
+                                                  ),
                                                 ),
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
                                               ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryText,
-                                                  width: 1,
+                                              Padding(
+                                                padding: EdgeInsetsDirectional
+                                                    .fromSTEB(20, 0, 0, 0),
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "${itemLeader.fristName} ${itemLeader.lastName}",
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .title2,
+                                                    ),
+                                                    Text(
+                                                      '${itemLeader.email}',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .title3,
+                                                    ),
+                                                  ],
                                                 ),
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
                                               ),
-                                              filled: true,
-                                              fillColor: Colors.white,
-                                              prefixIcon: Icon(
-                                                Icons.search,
-                                                size: 16,
-                                              ),
-                                            ),
-                                            style: FlutterFlowTheme.of(context)
-                                                .title3,
-                                            textAlign: TextAlign.center,
+                                            ],
                                           ),
-                                        ),
-                                      ),
-                                    ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                                Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      20, 10, 0, 0),
+                                  child: Text(
+                                    'สมาชิก',
+                                    style: FlutterFlowTheme.of(context).title2,
                                   ),
-                                  Builder(
-                                    builder: (context) {
-                                      return ListView.builder(
+                                ),
+                                Builder(
+                                  builder: (context) {
+                                    // final getMymember = GetGroupMyMemberCall
+                                    //         .getOneMyGroupMemberListFristName(
+                                    //       (containerGetGroupMyMemberResponse
+                                    //               .jsonBody ??
+                                    //           ''),
+                                    //     )?.toList() ??
+                                    //     [];
+                                    return RefreshIndicator(
+                                      onRefresh: () async {
+                                        setState(
+                                            () => _apiRequestCompleter = null);
+                                        await waitForApiRequestCompleter();
+                                      },
+                                      child: ListView.builder(
                                         padding: EdgeInsets.zero,
                                         shrinkWrap: true,
                                         scrollDirection: Axis.vertical,
-                                        itemCount: ItemGroup.leader!.length,
-                                        itemBuilder: (context, indexLeader) {
-                                          final itemLeader =
-                                              ItemGroup.leader![indexLeader];
-                                          return Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    0, 10, 0, 0),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Hero(
-                                                  tag: 'profile',
-                                                  transitionOnUserGestures:
-                                                      true,
-                                                  child: Container(
-                                                    width: 45,
-                                                    height: 45,
-                                                    clipBehavior:
-                                                        Clip.antiAlias,
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    child: Image.network(
-                                                      'https://picsum.photos/seed/180/600',
-                                                    ),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsetsDirectional
-                                                      .fromSTEB(20, 0, 0, 0),
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        "${itemLeader.fristName} ${itemLeader.lastName}",
-                                                        style:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .title2,
-                                                      ),
-                                                      Text(
-                                                        '${itemLeader.email}',
-                                                        style:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .title3,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0, 10, 0, 0),
-                                    child: Text(
-                                      'สมาชิก',
-                                      style:
-                                          FlutterFlowTheme.of(context).title2,
-                                    ),
-                                  ),
-                                  Builder(
-                                    builder: (context) {
-                                      // final getMymember = GetGroupMyMemberCall
-                                      //         .getOneMyGroupMemberListFristName(
-                                      //       (containerGetGroupMyMemberResponse
-                                      //               .jsonBody ??
-                                      //           ''),
-                                      //     )?.toList() ??
-                                      //     [];
-                                      return RefreshIndicator(
-                                        onRefresh: () async {
-                                          setState(() =>
-                                              _apiRequestCompleter = null);
-                                          await waitForApiRequestCompleter();
-                                        },
-                                        child: ListView.builder(
-                                          padding: EdgeInsets.zero,
-                                          shrinkWrap: true,
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: ItemGroup.member!.length,
-                                          itemBuilder: (context, indexMember) {
-                                            final itemMember =
-                                                ItemGroup.member![indexMember];
-                                            return InkWell(
+                                        itemCount: ItemGroup.member!.length,
+                                        itemBuilder: (context, indexMember) {
+                                          final itemMember =
+                                              ItemGroup.member![indexMember];
+                                          return Visibility(
+                                            visible:
+                                                indexMember == 0 ? false : true,
+                                            child: InkWell(
                                               onTap: () {
                                                 print(
                                                     "คลิกแล้ว item ที่ $indexMember");
@@ -356,7 +396,7 @@ class _GroupWidgetState extends State<GroupWidget> {
                                               },
                                               child: Padding(
                                                 padding: EdgeInsetsDirectional
-                                                    .fromSTEB(0, 10, 0, 0),
+                                                    .fromSTEB(20, 10, 0, 0),
                                                 child: Row(
                                                   mainAxisSize:
                                                       MainAxisSize.max,
@@ -403,14 +443,18 @@ class _GroupWidgetState extends State<GroupWidget> {
                                                   ],
                                                 ),
                                               ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                ),
+                                Container(
+                                  height: 30.0,
+                                  width: 30.0,
+                                )
+                              ],
                             ),
                           ),
                         );
