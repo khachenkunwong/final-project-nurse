@@ -44,45 +44,45 @@ class _RegisterWidgetState extends State<RegisterWidget> {
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       body: SafeArea(
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              color: Color(0xFFEEEEEE),
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: Image.asset(
-                  'assets/images/background.png',
-                ).image,
-              ),
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            color: Color(0xFFEEEEEE),
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: Image.asset(
+                'assets/images/background.png',
+              ).image,
             ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
-                    child: Material(
-                      color: Colors.transparent,
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                  child: Material(
+                    color: Colors.transparent,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      height: 700,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        height: 700,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Align(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Align(
                               alignment: AlignmentDirectional(-1, 0),
                               child: FlutterFlowIconButton(
                                 borderColor: Colors.transparent,
@@ -99,359 +99,361 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                 },
                               ),
                             ),
-                            Text(
-                              'สมัครสมาชิก',
-                              style: FlutterFlowTheme.of(context).title1,
+                          ),
+                          Text(
+                            'สมัครสมาชิก',
+                            style: FlutterFlowTheme.of(context).title1,
+                          ),
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      0, 20, 0, 0),
+                                  child: Text(
+                                    'ชื่อ',
+                                    style:
+                                        FlutterFlowTheme.of(context).title2,
+                                  ),
+                                ),
+                                TextFormField(
+                                  controller: fristNameRegisterController,
+                                  obscureText: false,
+                                  decoration: InputDecoration(
+                                    hintText: 'กรอกชื่อผู้ใช้ตรงนี้',
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                  ),
+                                  style: FlutterFlowTheme.of(context).title3,
+                                ),
+                                Text(
+                                  'นามสกุล',
+                                  style: FlutterFlowTheme.of(context).title2,
+                                ),
+                                TextFormField(
+                                  controller: lastNameRegisterController,
+                                  obscureText: false,
+                                  decoration: InputDecoration(
+                                    hintText: 'กรอกนามสกุลตรงนี้',
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                  ),
+                                  style: FlutterFlowTheme.of(context).title3,
+                                ),
+                                Text(
+                                  'อีเมล',
+                                  style: FlutterFlowTheme.of(context).title2,
+                                ),
+                                TextFormField(
+                                  controller: emailRegisterController,
+                                  obscureText: false,
+                                  decoration: InputDecoration(
+                                    hintText: 'กรอกอีเมลตรงนี้',
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                  ),
+                                  style: FlutterFlowTheme.of(context).title3,
+                                ),
+                                Text(
+                                  'รหัสผ่าน',
+                                  style: FlutterFlowTheme.of(context).title2,
+                                ),
+                                TextFormField(
+                                  controller: passwordRegister1Controller,
+                                  obscureText: !passwordRegister1Visibility,
+                                  decoration: InputDecoration(
+                                    hintText: 'กรอกรหัสผ่านตรงนี้',
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    suffixIcon: InkWell(
+                                      onTap: () => setState(
+                                        () => passwordRegister1Visibility =
+                                            !passwordRegister1Visibility,
+                                      ),
+                                      focusNode:
+                                          FocusNode(skipTraversal: true),
+                                      child: Icon(
+                                        passwordRegister1Visibility
+                                            ? Icons.visibility_outlined
+                                            : Icons.visibility_off_outlined,
+                                        color: Color(0xFF757575),
+                                        size: 22,
+                                      ),
+                                    ),
+                                  ),
+                                  style: FlutterFlowTheme.of(context).title3,
+                                ),
+                                Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      0, 10, 0, 0),
+                                  child: Text(
+                                    'รหัสผ่านอีกครั้ง',
+                                    style:
+                                        FlutterFlowTheme.of(context).title2,
+                                  ),
+                                ),
+                                TextFormField(
+                                  controller: passwordRegister2Controller,
+                                  obscureText: !passwordRegister2Visibility,
+                                  decoration: InputDecoration(
+                                    hintText: 'กรอกรหัสผ่านอีกครั้ง',
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    suffixIcon: InkWell(
+                                      onTap: () => setState(
+                                        () => passwordRegister2Visibility =
+                                            !passwordRegister2Visibility,
+                                      ),
+                                      focusNode:
+                                          FocusNode(skipTraversal: true),
+                                      child: Icon(
+                                        passwordRegister2Visibility
+                                            ? Icons.visibility_outlined
+                                            : Icons.visibility_off_outlined,
+                                        color: Color(0xFF757575),
+                                        size: 22,
+                                      ),
+                                    ),
+                                  ),
+                                  style: FlutterFlowTheme.of(context).title3,
+                                ),
+                              ],
                             ),
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0, 20, 0, 0),
-                                    child: Text(
-                                      'ชื่อ',
-                                      style:
-                                          FlutterFlowTheme.of(context).title2,
-                                    ),
-                                  ),
-                                  TextFormField(
-                                    controller: fristNameRegisterController,
-                                    obscureText: false,
-                                    decoration: InputDecoration(
-                                      hintText: 'กรอกชื่อผู้ใช้ตรงนี้',
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          width: 1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          width: 1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.white,
-                                    ),
-                                    style: FlutterFlowTheme.of(context).title3,
-                                  ),
-                                  Text(
-                                    'นามสกุล',
-                                    style: FlutterFlowTheme.of(context).title2,
-                                  ),
-                                  TextFormField(
-                                    controller: lastNameRegisterController,
-                                    obscureText: false,
-                                    decoration: InputDecoration(
-                                      hintText: 'กรอกนามสกุลตรงนี้',
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          width: 1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          width: 1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.white,
-                                    ),
-                                    style: FlutterFlowTheme.of(context).title3,
-                                  ),
-                                  Text(
-                                    'อีเมล',
-                                    style: FlutterFlowTheme.of(context).title2,
-                                  ),
-                                  TextFormField(
-                                    controller: emailRegisterController,
-                                    obscureText: false,
-                                    decoration: InputDecoration(
-                                      hintText: 'กรอกอีเมลตรงนี้',
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          width: 1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          width: 1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.white,
-                                    ),
-                                    style: FlutterFlowTheme.of(context).title3,
-                                  ),
-                                  Text(
-                                    'รหัสผ่าน',
-                                    style: FlutterFlowTheme.of(context).title2,
-                                  ),
-                                  TextFormField(
-                                    controller: passwordRegister1Controller,
-                                    obscureText: !passwordRegister1Visibility,
-                                    decoration: InputDecoration(
-                                      hintText: 'กรอกรหัสผ่านตรงนี้',
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          width: 1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          width: 1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.white,
-                                      suffixIcon: InkWell(
-                                        onTap: () => setState(
-                                          () => passwordRegister1Visibility =
-                                              !passwordRegister1Visibility,
-                                        ),
-                                        focusNode:
-                                            FocusNode(skipTraversal: true),
-                                        child: Icon(
-                                          passwordRegister1Visibility
-                                              ? Icons.visibility_outlined
-                                              : Icons.visibility_off_outlined,
-                                          color: Color(0xFF757575),
-                                          size: 22,
-                                        ),
-                                      ),
-                                    ),
-                                    style: FlutterFlowTheme.of(context).title3,
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0, 10, 0, 0),
-                                    child: Text(
-                                      'รหัสผ่านอีกครั้ง',
-                                      style:
-                                          FlutterFlowTheme.of(context).title2,
-                                    ),
-                                  ),
-                                  TextFormField(
-                                    controller: passwordRegister2Controller,
-                                    obscureText: !passwordRegister2Visibility,
-                                    decoration: InputDecoration(
-                                      hintText: 'กรอกรหัสผ่านอีกครั้ง',
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          width: 1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          width: 1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.white,
-                                      suffixIcon: InkWell(
-                                        onTap: () => setState(
-                                          () => passwordRegister2Visibility =
-                                              !passwordRegister2Visibility,
-                                        ),
-                                        focusNode:
-                                            FocusNode(skipTraversal: true),
-                                        child: Icon(
-                                          passwordRegister2Visibility
-                                              ? Icons.visibility_outlined
-                                              : Icons.visibility_off_outlined,
-                                          color: Color(0xFF757575),
-                                          size: 22,
-                                        ),
-                                      ),
-                                    ),
-                                    style: FlutterFlowTheme.of(context).title3,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
-                              child: FFButtonWidget(
-                                onPressed: () async {
-                                  if (((registerOutput?.statusCode ?? 200)) ==
-                                      200) {
-                                    if ((fristNameRegisterController!.text !=
+                          ),
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
+                            child: FFButtonWidget(
+                              onPressed: () async {
+                                if (((registerOutput?.statusCode ?? 200)) ==
+                                    200) {
+                                  if ((fristNameRegisterController!.text !=
+                                          null &&
+                                      fristNameRegisterController!.text !=
+                                          '')) {
+                                    if ((lastNameRegisterController!.text !=
                                             null &&
-                                        fristNameRegisterController!.text !=
+                                        lastNameRegisterController!.text !=
                                             '')) {
-                                      if ((lastNameRegisterController!.text !=
+                                      if ((emailRegisterController!.text !=
                                               null &&
-                                          lastNameRegisterController!.text !=
+                                          emailRegisterController!.text !=
                                               '')) {
-                                        if ((emailRegisterController!.text !=
+                                        if ((passwordRegister1Controller!
+                                                    .text !=
                                                 null &&
-                                            emailRegisterController!.text !=
+                                            passwordRegister1Controller!
+                                                    .text !=
                                                 '')) {
-                                          if ((passwordRegister1Controller!
+                                          if ((passwordRegister2Controller!
                                                       .text !=
                                                   null &&
-                                              passwordRegister1Controller!
+                                              passwordRegister2Controller!
                                                       .text !=
                                                   '')) {
-                                            if ((passwordRegister2Controller!
-                                                        .text !=
-                                                    null &&
-                                                passwordRegister2Controller!
-                                                        .text !=
-                                                    '')) {
-                                              if ((passwordRegister1Controller!
-                                                      .text) ==
-                                                  (passwordRegister2Controller!
-                                                      .text)) {
-                                                await actions.notifica(
-                                                  context,
-                                                  'สมัครเสร็จสิ้น',
-                                                );
-                                                registerOutput =
-                                                    await PostRegisterCall.call(
-                                                  fristName:
-                                                      fristNameRegisterController!
-                                                          .text,
-                                                  lastName:
-                                                      lastNameRegisterController!
-                                                          .text,
-                                                  email:
-                                                      emailRegisterController!
-                                                          .text,
-                                                  password:
-                                                      passwordRegister2Controller!
-                                                          .text,
-                                                );
-                                                Navigator.pop(context);
-                                              } else {
-                                                await actions.notifica(
-                                                  context,
-                                                  'กรุณากรอกรหัสผ่านไม่ตรงกัน',
-                                                );
-                                              }
+                                            if ((passwordRegister1Controller!
+                                                    .text) ==
+                                                (passwordRegister2Controller!
+                                                    .text)) {
+                                              
+                                              registerOutput =
+                                                  await PostRegisterCall.call(
+                                                fristName:
+                                                    fristNameRegisterController!
+                                                        .text,
+                                                lastName:
+                                                    lastNameRegisterController!
+                                                        .text,
+                                                email:
+                                                    emailRegisterController!
+                                                        .text,
+                                                password:
+                                                    passwordRegister2Controller!
+                                                        .text,
+                                              );
+                                              await actions.notifica(
+                                                context,
+                                                'สมัครเสร็จสิ้น',
+                                              );
+                                              Navigator.pop(context);
                                             } else {
                                               await actions.notifica(
                                                 context,
-                                                'กรุณากรอกยืนยันรหัสผ่าน',
+                                                'กรุณากรอกรหัสผ่านไม่ตรงกัน',
                                               );
                                             }
                                           } else {
                                             await actions.notifica(
                                               context,
-                                              'กรุณากรอกรหัสผ่าน',
+                                              'กรุณากรอกยืนยันรหัสผ่าน',
                                             );
                                           }
                                         } else {
                                           await actions.notifica(
                                             context,
-                                            'กรุณากรอกอีเมล',
+                                            'กรุณากรอกรหัสผ่าน',
                                           );
                                         }
                                       } else {
                                         await actions.notifica(
                                           context,
-                                          'กรุณากรอกนามสกุล',
+                                          'กรุณากรอกอีเมล',
                                         );
                                       }
                                     } else {
                                       await actions.notifica(
                                         context,
-                                        'กรุณากรอกชื่อ',
+                                        'กรุณากรอกนามสกุล',
                                       );
                                     }
                                   } else {
                                     await actions.notifica(
                                       context,
-                                      'กรุณากรอกข้อมูลให้ครบถ้วนหรืออีเมลนี้มีผู้ใช้แล้ว',
+                                      'กรุณากรอกชื่อ',
                                     );
                                   }
+                                } else {
+                                  await actions.notifica(
+                                    context,
+                                    'กรุณากรอกข้อมูลให้ครบถ้วนหรืออีเมลนี้มีผู้ใช้แล้ว',
+                                  );
+                                }
 
-                                  setState(() {});
-                                },
-                                text: 'สมัครสมาชิก',
-                                options: FFButtonOptions(
-                                  width: 285,
-                                  height: 40,
-                                  color:
-                                      FlutterFlowTheme.of(context).primaryColor,
-                                  textStyle:
-                                      FlutterFlowTheme.of(context).bodyText1,
-                                  elevation: 5,
-                                  borderSide: BorderSide(
-                                    color: Colors.transparent,
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
+                                setState(() {});
+                              },
+                              text: 'สมัครสมาชิก',
+                              options: FFButtonOptions(
+                                width: 285,
+                                height: 40,
+                                color:
+                                    FlutterFlowTheme.of(context).primaryColor,
+                                textStyle:
+                                    FlutterFlowTheme.of(context).bodyText1,
+                                elevation: 5,
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                  width: 1,
                                 ),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'มีบัญชี?',
-                                    style:
-                                        FlutterFlowTheme.of(context).subtitle1,
+                          ),
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'มีบัญชี?',
+                                  style:
+                                      FlutterFlowTheme.of(context).subtitle1,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    'เข้าสู่ระบบ',
+                                    style: FlutterFlowTheme.of(context)
+                                        .bodyText2,
                                   ),
-                                  InkWell(
-                                    onTap: () async {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text(
-                                      'เข้าสู่ระบบ',
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyText2,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+                
+              ],
             ),
           ),
         ),

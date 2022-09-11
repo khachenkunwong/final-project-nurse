@@ -226,7 +226,10 @@ class PostLoginCall {
       returnBody: true,
     );
   }
-
+  static dynamic resAll(dynamic response) => getJsonField(
+        response,
+        r'''$.''',
+      );
   static dynamic resToken(dynamic response) => getJsonField(
         response,
         r'''$.token''',

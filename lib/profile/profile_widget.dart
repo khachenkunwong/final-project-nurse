@@ -22,6 +22,12 @@ class ProfileWidget extends StatefulWidget {
 class _ProfileWidgetState extends State<ProfileWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   ApiCallResponse? logoutCallOutput;
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    print("ออกจากหน้า โปรไฟล์");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -300,25 +306,43 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       padding: EdgeInsetsDirectional.fromSTEB(0, 50, 0, 0),
                       child: FFButtonWidget(
                         onPressed: () async {
-                          logoutCallOutput = await LogoutCall.call(
-                            token: FFAppState().tokenStore,
-                          );
-                          setState(() => FFAppState().tokenStore = '');
-
-                          if (((logoutCallOutput?.statusCode ?? 200)) == 200) {
-                            await actions.notifica(
-                              context,
-                              'ออกจากระบบแล้ว',
+                          try {
+                            logoutCallOutput = await LogoutCall.call(
+                              token: FFAppState().tokenStore,
                             );
-                            Navigator.pushReplacement(
+                            if (mounted) {
+                              setState(() => FFAppState().tokenStore = '');
+                            }
+
+                            if (((logoutCallOutput?.statusCode ?? 200)) ==
+                                200) {
+                              await actions.notifica(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => FirstscreenWidget(),
-                                ));
-                          } else {
+                                'ออกจากระบบแล้ว',
+                                color: Colors.green,
+                              );
+                              await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FirstscreenWidget(),
+                                  ));
+
+                            } else if (logoutCallOutput?.statusCode == 404) {
+                              await actions.notifica(
+                                context,
+                                'Not fount',
+                              );
+                            } else {
+                              await actions.notifica(
+                                context,
+                                'ออกจากระบบไม่สำเร็จ',
+                              );
+                            }
+                          } catch (err) {
+                            print("เกิดข้อผิดพลาด $err");
                             await actions.notifica(
                               context,
-                              'ออกจากระบบไม่สำเร็จ',
+                              'เกิดข้อผิดพลาด',
                             );
                           }
                         },
@@ -337,7 +361,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         ),
                       ),
                     ),
-                  
                   ],
                 ),
               ),
