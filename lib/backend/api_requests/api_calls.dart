@@ -74,20 +74,6 @@ class ChangDutyCall {
 {
   "data":[
    {
-      "_id":"$idOne",
-      "_user":"$idUserOne",
-      "year":"$yearOne",
-      "month":"$monthOne",
-      "day":"$dayOne",
-      "group":"$groupOne",
-      "__v":$vOne,
-      "shift":[
-         {
-            "$dutyChooseOne":$dutyChooseNumberOne
-         }
-      ]
-   },
-   {
       "_id":"$idTwo",
       "_user":"$idUserTwo",
       "year":"$yearTwo",
@@ -98,6 +84,20 @@ class ChangDutyCall {
       "shift":[
          {
             "$dutyChooseTwo":$dutyChooseNumberTwo
+         }
+      ]
+   },
+   {
+      "_id":"$idOne",
+      "_user":"$idUserOne",
+      "year":"$yearOne",
+      "month":"$monthOne",
+      "day":"$dayOne",
+      "group":"$groupOne",
+      "__v":$vOne,
+      "shift":[
+         {
+            "$dutyChooseOne":$dutyChooseNumberOne
          }
       ]
    }

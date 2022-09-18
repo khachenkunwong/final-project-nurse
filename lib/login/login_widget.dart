@@ -30,8 +30,8 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   void initState() {
     super.initState();
-    textController1 = TextEditingController(text: 'TEST2@gmail.com');
-    textController2 = TextEditingController(text: 'TEST2');
+    textController1 = TextEditingController(text: 'TEST1@gmail.com');
+    textController2 = TextEditingController(text: 'TEST1');
     passwordVisibility = false;
   }
 
@@ -117,26 +117,31 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   obscureText: false,
                                   decoration: InputDecoration(
                                     hintText: 'กรอกอีเมลตรงนี้',
+                                    hintStyle: GoogleFonts.mitr(
+                                      color: Color(0xFFBDBDBD),
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                    ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFFBDBDBD),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFF727272),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    filled: true,
-                                    fillColor: Colors.white,
                                   ),
-                                  style: FlutterFlowTheme.of(context).title3,
+                                  style: GoogleFonts.mitr(
+                                    color: Color(0xFF727272),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                  ),
                                 ),
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
@@ -151,21 +156,24 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   obscureText: !passwordVisibility,
                                   decoration: InputDecoration(
                                     hintText: 'กรอกรหัสผ่านตรงนี้',
+                                    hintStyle: GoogleFonts.mitr(
+                                      color: Color(0xFFBDBDBD),
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                    ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFFBDBDBD),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFF727272),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     filled: true,
                                     fillColor: Colors.white,
@@ -179,12 +187,16 @@ class _LoginWidgetState extends State<LoginWidget> {
                                         passwordVisibility
                                             ? Icons.visibility_outlined
                                             : Icons.visibility_off_outlined,
-                                        color: Color(0xFF757575),
+                                        color: passwordVisibility?Color(0xFF757575):Color(0xFFBDBDBD),
                                         size: 22,
                                       ),
                                     ),
                                   ),
-                                  style: FlutterFlowTheme.of(context).title3,
+                                  style: GoogleFonts.mitr(
+                                    color: Color(0xFF727272),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                  ),
                                 ),
                               ],
                             ),

@@ -28,10 +28,10 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   @override
   void initState() {
     super.initState();
-    emailRegisterController = TextEditingController();
-    fristNameRegisterController = TextEditingController();
-    lastNameRegisterController = TextEditingController();
-    passwordRegister1Controller = TextEditingController();
+    emailRegisterController = TextEditingController(text: "addadmin@gmail.com");
+    fristNameRegisterController = TextEditingController(text: "addadmin");
+    lastNameRegisterController = TextEditingController(text: "addadminLast");
+    passwordRegister1Controller = TextEditingController(text: "addadmin");
     passwordRegister1Visibility = false;
     passwordRegister2Controller =
         TextEditingController(text: passwordRegister1Controller!.text);
@@ -125,26 +125,31 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                   obscureText: false,
                                   decoration: InputDecoration(
                                     hintText: 'กรอกชื่อผู้ใช้ตรงนี้',
+                                    hintStyle: GoogleFonts.mitr(
+                                      color: Color(0xFFBDBDBD),
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                    ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFFBDBDBD),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFF727272),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    filled: true,
-                                    fillColor: Colors.white,
                                   ),
-                                  style: FlutterFlowTheme.of(context).title3,
+                                  style: GoogleFonts.mitr(
+                                    color: Color(0xFF727272),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                  ),
                                 ),
                                 Text(
                                   'นามสกุล',
@@ -155,26 +160,31 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                   obscureText: false,
                                   decoration: InputDecoration(
                                     hintText: 'กรอกนามสกุลตรงนี้',
+                                    hintStyle: GoogleFonts.mitr(
+                                      color: Color(0xFFBDBDBD),
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                    ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFFBDBDBD),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFF727272),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    filled: true,
-                                    fillColor: Colors.white,
                                   ),
-                                  style: FlutterFlowTheme.of(context).title3,
+                                  style: GoogleFonts.mitr(
+                                    color: Color(0xFF727272),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                  ),
                                 ),
                                 Text(
                                   'อีเมล',
@@ -185,26 +195,31 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                   obscureText: false,
                                   decoration: InputDecoration(
                                     hintText: 'กรอกอีเมลตรงนี้',
+                                    hintStyle: GoogleFonts.mitr(
+                                      color: Color(0xFFBDBDBD),
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                    ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFFBDBDBD),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFF727272),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    filled: true,
-                                    fillColor: Colors.white,
                                   ),
-                                  style: FlutterFlowTheme.of(context).title3,
+                                  style: GoogleFonts.mitr(
+                                    color: Color(0xFF727272),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                  ),
                                 ),
                                 Text(
                                   'รหัสผ่าน',
@@ -215,21 +230,24 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                   obscureText: !passwordRegister1Visibility,
                                   decoration: InputDecoration(
                                     hintText: 'กรอกรหัสผ่านตรงนี้',
+                                    hintStyle: GoogleFonts.mitr(
+                                      color: Color(0xFFBDBDBD),
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                    ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFFBDBDBD),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFF727272),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     filled: true,
                                     fillColor: Colors.white,
@@ -249,7 +267,11 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                       ),
                                     ),
                                   ),
-                                  style: FlutterFlowTheme.of(context).title3,
+                                  style: GoogleFonts.mitr(
+                                    color: Color(0xFF727272),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                  ),
                                 ),
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
@@ -265,21 +287,24 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                   obscureText: !passwordRegister2Visibility,
                                   decoration: InputDecoration(
                                     hintText: 'กรอกรหัสผ่านอีกครั้ง',
+                                    hintStyle: GoogleFonts.mitr(
+                                      color: Color(0xFFBDBDBD),
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                    ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFFBDBDBD),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFF727272),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     filled: true,
                                     fillColor: Colors.white,
@@ -299,7 +324,11 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                       ),
                                     ),
                                   ),
-                                  style: FlutterFlowTheme.of(context).title3,
+                                  style: GoogleFonts.mitr(
+                                    color: Color(0xFF727272),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                  ),
                                 ),
                               ],
                             ),
@@ -358,6 +387,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                               await actions.notifica(
                                                 context,
                                                 'สมัครเสร็จสิ้น',
+                                                color: Colors.green,
                                               );
                                               Navigator.pop(context);
                                             } else {

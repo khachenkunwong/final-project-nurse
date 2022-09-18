@@ -331,24 +331,24 @@ class _WorkcalendarWidgetState extends State<WorkcalendarWidget> {
                               // เมื่อปัดลงจะทำการโหลดค่าข้างในใหม่
                               return Column(
                                 children: [
-                                  Align(
-                                    alignment: AlignmentDirectional(-1, 0),
-                                    child: Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          5, 5, 0, 0),
-                                      child: Text(
-                                        '${listViewPresent.first.group}',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyText1
-                                            .override(
-                                              fontFamily: 'Mitr',
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .secondaryButtonDarkBlue,
-                                            ),
-                                      ),
-                                    ),
-                                  ),
+                                  // Align(
+                                  //   alignment: AlignmentDirectional(-1, 0),
+                                  //   child: Padding(
+                                  //     padding: EdgeInsetsDirectional.fromSTEB(
+                                  //         5, 5, 0, 0),
+                                  //     child: Text(
+                                  //       '${listViewPresent.first.group}',
+                                  //       style: FlutterFlowTheme.of(context)
+                                  //           .bodyText1
+                                  //           .override(
+                                  //             fontFamily: 'Mitr',
+                                  //             color:
+                                  //                 FlutterFlowTheme.of(context)
+                                  //                     .secondaryButtonDarkBlue,
+                                  //           ),
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   RefreshIndicator(
                                     onRefresh: () async {
                                       setState(
