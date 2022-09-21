@@ -1,3 +1,5 @@
+import 'package:flutter_slidable/flutter_slidable.dart';
+
 import '../backend/api_requests/api_calls.dart';
 import '../backend/pubilc_.dart';
 import '../flutter_flow/flutter_flow_calendar.dart';
@@ -11,6 +13,8 @@ import '../model/present_model.dart';
 import '../model/without_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+
+import '../select_exchange_workschedule/select_exchange_workschedule_widget.dart';
 
 class WorkcalendarWidget extends StatefulWidget {
   const WorkcalendarWidget({Key? key}) : super(key: key);
@@ -29,6 +33,7 @@ class _WorkcalendarWidgetState extends State<WorkcalendarWidget> {
   Future<List<DutyWithOutModel>>? futureWithOut;
   late Future<List<dynamic>> futureMeAll;
   List dayDuty = ["เช้า", "บ่าย", "ดึก"];
+  List dayDutyEnglist = ["morning", "noon", "night"];
   var index1 = 0;
 
   late String calendarSelectedDayString;
@@ -578,76 +583,135 @@ class _WorkcalendarWidgetState extends State<WorkcalendarWidget> {
                                                       0) {
                                                     return SizedBox();
                                                   }
-                                                  return Container(
-                                                    child: Card(
-                                                      clipBehavior: Clip
-                                                          .antiAliasWithSaveLayer,
-                                                      color:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .secondaryWhite,
-                                                      elevation: 2,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
+                                                  return Slidable(
+                                                      endActionPane: ActionPane(
+                                                        motion:
+                                                            const ScrollMotion(),
+                                                        children: [
+                                                          SlidableAction(
+                                                            onPressed:
+                                                                (context) {
+                                                              print(
+                                                                  "ttt $itemFristName $itemLastName  เวรที่เลือก ${dutylist[indexDutyList]} เวรทั้งหมด ${dayDutyEnglist[indexDutyList]}");
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          SelectExchangeWorkscheduleWidget(
+                                                                    id: itemWityOutMeDuty
+                                                                        .id
+                                                                        .toString(),
+                                                                    userID: itemWityOutMeDuty
+                                                                        .user
+                                                                        .toString(),
+                                                                    year: int.parse(
+                                                                        itemWityOutMeDuty
+                                                                            .year
+                                                                            .toString()),
+                                                                    month: int.parse(
+                                                                        itemWityOutMeDuty
+                                                                            .month
+                                                                            .toString()),
+                                                                    day: int.parse(
+                                                                        itemWityOutMeDuty
+                                                                            .day
+                                                                            .toString()),
+                                                                    group: itemWityOutMeDuty
+                                                                        .group
+                                                                        .toString(),
+                                                                    v: itemWityOutMeDuty
+                                                                        .v,
+                                                                    dutyString:
+                                                                        "${dayDutyEnglist[indexDutyList]}",
+                                                                    dutyNumber:
+                                                                        1,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            },
+                                                            backgroundColor:
+                                                                Color(
+                                                                    0xFFF00A2FD),
+                                                            foregroundColor:
+                                                                Colors.white,
+                                                            icon: Icons
+                                                                .change_circle,
+                                                            label: 'แลกเปลี่ยน',
+                                                          ),
+                                                        ],
                                                       ),
-                                                      child: Padding(
-                                                        padding:
-                                                            EdgeInsetsDirectional
-                                                                .fromSTEB(10, 5,
-                                                                    10, 5),
-                                                        child: Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.max,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Container(
-                                                              width: 56,
-                                                              height: 56,
-                                                              clipBehavior: Clip
-                                                                  .antiAlias,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                shape: BoxShape
-                                                                    .circle,
-                                                              ),
-                                                              child:
-                                                                  Image.network(
-                                                                'https://picsum.photos/seed/260/600',
-                                                              ),
-                                                            ),
-                                                            Row(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .max,
-                                                              children: [
-                                                                Text(
-                                                                  '${itemFristName}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .title2,
+                                                    child: Container(
+                                                      child: Card(
+                                                        clipBehavior: Clip
+                                                            .antiAliasWithSaveLayer,
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .secondaryWhite,
+                                                        elevation: 2,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(10, 5,
+                                                                      10, 5),
+                                                          child: Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize.max,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Container(
+                                                                width: 56,
+                                                                height: 56,
+                                                                clipBehavior: Clip
+                                                                    .antiAlias,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .circle,
                                                                 ),
-                                                                Text(
-                                                                  ' ${itemLastName}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .title2,
+                                                                child:
+                                                                    Image.network(
+                                                                  'https://picsum.photos/seed/260/600',
                                                                 ),
-                                                              ],
-                                                            ),
-                                                            Text(
-                                                              "${dayDuty[indexDutyList]}",
-                                                              // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
-                                                              // '${dayDuty[IndexWithOutList]}',
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .title2,
-                                                            ),
-                                                          ],
+                                                              ),
+                                                              Row(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .max,
+                                                                children: [
+                                                                  Text(
+                                                                    '${itemFristName}',
+                                                                    style: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .title2,
+                                                                  ),
+                                                                  Text(
+                                                                    ' ${itemLastName}',
+                                                                    style: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .title2,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Text(
+                                                                "${dayDuty[indexDutyList]}",
+                                                                // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                                                                // '${dayDuty[IndexWithOutList]}',
+                                                                style: FlutterFlowTheme
+                                                                        .of(context)
+                                                                    .title2,
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),

@@ -58,7 +58,7 @@ class _ConnextEmailYesNoWidgetState extends State<ConnextEmailYesNoWidget> {
           }));
       print("555555 ${res.statusCode} ${res.body}");
       if (res.statusCode == 200) {
-        await notifica(context, "อนุญาติสำเร็จ");
+        await notifica(context, "อนุญาติสำเร็จ",color: Colors.green);
       } else {
         await notifica(context, "อนุญาติไม่สำเร็จ");
       }
@@ -111,7 +111,7 @@ class _ConnextEmailYesNoWidgetState extends State<ConnextEmailYesNoWidget> {
                 // print("stata ${statainvitecall.statusCode}");
                 // if (statainvitecall.statusCode == 200) {
                 //   print("${PutInviteCall.resState(statainvitecall.jsonBody)}");
-                //   await notifica(context, "อนุญาติสำเร็จ");
+                //   await notifica(context, "อนุญาติสำเร็จ",color: Colors.green);
                 // } else {
                 //   await notifica(context, "อนุญาติไม่สำเร็จ");
                 // }

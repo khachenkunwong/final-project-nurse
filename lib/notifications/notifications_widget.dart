@@ -36,6 +36,8 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
   late String calendarSelectedyearString;
   Map<String, bool> lordinvite = {};
   List dayDuty = ["เช้า", "บ่าย", "ดึก"];
+  late String stoteDuty;
+  late String stoteDuty2;
   putInvite(
       {required String groupId,
       required String userId,
@@ -65,9 +67,9 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
           }));
       print("555555 ${res.statusCode} ${res.body}");
       if (res.statusCode == 200) {
-        await notifica(context, "อนุญาติสำเร็จ");
+        await notifica(context, "ส่งคำขอสำเร็จ", color: Colors.green);
       } else {
-        await notifica(context, "อนุญาติไม่สำเร็จ");
+        await notifica(context, "ส่งคำขอไม่สำเร็จ");
       }
     } catch (error) {
       print(error);
@@ -115,7 +117,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
           GetChangDuty.fromJson(body as Map<String, dynamic>);
       final futureGetChangDuty = _futureGetChangDuty.data as List<Datum>;
       if (res.statusCode == 200) {
-        await notifica(context, "แสดงข้อมูลสำเร็จ");
+        await notifica(context, "แสดงข้อมูลสำเร็จ", color: Colors.green);
         return futureGetChangDuty;
       } else {
         await notifica(context, "แสดงข้อมูลไม่สำเร็จ");
@@ -175,7 +177,9 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
 
   Future<void> _refresh() async {
     setState(() {
+      futureInvite = getInviteModel(token: FFAppState().tokenStore);
       futurePresent = getPresentModel(token: FFAppState().tokenStore);
+      futureGetChangDuty = getChangDutyModel();
     });
     return await Future.delayed(Duration(seconds: 2));
   }
@@ -210,7 +214,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
         label: Container(),
       ),
       body: SafeArea(
-        child:  Builder(builder: (context) {
+        child: Builder(builder: (context) {
           return LayoutBuilder(
             builder: (context, constraints) => RefreshIndicator(
               onRefresh: _refresh,
@@ -237,17 +241,24 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                             final listview = snapshot.data!.invite;
 
                             if (listview == null) {
-                              return Text("ไม่มีค่า");
+                              return Column(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Text(
+                                    "ไม่มีแจ้งเตือนยังไม่ได้อยู่ในกลุ่ม",
+                                    style: GoogleFonts.mitr(
+                                        fontSize: 18, color: Colors.black),
+                                  ),
+                                ],
+                              );
                             }
                             for (var numberInvite = 0;
                                 numberInvite < listview.length;
                                 numberInvite++) {
-                              lordinvite.addEntries({
-                                "refrest1 ${numberInvite}": false
-                              }.entries);
-                              lordinvite.addEntries({
-                                "refrest2 ${numberInvite}": false
-                              }.entries);
+                              lordinvite.addEntries(
+                                  {"refrest1 ${numberInvite}": false}.entries);
+                              lordinvite.addEntries(
+                                  {"refrest2 ${numberInvite}": false}.entries);
                             }
 
                             return ListView.builder(
@@ -269,19 +280,16 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                 return Column(
                                   children: [
                                     Card(
-                                      clipBehavior:
-                                          Clip.antiAliasWithSaveLayer,
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
                                       color: FlutterFlowTheme.of(context)
                                           .secondaryWhite,
                                       elevation: 2,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Padding(
-                                        padding:
-                                            EdgeInsetsDirectional.fromSTEB(
-                                                5, 5, 5, 5),
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            5, 5, 5, 5),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           mainAxisAlignment:
@@ -327,8 +335,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                 size: 30,
                                               ),
                                               onPressed: () {
-                                                print(
-                                                    'IconButton pressed ...');
+                                                print('IconButton pressed ...');
                                               },
                                             ),
                                           ],
@@ -336,20 +343,19 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                       ),
                                     ),
                                     Card(
-                                      clipBehavior:
-                                          Clip.antiAliasWithSaveLayer,
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
                                       color: FlutterFlowTheme.of(context)
                                           .secondaryWhite,
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                           Padding(
-                                            padding: EdgeInsetsDirectional
-                                                .fromSTEB(50, 30, 0, 0),
+                                            padding:
+                                                EdgeInsetsDirectional.fromSTEB(
+                                                    50, 30, 0, 0),
                                             child: Column(
                                               mainAxisSize: MainAxisSize.min,
                                               // mainAxisAlignment: MainAxisAlignment.end,
@@ -369,21 +375,22 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                     Padding(
                                                       padding:
                                                           EdgeInsetsDirectional
-                                                              .fromSTEB(10, 0,
-                                                                  0, 0),
+                                                              .fromSTEB(
+                                                                  10, 0, 0, 0),
                                                       child: Text(
                                                         'คำเชิญเข้ากลุ่ม',
-                                                        style: FlutterFlowTheme
-                                                                .of(context)
-                                                            .bodyText1
-                                                            .override(
-                                                              fontFamily:
-                                                                  'Mitr',
-                                                              color: FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .primaryGray,
-                                                              fontSize: 16,
-                                                            ),
+                                                        style:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Mitr',
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .primaryGray,
+                                                                  fontSize: 16,
+                                                                ),
                                                       ),
                                                     ),
                                                   ],
@@ -397,31 +404,34 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                           -0.8, 0),
                                                   child: Text(
                                                     "ชื่อกลุ่มที่เชิญเข้า ${getDataGroup!.nameGroup}",
-                                                    style:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyText1
-                                                            .override(
-                                                              fontFamily:
-                                                                  'Mitr',
-                                                              color: FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .primaryGray,
-                                                              fontSize: 16,
-                                                            ),
+                                                    style: FlutterFlowTheme.of(
+                                                            context)
+                                                        .bodyText1
+                                                        .override(
+                                                          fontFamily: 'Mitr',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryGray,
+                                                          fontSize: 16,
+                                                        ),
                                                   ),
+                                                ),
+                                                Center(
+                                                  child: Icon(
+                                                      Icons.change_circle,
+                                                      size: 24.0),
                                                 ),
                                               ],
                                             ),
                                           ),
                                           Padding(
-                                            padding: EdgeInsetsDirectional
-                                                .fromSTEB(0, 10, 0, 10),
+                                            padding:
+                                                EdgeInsetsDirectional.fromSTEB(
+                                                    0, 10, 0, 10),
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceEvenly,
+                                                  MainAxisAlignment.spaceEvenly,
                                               children: [
                                                 lordinvite["refrest1 ${indexInvite}"] ==
                                                         false
@@ -440,8 +450,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                                         context)
                                                                     .secondaryWhite,
                                                             context: context,
-                                                            builder:
-                                                                (context) {
+                                                            builder: (context) {
                                                               return Padding(
                                                                 padding: MediaQuery.of(
                                                                         context)
@@ -499,13 +508,15 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                         false
                                                     ? InkWell(
                                                         onTap: () async {
-                                                          print("lordinvite ${lordinvite}");
+                                                          print(
+                                                              "lordinvite ${lordinvite}");
                                                           setState(() {
                                                             lordinvite[
                                                                     "refrest2 ${indexInvite}"] =
                                                                 true;
                                                           });
-                                                          print("lordinvite ${lordinvite}");
+                                                          print(
+                                                              "lordinvite ${lordinvite}");
                                                           putInvite(
                                                               approve: false,
                                                               groupId:
@@ -531,7 +542,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                           //   print(
                                                           //       "${PutInviteCall.resState(statainvitecall.jsonBody)}");
                                                           //   await notifica(
-                                                          //       context, "ปฎิเศษสำเร็จ");
+                                                          //       context, "ปฎิเศษสำเร็จ",color: Colors.green);
                                                           // } else {
                                                           //   await notifica(
                                                           //       context, "ปฎิเศษไม่สำเร็จ");
@@ -584,7 +595,6 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                             child: CircularProgressIndicator(),
                           );
                         }),
-
                     FutureBuilder<List<Datum>>(
                         future: futureGetChangDuty,
                         builder: (context, snapshot) {
@@ -622,68 +632,71 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                           return Builder(builder: (context) {
                             return Column(
                               children: [
-                                Card(
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryWhite,
-                                  elevation: 2,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        5, 5, 5, 5),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          width: 56,
-                                          height: 56,
-                                          clipBehavior: Clip.antiAlias,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Image.network(
-                                            'https://picsum.photos/seed/260/600',
-                                          ),
-                                        ),
-                                        Text(
-                                          // '${getDataLeader!.fristName} ${getDataLeader.lastName} (${getDataLeader.actor})',
-                                          "${snapshot.data!.first.member2!.fristName} ${snapshot.data!.first.member2!.lastName} (${snapshot.data!.first.member2!.actor})",
-                                          style: FlutterFlowTheme.of(context)
-                                              .title2,
-                                        ),
-                                        // Text(
-                                        //   'แลกทั้งหมด',
-                                        //   textAlign: TextAlign.center,
-                                        //   style: FlutterFlowTheme.of(context)
-                                        //       .bodyText1
-                                        //       .override(
-                                        //         fontFamily: 'Mitr',
-                                        //         color: FlutterFlowTheme.of(context)
-                                        //             .primaryBlue,
-                                        //       ),
-                                        // ),
-                                        FlutterFlowIconButton(
-                                          borderColor: Colors.transparent,
-                                          borderRadius: 30,
-                                          borderWidth: 1,
-                                          buttonSize: 60,
-                                          icon: Icon(
-                                            Icons.keyboard_arrow_up,
-                                            color: Colors.black,
-                                            size: 30,
-                                          ),
-                                          onPressed: () {
-                                            print('IconButton pressed ...');
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                // Card(
+                                //   clipBehavior: Clip.antiAliasWithSaveLayer,
+                                //   color: FlutterFlowTheme.of(context)
+                                //       .secondaryWhite,
+                                //   elevation: 2,
+                                //   shape: RoundedRectangleBorder(
+                                //     borderRadius: BorderRadius.circular(10),
+                                //   ),
+                                //   child: Padding(
+                                //     padding: EdgeInsetsDirectional.fromSTEB(
+                                //         5, 5, 5, 5),
+                                //     child: Row(
+                                //       mainAxisSize: MainAxisSize.max,
+                                //       mainAxisAlignment:
+                                //           MainAxisAlignment.spaceBetween,
+                                //       children: [
+                                //         Expanded(
+                                //           flex: 1,
+                                //           child: Container(
+                                //             width: 56,
+                                //             height: 56,
+                                //             clipBehavior: Clip.antiAlias,
+                                //             decoration: BoxDecoration(
+                                //               shape: BoxShape.circle,
+                                //             ),
+                                //             child: Image.network(
+                                //               'https://picsum.photos/seed/260/600',
+                                //             ),
+                                //           ),
+                                //         ),
+                                //         Text(
+                                //           // '${getDataLeader!.fristName} ${getDataLeader.lastName} (${getDataLeader.actor})',
+                                //           "${snapshot.data!.first.member2!.fristName} ${snapshot.data!.first.member2!.lastName} (${snapshot.data!.first.member2!.actor})",
+                                //           style: FlutterFlowTheme.of(context)
+                                //               .title2,
+                                //         ),
+                                //         // Text(
+                                //         //   'แลกทั้งหมด',
+                                //         //   textAlign: TextAlign.center,
+                                //         //   style: FlutterFlowTheme.of(context)
+                                //         //       .bodyText1
+                                //         //       .override(
+                                //         //         fontFamily: 'Mitr',
+                                //         //         color: FlutterFlowTheme.of(context)
+                                //         //             .primaryBlue,
+                                //         //       ),
+                                //         // ),
+                                //         FlutterFlowIconButton(
+                                //           borderColor: Colors.transparent,
+                                //           borderRadius: 30,
+                                //           borderWidth: 1,
+                                //           buttonSize: 60,
+                                //           icon: Icon(
+                                //             Icons.keyboard_arrow_up,
+                                //             color: Colors.black,
+                                //             size: 30,
+                                //           ),
+                                //           onPressed: () {
+                                //             print('IconButton pressed ...');
+                                //           },
+                                //         ),
+                                //       ],
+                                //     ),
+                                //   ),
+                                // ),
                                 ListView.builder(
                                     padding: EdgeInsets.zero,
                                     physics: NeverScrollableScrollPhysics(),
@@ -692,6 +705,28 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                     itemCount: snapshot.data!.length,
                                     itemBuilder: (BuildContext context,
                                         int indexgetInvite) {
+                                      if (snapshot.data![indexgetInvite]
+                                              .memberShift1![0].morning !=
+                                          null) {
+                                        stoteDuty = "เช้า";
+                                      } else if (snapshot.data![indexgetInvite]
+                                              .memberShift1![0].noon !=
+                                          null) {
+                                        stoteDuty = "บ่าย";
+                                      } else {
+                                        stoteDuty = "ดึก";
+                                      }
+                                      if (snapshot.data![indexgetInvite]
+                                              .memberShift2![0].morning !=
+                                          null) {
+                                        stoteDuty2 = "เช้า";
+                                      } else if (snapshot.data![indexgetInvite]
+                                              .memberShift2![0].noon !=
+                                          null) {
+                                        stoteDuty2 = "บ่าย";
+                                      } else {
+                                        stoteDuty2 = "ดึก";
+                                      }
                                       print(
                                           "ttttttttt ${snapshot.data!.first.approve}");
                                       return Card(
@@ -712,8 +747,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                               padding: EdgeInsetsDirectional
                                                   .fromSTEB(0, 20, 0, 0),
                                               child: Row(
-                                                mainAxisSize:
-                                                    MainAxisSize.max,
+                                                mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
                                                         .spaceEvenly,
@@ -731,47 +765,46 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                                 10, 0, 0, 0),
                                                     child: Text(
                                                       'แลกเปลี่ยนเวร',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .title2
-                                                              .override(
-                                                                fontFamily:
-                                                                    'Mitr',
-                                                                color: Color(
-                                                                    0xFF606060),
-                                                                fontSize: 18,
-                                                              ),
+                                                      style: FlutterFlowTheme
+                                                              .of(context)
+                                                          .title2
+                                                          .override(
+                                                            fontFamily: 'Mitr',
+                                                            color: Color(
+                                                                0xFF606060),
+                                                            fontSize: 18,
+                                                          ),
                                                     ),
                                                   ),
                                                   Column(
                                                     mainAxisSize:
                                                         MainAxisSize.max,
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .end,
+                                                        CrossAxisAlignment.end,
                                                     children: [
                                                       Text(
                                                         'วันนี้ 07:14 น.',
-                                                        style: FlutterFlowTheme
-                                                                .of(context)
-                                                            .title3,
+                                                        style:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .title3,
                                                       ),
                                                       Text(
                                                         '${snapshot.data!.first.member2!.fristName} ${snapshot.data!.first.member2!.lastName}',
-                                                        style: FlutterFlowTheme
-                                                                .of(context)
-                                                            .bodyText1
-                                                            .override(
-                                                              fontFamily:
-                                                                  'Mitr',
-                                                              color: FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .primaryRed,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                            ),
+                                                        style:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Mitr',
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .primaryRed,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
                                                       ),
                                                     ],
                                                   ),
@@ -845,33 +878,188 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                               ),
                                               daysOfWeekHeight: 20,
                                               yearduty: int.parse(snapshot
-                                                  .data!.first.duty2!.year
+                                                  .data![indexgetInvite]
+                                                  .duty2!
+                                                  .year
                                                   .toString()),
                                               monthduty: int.parse(snapshot
-                                                  .data!.first.duty2!.month
+                                                  .data![indexgetInvite]
+                                                  .duty2!
+                                                  .month
                                                   .toString()),
                                               dayduty: int.parse(snapshot
-                                                  .data!.first.duty2!.day
+                                                  .data![indexgetInvite]
+                                                  .duty2!
+                                                  .day
                                                   .toString()),
                                               changTwoDuty: true,
                                               yearduty2: int.parse(snapshot
-                                                  .data!.first.duty1!.year
+                                                  .data![indexgetInvite]
+                                                  .duty1!
+                                                  .year
                                                   .toString()),
                                               monthduty2: int.parse(snapshot
-                                                  .data!.first.duty1!.month
+                                                  .data![indexgetInvite]
+                                                  .duty1!
+                                                  .month
                                                   .toString()),
                                               dayduty2: int.parse(snapshot
-                                                  .data!.first.duty1!.day
+                                                  .data![indexgetInvite]
+                                                  .duty1!
+                                                  .day
                                                   .toString()),
                                             ),
                                             Padding(
                                               padding:
                                                   const EdgeInsets.all(12.0),
                                               child: Text(
-                                                "ชื่อกลุ่ม ${snapshot.data![0].group2}",
+                                                "วันที่ ${snapshot.data![indexgetInvite].duty1!.day} เดือน ${snapshot.data![indexgetInvite].duty1!.month} ปี ${snapshot.data![indexgetInvite].duty1!.year} ชื่อกลุ่ม ${snapshot.data![indexgetInvite].group1}",
                                                 style: GoogleFonts.mitr(
                                                   fontSize: 16,
                                                   color: Color(0xFF606060),
+                                                ),
+                                              ),
+                                            ),
+                                            Card(
+                                              clipBehavior:
+                                                  Clip.antiAliasWithSaveLayer,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryWhite,
+                                              elevation: 2,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Padding(
+                                                padding: EdgeInsetsDirectional
+                                                    .fromSTEB(10, 5, 10, 5),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Container(
+                                                      width: 56,
+                                                      height: 56,
+                                                      clipBehavior:
+                                                          Clip.antiAlias,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                      child: Image.network(
+                                                        'https://picsum.photos/seed/260/600',
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      children: [
+                                                        Text(
+                                                          '${snapshot.data![indexgetInvite].member1!.fristName}',
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .title2,
+                                                        ),
+                                                        Text(
+                                                          ' ${snapshot.data![indexgetInvite].member1!.lastName}',
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .title2,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Text(
+                                                      // dayDuty คือ list เช้า บ่าย ดึกที่เตรียมไว้
+                                                      // getMydutyIndex คือ index การ loop ของ listview
+                                                      '${stoteDuty}',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .title2,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Center(
+                                              child: Icon(Icons.change_circle,
+                                                  size: 24.0),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(12.0),
+                                              child: Text(
+                                                "วันที่ ${snapshot.data![indexgetInvite].duty2!.day} เดือน ${snapshot.data![indexgetInvite].duty2!.month} ปี ${snapshot.data![indexgetInvite].duty2!.year} ชื่อกลุ่ม ${snapshot.data![indexgetInvite].group2}",
+                                                style: GoogleFonts.mitr(
+                                                  fontSize: 16,
+                                                  color: Color(0xFF606060),
+                                                ),
+                                              ),
+                                            ),
+                                            Card(
+                                              clipBehavior:
+                                                  Clip.antiAliasWithSaveLayer,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryWhite,
+                                              elevation: 2,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Padding(
+                                                padding: EdgeInsetsDirectional
+                                                    .fromSTEB(10, 5, 10, 5),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Container(
+                                                      width: 56,
+                                                      height: 56,
+                                                      clipBehavior:
+                                                          Clip.antiAlias,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                      child: Image.network(
+                                                        'https://picsum.photos/seed/260/600',
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      children: [
+                                                        Text(
+                                                          '${snapshot.data![indexgetInvite].member2!.fristName}',
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .title2,
+                                                        ),
+                                                        Text(
+                                                          ' ${snapshot.data![indexgetInvite].member2!.lastName}',
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .title2,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Text(
+                                                      // dayDuty คือ list เช้า บ่าย ดึกที่เตรียมไว้
+                                                      // getMydutyIndex คือ index การ loop ของ listview
+                                                      '${stoteDuty2}',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .title2,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),
@@ -911,17 +1099,17 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                               builder:
                                                   (context, snapshotPresent) {
                                                 // Customize what your widget looks like when it's loading.
-                                                if (!snapshotPresent
-                                                    .hasData) {
+                                                if (!snapshotPresent.hasData) {
                                                   return Center(
                                                     child: SizedBox(
                                                       width: 50,
                                                       height: 50,
                                                       child:
                                                           CircularProgressIndicator(
-                                                        color: FlutterFlowTheme
-                                                                .of(context)
-                                                            .primaryColor,
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .primaryColor,
                                                       ),
                                                     ),
                                                   );
@@ -934,14 +1122,16 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                     try {
                                                       print(
                                                           "aaaa${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month} != ${calendarSelectedmonthString}");
-                                                      if (listViewPresent[
-                                                                      int.parse(calendarSelectedDayString.toString()) -
-                                                                          1]
+                                                      if (listViewPresent[int.parse(
+                                                                          calendarSelectedDayString
+                                                                              .toString()) -
+                                                                      1]
                                                                   .year !=
                                                               calendarSelectedyearString ||
-                                                          listViewPresent[
-                                                                      int.parse(calendarSelectedDayString.toString()) -
-                                                                          1]
+                                                          listViewPresent[int.parse(
+                                                                          calendarSelectedDayString
+                                                                              .toString()) -
+                                                                      1]
                                                                   .month !=
                                                               calendarSelectedmonthString) {
                                                         return Center(
@@ -962,8 +1152,8 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                                     "ไม่มีเวรของคุณวันนี้")));
                                                       }
                                                       // ตัวนี้คือนำเวรเช้า บ่าย ดึก มาเก็บไว้ใน list
-                                                      List<dynamic>
-                                                          getMyduty = [
+                                                      List<dynamic> getMyduty =
+                                                          [
                                                         listViewPresent[int.parse(
                                                                     calendarSelectedDayString
                                                                         .toString()) -
@@ -1000,14 +1190,15 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                                           0,
                                                                           0),
                                                               child: Text(
-                                                                '${listViewPresent.first.group}',
+                                                                '${listViewPresent.first.group} ',
                                                                 style: FlutterFlowTheme.of(
                                                                         context)
                                                                     .bodyText1
                                                                     .override(
                                                                       fontFamily:
                                                                           'Mitr',
-                                                                      color: FlutterFlowTheme.of(context)
+                                                                      color: FlutterFlowTheme.of(
+                                                                              context)
                                                                           .secondaryButtonDarkBlue,
                                                                     ),
                                                               ),
@@ -1015,8 +1206,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                           ),
                                                           ListView.builder(
                                                             padding:
-                                                                EdgeInsets
-                                                                    .zero,
+                                                                EdgeInsets.zero,
                                                             shrinkWrap: true,
                                                             scrollDirection:
                                                                 Axis.vertical,
@@ -1031,8 +1221,8 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                               }
 
                                                               return Card(
-                                                                clipBehavior:
-                                                                    Clip.antiAliasWithSaveLayer,
+                                                                clipBehavior: Clip
+                                                                    .antiAliasWithSaveLayer,
                                                                 color: FlutterFlowTheme.of(
                                                                         context)
                                                                     .primaryBlue02,
@@ -1040,11 +1230,11 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                                 shape:
                                                                     RoundedRectangleBorder(
                                                                   borderRadius:
-                                                                      BorderRadius.circular(
-                                                                          10),
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
                                                                 ),
-                                                                child:
-                                                                    Padding(
+                                                                child: Padding(
                                                                   padding: EdgeInsetsDirectional
                                                                       .fromSTEB(
                                                                           10,
@@ -1071,8 +1261,8 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                                           shape:
                                                                               BoxShape.circle,
                                                                         ),
-                                                                        child:
-                                                                            Image.network(
+                                                                        child: Image
+                                                                            .network(
                                                                           'https://picsum.photos/seed/260/600',
                                                                         ),
                                                                       ),
@@ -1082,11 +1272,13 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                                         children: [
                                                                           Text(
                                                                             '${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.fristName}',
-                                                                            style: FlutterFlowTheme.of(context).title2,
+                                                                            style:
+                                                                                FlutterFlowTheme.of(context).title2,
                                                                           ),
                                                                           Text(
                                                                             ' ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.lastName}',
-                                                                            style: FlutterFlowTheme.of(context).title2,
+                                                                            style:
+                                                                                FlutterFlowTheme.of(context).title2,
                                                                           ),
                                                                         ],
                                                                       ),
@@ -1094,8 +1286,8 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                                         // dayDuty คือ list เช้า บ่าย ดึกที่เตรียมไว้
                                                                         // getMydutyIndex คือ index การ loop ของ listview
                                                                         '${dayDuty[indexPresent]}',
-                                                                        style:
-                                                                            FlutterFlowTheme.of(context).title2,
+                                                                        style: FlutterFlowTheme.of(context)
+                                                                            .title2,
                                                                       ),
                                                                     ],
                                                                   ),
@@ -1112,8 +1304,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                               child: Text(
                                                                   "ตารางเวรเดือนนี้ยังไม่ได้สร้างหรือจัด")));
                                                     } catch (error) {
-                                                      print(
-                                                          "error = ${error}");
+                                                      print("error = ${error}");
                                                       return Text(
                                                           "error นอกขอบเขตที่กำหนด");
                                                     }
@@ -1125,37 +1316,43 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                               padding: EdgeInsetsDirectional
                                                   .fromSTEB(0, 0, 0, 15),
                                               child: Row(
-                                                mainAxisSize:
-                                                    MainAxisSize.max,
+                                                mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
                                                         .spaceEvenly,
                                                 children: [
                                                   InkWell(
                                                     onTap: () async {
-                                                      final getState =
-                                                          await updateChangdutyCall.call(
-                                                              token: FFAppState()
-                                                                  .tokenStore,
-                                                              apporve: true,
-                                                              chagnId:
-                                                                  '${snapshot.data![0].id}');
-                                                      if (getState
-                                                              .statusCode ==
-                                                          200) {
+                                                      try {
+                                                        final getState =
+                                                            await updateChangdutyCall.call(
+                                                                token: FFAppState()
+                                                                    .tokenStore,
+                                                                apporve: true,
+                                                                chagnId:
+                                                                    '${snapshot.data![indexgetInvite].id}');
+                                                        if (getState
+                                                                .statusCode ==
+                                                            200) {
+                                                          print(
+                                                              "getstata ${getState.jsonBody}");
+                                                          await notifica(
+                                                              context,
+                                                              "ส่งคำขอสำเร็จ",
+                                                              color:
+                                                                  Colors.green);
+                                                        } else {
+                                                          print(
+                                                              "getstata ${getState.jsonBody}");
+                                                          await notifica(
+                                                              context,
+                                                              "ส่งคำขอไม่สำเร็จ");
+                                                        }
+                                                        _refresh();
+                                                      } catch (error) {
                                                         print(
-                                                            "getstata ${getState.jsonBody}");
-                                                        await notifica(
-                                                            context,
-                                                            "สำเร็จ");
-                                                      } else {
-                                                        print(
-                                                            "getstata ${getState.jsonBody}");
-                                                        await notifica(
-                                                            context,
-                                                            "ไม่สำเร็จ");
+                                                            "เกิดข้อผิดพลาดตอนแลกเวร $error");
                                                       }
-                                                      setState(() {});
                                                     },
                                                     child: Text(
                                                       'แลกเปลี่ยน',
@@ -1174,29 +1371,36 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                   ),
                                                   InkWell(
                                                     onTap: () async {
-                                                      final getState =
-                                                          await updateChangdutyCall.call(
-                                                              token: FFAppState()
-                                                                  .tokenStore,
-                                                              apporve: false,
-                                                              chagnId:
-                                                                  '${snapshot.data![0].id}');
-                                                      if (getState
-                                                              .statusCode ==
-                                                          200) {
+                                                      try {
+                                                        final getState =
+                                                            await updateChangdutyCall.call(
+                                                                token: FFAppState()
+                                                                    .tokenStore,
+                                                                apporve: false,
+                                                                chagnId:
+                                                                    '${snapshot.data![indexgetInvite].id}');
+                                                        if (getState
+                                                                .statusCode ==
+                                                            200) {
+                                                          print(
+                                                              "getstata ${getState.jsonBody}");
+                                                          await notifica(
+                                                              context,
+                                                              "ยกเลิกสำเร็จ",
+                                                              color:
+                                                                  Colors.green);
+                                                        } else {
+                                                          print(
+                                                              "getstata ${getState.jsonBody}");
+                                                          await notifica(
+                                                              context,
+                                                              "ยกเลิกไม่สำเร็จกรุณากดใหม่อีกครั้ง");
+                                                        }
+                                                        _refresh();
+                                                      } catch (error) {
                                                         print(
-                                                            "getstata ${getState.jsonBody}");
-                                                        await notifica(
-                                                            context,
-                                                            "สำเร็จ");
-                                                      } else {
-                                                        print(
-                                                            "getstata ${getState.jsonBody}");
-                                                        await notifica(
-                                                            context,
-                                                            "ไม่สำเร็จ");
+                                                            "เกิดข้อผิดพลาดตอนแลกเวร $error");
                                                       }
-                                                      setState(() {});
                                                     },
                                                     child: Text(
                                                       'ยกเลิก',
@@ -1224,7 +1428,6 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                             );
                           });
                         }),
-                    
                     Container(
                       height: 50.0,
                       width: 50.0,

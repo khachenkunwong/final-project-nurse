@@ -191,6 +191,7 @@ class _EditedProfileWidgetState extends State<EditedProfileWidget> {
                                       await actions.notifica(
                                         context,
                                         'บันทึกสำเร็จ',
+                                        color: Colors.green
                                       );
                                       Navigator.pop(context);
                                     } else {

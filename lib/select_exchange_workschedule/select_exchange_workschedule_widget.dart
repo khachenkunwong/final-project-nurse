@@ -1,3 +1,5 @@
+import 'package:hos_mobile2/custom_code/actions/index.dart';
+
 import '../backend/api_requests/api_calls.dart';
 import '../backend/pubilc_.dart';
 import '../flutter_flow/flutter_flow_calendar.dart';
@@ -86,7 +88,7 @@ class _SelectExchangeWorkscheduleWidgetState
     return [];
   }
 
-  Future<void> _refresh()  async{
+  Future<void> _refresh() async {
     return await Future.delayed(Duration(seconds: 1));
   }
 
@@ -278,17 +280,17 @@ class _SelectExchangeWorkscheduleWidgetState
                                 child: Text("ไม่มีข้อมูลเวรของเดือนนี้"),
                               );
                             }
-                            if (listViewPresent[int.parse(
-                                            calendarSelectedDayString
-                                                .toString()) -
-                                        1]
-                                    .count ==
-                                0) {
-                              return Container(
-                                  height: 50.0,
-                                  child: Center(
-                                      child: Text("ไม่มีเวรของคุณวันนี้")));
-                            }
+                            // if (listViewPresent[int.parse(
+                            //                 calendarSelectedDayString
+                            //                     .toString()) -
+                            //             1]
+                            //         .count ==
+                            //     0) {
+                            //   return Container(
+                            //       height: 50.0,
+                            //       child: Center(
+                            //           child: Text("ไม่มีเวรของคุณวันนี้")));
+                            // }
                             // ตัวนี้คือนำเวรเช้า บ่าย ดึก มาเก็บไว้ใน list
                             List<dynamic> getMyduty = [
                               listViewPresent[int.parse(
@@ -343,12 +345,13 @@ class _SelectExchangeWorkscheduleWidgetState
                                     scrollDirection: Axis.vertical,
                                     itemCount: 3,
                                     itemBuilder: (context, indexPresent) {
+                                      print("aaaaaa ${getMyduty}");
                                       // ถ้า เช้า บ่าย ดึก ไม่มีก็จะแสดงเป็น box ว่าง แต่ถ้า เช้ามีแต่บ่ายกับดึกไม่มีก็จะแสดงแต่เช้า
                                       if (getMyduty[indexPresent] == 0) {
                                         return InkWell(
-                                          onTap: () {
+                                          onTap: () async {
                                             // รอเชื่อม api
-                                            final outputchangduty = ChangDutyCall.call(
+                                            final outputchangduty = await ChangDutyCall.call(
                                                 idOne: '${widget.id}',
                                                 idUserOne: '${widget.userID}',
                                                 yearOne: '${widget.year}',
@@ -384,33 +387,44 @@ class _SelectExchangeWorkscheduleWidgetState
                                                     '${dayDutyEnglist[indexPresent]}',
                                                 dutyChooseNumberTwo:
                                                     getMyduty[indexPresent]);
-                                            print(
-                                                "changDutyCall ${ChangDutyCall.resState(outputchangduty)}");
-                                            print(
-                                                "id ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].id}");
-                                            print(
-                                                "id user ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.id}");
-                                            print(
-                                                "fristName ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.fristName}");
-                                            print(
-                                                "lastName ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.lastName}");
-                                            print(
-                                                "actor ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.actor}");
-                                            print(
-                                                "year ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].year}");
-                                            print(
-                                                "month ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month}");
-                                            print(
-                                                "day ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].day}");
-                                            print(
-                                                "group ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].group}");
-                                            print(
-                                                "count ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].count}");
-                                            print(
-                                                "__v ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].v}");
+                                            if (outputchangduty.statusCode ==
+                                                200) {
+                                              await notifica(
+                                                  context, "แลกสำเร็จ",
+                                                  color: Colors.green);
+                                              print(
+                                                  "changDutyCall ${ChangDutyCall.resState(outputchangduty)}");
 
-                                            print(
-                                                "${dayDutyEnglist[indexPresent]}");
+                                              print(
+                                                  "id ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].id}");
+                                              print(
+                                                  "id user ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.id}");
+                                              print(
+                                                  "fristName ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.fristName}");
+                                              print(
+                                                  "lastName ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.lastName}");
+                                              print(
+                                                  "actor ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.actor}");
+                                              print(
+                                                  "year ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].year}");
+                                              print(
+                                                  "month ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month}");
+                                              print(
+                                                  "day ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].day}");
+                                              print(
+                                                  "group ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].group}");
+                                              print(
+                                                  "count ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].count}");
+                                              print(
+                                                  "__v ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].v}");
+
+                                              print(
+                                                  "${dayDutyEnglist[indexPresent]}");
+                                              Navigator.pop(context);
+                                            } else {
+                                              await notifica(
+                                                  context, "แลกไม่สำเร็จ");
+                                            }
                                           },
                                           child: Card(
                                             clipBehavior:
@@ -476,11 +490,11 @@ class _SelectExchangeWorkscheduleWidgetState
                                           ),
                                         );
                                       }
-
+                                      print("aaaaaa เข้าเงื่อนไขด้านล่าง");
                                       return InkWell(
-                                        onTap: () {
+                                        onTap: () async {
                                           // รอเชื่อม api
-                                          final outputchangduty = ChangDutyCall.call(
+                                          final outputchangduty = await ChangDutyCall.call(
                                               idOne: '${widget.id}',
                                               idUserOne: '${widget.userID}',
                                               yearOne: '${widget.year}',
@@ -516,33 +530,43 @@ class _SelectExchangeWorkscheduleWidgetState
                                                   '${dayDutyEnglist[indexPresent]}',
                                               dutyChooseNumberTwo:
                                                   getMyduty[indexPresent]);
-                                          print(
-                                              "changDutyCall ${ChangDutyCall.resState(outputchangduty)}");
-                                          print(
-                                              "id ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].id}");
-                                          print(
-                                              "id user ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.id}");
-                                          print(
-                                              "fristName ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.fristName}");
-                                          print(
-                                              "lastName ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.lastName}");
-                                          print(
-                                              "actor ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.actor}");
-                                          print(
-                                              "year ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].year}");
-                                          print(
-                                              "month ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month}");
-                                          print(
-                                              "day ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].day}");
-                                          print(
-                                              "group ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].group}");
-                                          print(
-                                              "count ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].count}");
-                                          print(
-                                              "__v ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].v}");
+                                          if (outputchangduty.statusCode ==
+                                              200) {
+                                            await notifica(
+                                                context, "ส่งคำขอแลกเวรแล้ว",
+                                                color: Colors.green);
+                                            print(
+                                                "changDutyCall ${ChangDutyCall.resState(outputchangduty)}");
+                                            print(
+                                                "id ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].id}");
+                                            print(
+                                                "id user ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.id}");
+                                            print(
+                                                "fristName ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.fristName}");
+                                            print(
+                                                "lastName ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.lastName}");
+                                            print(
+                                                "actor ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.actor}");
+                                            print(
+                                                "year ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].year}");
+                                            print(
+                                                "month ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month}");
+                                            print(
+                                                "day ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].day}");
+                                            print(
+                                                "group ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].group}");
+                                            print(
+                                                "count ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].count}");
+                                            print(
+                                                "__v ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].v}");
 
-                                          print(
-                                              "${dayDutyEnglist[indexPresent]}");
+                                            print(
+                                                "${dayDutyEnglist[indexPresent]}");
+                                            Navigator.pop(context);
+                                          } else {
+                                            await notifica(
+                                                context, "ส่งคำขอไม่สำเร็จ");
+                                          }
                                         },
                                         child: Card(
                                           clipBehavior:

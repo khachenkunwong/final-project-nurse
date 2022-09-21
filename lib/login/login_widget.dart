@@ -30,8 +30,8 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   void initState() {
     super.initState();
-    textController1 = TextEditingController(text: 'TEST1@gmail.com');
-    textController2 = TextEditingController(text: 'TEST1');
+    textController1 = TextEditingController(text: 'member1@gmail.com');
+    textController2 = TextEditingController(text: 'member1');
     passwordVisibility = false;
   }
 
@@ -247,7 +247,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                       //         ) {
                                       // await actions.notifica(
                                       //   context,
-                                      //   'สร้างตารางสำเร็จ',
+                                      //   'สร้างตารางสำเร็จ',color: Colors.green
                                       // );
                                       // setState(() {
                                       //   FFAppState().namegroup =

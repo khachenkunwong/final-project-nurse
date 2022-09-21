@@ -155,7 +155,6 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
     print("api ทำงาน");
 
     futurePresent = getPresentModel(token: FFAppState().tokenStore);
-
     futureWithOut = getWithOutModel(token: FFAppState().tokenStore);
   }
 
@@ -470,6 +469,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                           ),
                                         ),
                                       );
+                                    
                                     },
                                   ),
                                 ],
