@@ -28,10 +28,10 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   @override
   void initState() {
     super.initState();
-    emailRegisterController = TextEditingController(text: "addadmin@gmail.com");
-    fristNameRegisterController = TextEditingController(text: "addadmin");
-    lastNameRegisterController = TextEditingController(text: "addadminLast");
-    passwordRegister1Controller = TextEditingController(text: "addadmin");
+    emailRegisterController = TextEditingController(text: "headmanager@gmail.com");
+    fristNameRegisterController = TextEditingController(text: "headmanager");
+    lastNameRegisterController = TextEditingController(text: "headmanagerLast");
+    passwordRegister1Controller = TextEditingController(text: "headmanager");
     passwordRegister1Visibility = false;
     passwordRegister2Controller =
         TextEditingController(text: passwordRegister1Controller!.text);
