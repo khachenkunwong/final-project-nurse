@@ -39,6 +39,13 @@ class _WorkcalendarWidgetState extends State<WorkcalendarWidget> {
   late String calendarSelectedDayString;
   late String calendarSelectedmonthString;
   late String calendarSelectedyearString;
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    dayDuty.clear();
+    dayDutyEnglist.clear();
+    super.dispose();
+  }
 
   Future<List<DutyPresent>> getPresentModel({required String token}) async {
     try {
@@ -584,63 +591,62 @@ class _WorkcalendarWidgetState extends State<WorkcalendarWidget> {
                                                     return SizedBox();
                                                   }
                                                   return Slidable(
-                                                      endActionPane: ActionPane(
-                                                        motion:
-                                                            const ScrollMotion(),
-                                                        children: [
-                                                          SlidableAction(
-                                                            onPressed:
-                                                                (context) {
-                                                              print(
-                                                                  "ttt $itemFristName $itemLastName  เวรที่เลือก ${dutylist[indexDutyList]} เวรทั้งหมด ${dayDutyEnglist[indexDutyList]}");
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          SelectExchangeWorkscheduleWidget(
-                                                                    id: itemWityOutMeDuty
-                                                                        .id
-                                                                        .toString(),
-                                                                    userID: itemWityOutMeDuty
-                                                                        .user
-                                                                        .toString(),
-                                                                    year: int.parse(
-                                                                        itemWityOutMeDuty
-                                                                            .year
-                                                                            .toString()),
-                                                                    month: int.parse(
-                                                                        itemWityOutMeDuty
-                                                                            .month
-                                                                            .toString()),
-                                                                    day: int.parse(
-                                                                        itemWityOutMeDuty
-                                                                            .day
-                                                                            .toString()),
-                                                                    group: itemWityOutMeDuty
-                                                                        .group
-                                                                        .toString(),
-                                                                    v: itemWityOutMeDuty
-                                                                        .v,
-                                                                    dutyString:
-                                                                        "${dayDutyEnglist[indexDutyList]}",
-                                                                    dutyNumber:
-                                                                        1,
-                                                                  ),
+                                                    endActionPane: ActionPane(
+                                                      motion:
+                                                          const ScrollMotion(),
+                                                      children: [
+                                                        SlidableAction(
+                                                          onPressed: (context) {
+                                                            print(
+                                                                "ttt $itemFristName $itemLastName  เวรที่เลือก ${dutylist[indexDutyList]} เวรทั้งหมด ${dayDutyEnglist[indexDutyList]}");
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        SelectExchangeWorkscheduleWidget(
+                                                                  id: itemWityOutMeDuty
+                                                                      .id
+                                                                      .toString(),
+                                                                  userID: itemWityOutMeDuty
+                                                                      .user
+                                                                      .toString(),
+                                                                  year: int.parse(
+                                                                      itemWityOutMeDuty
+                                                                          .year
+                                                                          .toString()),
+                                                                  month: int.parse(
+                                                                      itemWityOutMeDuty
+                                                                          .month
+                                                                          .toString()),
+                                                                  day: int.parse(
+                                                                      itemWityOutMeDuty
+                                                                          .day
+                                                                          .toString()),
+                                                                  group: itemWityOutMeDuty
+                                                                      .group
+                                                                      .toString(),
+                                                                  v: itemWityOutMeDuty
+                                                                      .v,
+                                                                  dutyString:
+                                                                      "${dayDutyEnglist[indexDutyList]}",
+                                                                  dutyNumber: 1,
                                                                 ),
-                                                              );
-                                                            },
-                                                            backgroundColor:
-                                                                Color(
-                                                                    0xFFF00A2FD),
-                                                            foregroundColor:
-                                                                Colors.white,
-                                                            icon: Icons
-                                                                .change_circle,
-                                                            label: 'แลกเปลี่ยน',
-                                                          ),
-                                                        ],
-                                                      ),
+                                                              ),
+                                                            );
+                                                          },
+                                                          backgroundColor:
+                                                              Color(
+                                                                  0xFFF00A2FD),
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          icon: Icons
+                                                              .change_circle,
+                                                          label: 'แลกเปลี่ยน',
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    
                                                     child: Container(
                                                       child: Card(
                                                         clipBehavior: Clip
@@ -659,11 +665,12 @@ class _WorkcalendarWidgetState extends State<WorkcalendarWidget> {
                                                         child: Padding(
                                                           padding:
                                                               EdgeInsetsDirectional
-                                                                  .fromSTEB(10, 5,
-                                                                      10, 5),
+                                                                  .fromSTEB(10,
+                                                                      5, 10, 5),
                                                           child: Row(
                                                             mainAxisSize:
-                                                                MainAxisSize.max,
+                                                                MainAxisSize
+                                                                    .max,
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
                                                                     .spaceBetween,
@@ -678,8 +685,8 @@ class _WorkcalendarWidgetState extends State<WorkcalendarWidget> {
                                                                   shape: BoxShape
                                                                       .circle,
                                                                 ),
-                                                                child:
-                                                                    Image.network(
+                                                                child: Image
+                                                                    .network(
                                                                   'https://picsum.photos/seed/260/600',
                                                                 ),
                                                               ),
@@ -706,8 +713,8 @@ class _WorkcalendarWidgetState extends State<WorkcalendarWidget> {
                                                                 "${dayDuty[indexDutyList]}",
                                                                 // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
                                                                 // '${dayDuty[IndexWithOutList]}',
-                                                                style: FlutterFlowTheme
-                                                                        .of(context)
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
                                                                     .title2,
                                                               ),
                                                             ],
@@ -715,6 +722,7 @@ class _WorkcalendarWidgetState extends State<WorkcalendarWidget> {
                                                         ),
                                                       ),
                                                     ),
+                                                  
                                                   );
                                                 });
                                           });

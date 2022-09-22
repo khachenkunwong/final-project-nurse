@@ -35,6 +35,14 @@ class _EditedProfileWidgetState extends State<EditedProfileWidget> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    fristnametextController?.dispose();
+    lastnametextController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
@@ -116,26 +124,31 @@ class _EditedProfileWidgetState extends State<EditedProfileWidget> {
                                   obscureText: false,
                                   decoration: InputDecoration(
                                     hintText: 'กรอกชื่อ',
+                                    hintStyle: GoogleFonts.mitr(
+                                      color: Color(0xFFBDBDBD),
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                    ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFFBDBDBD),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFF727272),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    filled: true,
-                                    fillColor: Colors.white,
                                   ),
-                                  style: FlutterFlowTheme.of(context).title3,
+                                  style: GoogleFonts.mitr(
+                                    color: Color(0xFF727272),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                  ),
                                 ),
                                 Text(
                                   'นามสกุล',
@@ -146,26 +159,31 @@ class _EditedProfileWidgetState extends State<EditedProfileWidget> {
                                   obscureText: false,
                                   decoration: InputDecoration(
                                     hintText: 'กรอกนามสกุล',
+                                    hintStyle: GoogleFonts.mitr(
+                                      color: Color(0xFFBDBDBD),
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16,
+                                    ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFFBDBDBD),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
+                                        color: Color(0xFF727272),
                                         width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    filled: true,
-                                    fillColor: Colors.white,
                                   ),
-                                  style: FlutterFlowTheme.of(context).title3,
+                                  style: GoogleFonts.mitr(
+                                    color: Color(0xFF727272),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 16,
+                                  ),
                                 ),
                               ],
                             ),
@@ -189,10 +207,8 @@ class _EditedProfileWidgetState extends State<EditedProfileWidget> {
                                             200)) ==
                                         200) {
                                       await actions.notifica(
-                                        context,
-                                        'บันทึกสำเร็จ',
-                                        color: Colors.green
-                                      );
+                                          context, 'บันทึกสำเร็จ',
+                                          color: Colors.green);
                                       Navigator.pop(context);
                                     } else {
                                       await actions.notifica(

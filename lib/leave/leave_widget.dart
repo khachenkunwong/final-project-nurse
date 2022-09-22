@@ -1,3 +1,7 @@
+import 'package:hos_mobile2/backend/pubilc_.dart';
+import 'package:hos_mobile2/custom_code/actions/index.dart';
+import 'package:hos_mobile2/leave/select_exchange_workschedule_widget.dart';
+
 import '../flutter_flow/flutter_flow_choice_chips.dart';
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
@@ -6,6 +10,8 @@ import '../flutter_flow/flutter_flow_widgets.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 class LeaveWidget extends StatefulWidget {
   const LeaveWidget({Key? key}) : super(key: key);
@@ -21,6 +27,45 @@ class _LeaveWidgetState extends State<LeaveWidget> {
   TextEditingController? textController3;
   TextEditingController? textController4;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  Map<String, dynamic> dutyStore = {
+    "idDuty": "",
+    "duty": "",
+    "numberDuty": 0,
+    "firstname": "",
+    "lastname": ""
+  };
+  List dutyList = [];
+
+  updataLeave(
+      {required String type,
+      required String detail,
+      required String idDuty,
+      required String duty,
+      required int number}) async {
+    final body = {
+      "type": "$type",
+      "detail": "$detail",
+      "_duty": "$idDuty",
+      "shift": {"$duty": number}
+    };
+    print(body);
+    final res = await http.post(
+        Uri.parse(
+          "$url/api/req/take/leave",
+        ),
+        headers: {
+          // 'Accept': 'application/json',
+          'content-type': 'application/json',
+          'Access-Control_Allow_Origin': '*',
+          'x-access-token': '${FFAppState().tokenStore}'
+        },
+        body: jsonEncode(body));
+    if (res.statusCode == 200) {
+      await notifica(context, "ส่งคำขอสำเร็จ", color: Colors.green);
+    } else {
+      await notifica(context, "ส่งคำขอไม่สำเร็จ");
+    }
+  }
 
   @override
   void initState() {
@@ -49,7 +94,7 @@ class _LeaveWidgetState extends State<LeaveWidget> {
             size: 30,
           ),
           onPressed: () {
-            print('IconButton pressed ...');
+            Navigator.pop(context);
           },
         ),
         title: Text(
@@ -68,16 +113,16 @@ class _LeaveWidgetState extends State<LeaveWidget> {
       ),
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       body: SafeArea(
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 1,
-              decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).secondaryWhite,
-              ),
+        child: Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 1,
+            decoration: BoxDecoration(
+              color: FlutterFlowTheme.of(context).secondaryWhite,
+            ),
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,41 +238,142 @@ class _LeaveWidgetState extends State<LeaveWidget> {
                       obscureText: false,
                       decoration: InputDecoration(
                         hintText: 'กรุณากรอกลายละเอียด',
+                        hintStyle: GoogleFonts.mitr(
+                          color: Color(0xFFBDBDBD),
+                          fontWeight: FontWeight.normal,
+                          fontSize: 16,
+                        ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: FlutterFlowTheme.of(context).primaryGray,
+                            color: Color(0xFFBDBDBD),
                             width: 1,
                           ),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(4.0),
-                            topRight: Radius.circular(4.0),
-                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: FlutterFlowTheme.of(context).primaryGray,
+                            color: Color(0xFF727272),
                             width: 1,
                           ),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(4.0),
-                            topRight: Radius.circular(4.0),
-                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      style: FlutterFlowTheme.of(context).title3,
+                      style: GoogleFonts.mitr(
+                        color: Color(0xFF727272),
+                        fontWeight: FontWeight.normal,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
+
+                  // Padding(
+                  //   padding: EdgeInsetsDirectional.fromSTEB(10, 5, 0, 0),
+                  //   child: FFButtonWidget(
+                  //     onPressed: () {
+                  //       print('Button pressed ...');
+                  //     },
+                  //     text: 'เพิ่ม',
+                  //     icon: Icon(
+                  //       Icons.attach_file,
+                  //       size: 15,
+                  //     ),
+                  //     options: FFButtonOptions(
+                  //       width: 130,
+                  //       height: 40,
+                  //       color: FlutterFlowTheme.of(context).primaryBlue01,
+                  //       textStyle: FlutterFlowTheme.of(context).bodyText1,
+                  //       borderSide: BorderSide(
+                  //         color: Colors.transparent,
+                  //         width: 1,
+                  //       ),
+                  //       borderRadius: BorderRadius.circular(12),
+                  //     ),
+                  //   ),
+                  // ),
+
+                  ListView.builder(
+                      padding: EdgeInsets.zero,
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: dutyList.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          child: Card(
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            color: FlutterFlowTheme.of(context).secondaryWhite,
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(10, 5, 10, 5),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: 56,
+                                    height: 56,
+                                    clipBehavior: Clip.antiAlias,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Image.network(
+                                      'https://picsum.photos/seed/260/600',
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Text(
+                                        '${dutyList[index]["firstname"]}',
+                                        style:
+                                            FlutterFlowTheme.of(context).title2,
+                                      ),
+                                      Text(
+                                        " ${dutyList[index]["lastname"]}",
+                                        style:
+                                            FlutterFlowTheme.of(context).title2,
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    "${dutyList[index]["duty"]}",
+                                    // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                                    // '${dayDuty[IndexWithOutList]}',
+                                    style: FlutterFlowTheme.of(context).title2,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
                   Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(10, 5, 0, 0),
+                    padding: EdgeInsetsDirectional.fromSTEB(10, 10, 0, 0),
                     child: FFButtonWidget(
-                      onPressed: () {
-                        print('Button pressed ...');
+                      onPressed: () async {
+                        try {
+                          Map<String, dynamic> dutyStore2 =
+                              await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          SelectExchangeWorkscheduleWidget2(
+                                              dutyList: dutyList,
+                                              dutyStore: dutyStore)));
+                          dutyList.add(dutyStore2);
+                        } catch (error) {
+                          print("เกิดข้อผิดพลาด $error");
+                        }
                       },
-                      text: 'เพิ่ม',
-                      icon: Icon(
-                        Icons.attach_file,
-                        size: 15,
-                      ),
+                      text: 'เลือกเวร',
+                      // icon: Icon(
+                      //   Icons.attach_file,
+                      //   size: 15,
+                      // ),
                       options: FFButtonOptions(
                         width: 130,
                         height: 40,
@@ -241,198 +387,220 @@ class _LeaveWidgetState extends State<LeaveWidget> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
-                    child: Text(
-                      'แนบไฟล์ (ถ้ามี)',
-                      style: FlutterFlowTheme.of(context).bodyText1.override(
-                            fontFamily: 'Mitr',
-                            color: FlutterFlowTheme.of(context).primaryGreen,
-                          ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(5, 10, 0, 0),
-                        child: Text(
-                          'วันที่ขอลา',
-                          style: FlutterFlowTheme.of(context)
-                              .bodyText1
-                              .override(
-                                fontFamily: 'Mitr',
-                                color: FlutterFlowTheme.of(context).primaryGray,
-                                fontSize: 18,
-                              ),
-                        ),
-                      ),
-                      Text(
-                        '*',
-                        style: FlutterFlowTheme.of(context).bodyText1.override(
-                              fontFamily: 'Mitr',
-                              color: FlutterFlowTheme.of(context).primaryRed,
-                            ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(10, 5, 10, 0),
-                    child: TextFormField(
-                      controller: textController2,
-                      onChanged: (_) => EasyDebounce.debounce(
-                        'textController2',
-                        Duration(milliseconds: 2000),
-                        () => setState(() {}),
-                      ),
-                      autofocus: true,
-                      obscureText: false,
-                      decoration: InputDecoration(
-                        hintText: '14 เม.ย 2565',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: FlutterFlowTheme.of(context).primaryGray,
-                            width: 1,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(4.0),
-                            topRight: Radius.circular(4.0),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: FlutterFlowTheme.of(context).primaryGray,
-                            width: 1,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(4.0),
-                            topRight: Radius.circular(4.0),
-                          ),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.calendar_today,
-                        ),
-                      ),
-                      style: FlutterFlowTheme.of(context).title3,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(10, 5, 10, 0),
-                    child: TextFormField(
-                      controller: textController3,
-                      onChanged: (_) => EasyDebounce.debounce(
-                        'textController3',
-                        Duration(milliseconds: 2000),
-                        () => setState(() {}),
-                      ),
-                      autofocus: true,
-                      obscureText: false,
-                      decoration: InputDecoration(
-                        hintText: '21 เม.ย 2565',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: FlutterFlowTheme.of(context).primaryGray,
-                            width: 1,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(4.0),
-                            topRight: Radius.circular(4.0),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: FlutterFlowTheme.of(context).primaryGray,
-                            width: 1,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(4.0),
-                            topRight: Radius.circular(4.0),
-                          ),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.calendar_today,
-                        ),
-                      ),
-                      style: FlutterFlowTheme.of(context).title3,
-                    ),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(5, 10, 0, 0),
-                        child: Text(
-                          'เบอร์โทรติดต่อ',
-                          style: FlutterFlowTheme.of(context)
-                              .bodyText1
-                              .override(
-                                fontFamily: 'Mitr',
-                                color: FlutterFlowTheme.of(context).primaryGray,
-                                fontSize: 18,
-                              ),
-                        ),
-                      ),
-                      Text(
-                        '*',
-                        style: FlutterFlowTheme.of(context).bodyText1.override(
-                              fontFamily: 'Mitr',
-                              color: FlutterFlowTheme.of(context).primaryRed,
-                            ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(10, 5, 10, 0),
-                    child: TextFormField(
-                      controller: textController4,
-                      onChanged: (_) => EasyDebounce.debounce(
-                        'textController4',
-                        Duration(milliseconds: 2000),
-                        () => setState(() {}),
-                      ),
-                      autofocus: true,
-                      obscureText: false,
-                      decoration: InputDecoration(
-                        hintText: 'กรุณากรอกเบอร์โทร',
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: FlutterFlowTheme.of(context).primaryGray,
-                            width: 1,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(4.0),
-                            topRight: Radius.circular(4.0),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: FlutterFlowTheme.of(context).primaryGray,
-                            width: 1,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(4.0),
-                            topRight: Radius.circular(4.0),
-                          ),
-                        ),
-                      ),
-                      style: FlutterFlowTheme.of(context).title3,
-                    ),
-                  ),
+
+                  // Padding(
+                  //   padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
+                  //   child: Text(
+                  //     'แนบไฟล์ (ถ้ามี)',
+                  //     style: FlutterFlowTheme.of(context).bodyText1.override(
+                  //           fontFamily: 'Mitr',
+                  //           color: FlutterFlowTheme.of(context).primaryGreen,
+                  //         ),
+                  //   ),
+                  // ),
+
+                  // Row(
+                  //   mainAxisSize: MainAxisSize.max,
+                  //   crossAxisAlignment: CrossAxisAlignment.center,
+                  //   children: [
+                  //     Padding(
+                  //       padding: EdgeInsetsDirectional.fromSTEB(5, 10, 0, 0),
+                  //       child: Text(
+                  //         'วันที่ขอลา',
+                  //         style: FlutterFlowTheme.of(context)
+                  //             .bodyText1
+                  //             .override(
+                  //               fontFamily: 'Mitr',
+                  //               color: FlutterFlowTheme.of(context).primaryGray,
+                  //               fontSize: 18,
+                  //             ),
+                  //       ),
+                  //     ),
+                  //     Text(
+                  //       '*',
+                  //       style: FlutterFlowTheme.of(context).bodyText1.override(
+                  //             fontFamily: 'Mitr',
+                  //             color: FlutterFlowTheme.of(context).primaryRed,
+                  //           ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // Padding(
+                  //   padding: EdgeInsetsDirectional.fromSTEB(10, 5, 10, 0),
+                  //   child: TextFormField(
+                  //     controller: textController2,
+                  //     onChanged: (_) => EasyDebounce.debounce(
+                  //       'textController2',
+                  //       Duration(milliseconds: 2000),
+                  //       () => setState(() {}),
+                  //     ),
+                  //     autofocus: true,
+                  //     obscureText: false,
+                  //     decoration: InputDecoration(
+                  //       hintText: '14 เม.ย 2565',
+                  //       enabledBorder: OutlineInputBorder(
+                  //         borderSide: BorderSide(
+                  //           color: FlutterFlowTheme.of(context).primaryGray,
+                  //           width: 1,
+                  //         ),
+                  //         borderRadius: const BorderRadius.only(
+                  //           topLeft: Radius.circular(4.0),
+                  //           topRight: Radius.circular(4.0),
+                  //         ),
+                  //       ),
+                  //       focusedBorder: OutlineInputBorder(
+                  //         borderSide: BorderSide(
+                  //           color: FlutterFlowTheme.of(context).primaryGray,
+                  //           width: 1,
+                  //         ),
+                  //         borderRadius: const BorderRadius.only(
+                  //           topLeft: Radius.circular(4.0),
+                  //           topRight: Radius.circular(4.0),
+                  //         ),
+                  //       ),
+                  //       prefixIcon: Icon(
+                  //         Icons.calendar_today,
+                  //       ),
+                  //     ),
+                  //     style: FlutterFlowTheme.of(context).title3,
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: EdgeInsetsDirectional.fromSTEB(10, 5, 10, 0),
+                  //   child: TextFormField(
+                  //     controller: textController3,
+                  //     onChanged: (_) => EasyDebounce.debounce(
+                  //       'textController3',
+                  //       Duration(milliseconds: 2000),
+                  //       () => setState(() {}),
+                  //     ),
+                  //     autofocus: true,
+                  //     obscureText: false,
+                  //     decoration: InputDecoration(
+                  //       hintText: '21 เม.ย 2565',
+                  //       enabledBorder: OutlineInputBorder(
+                  //         borderSide: BorderSide(
+                  //           color: FlutterFlowTheme.of(context).primaryGray,
+                  //           width: 1,
+                  //         ),
+                  //         borderRadius: const BorderRadius.only(
+                  //           topLeft: Radius.circular(4.0),
+                  //           topRight: Radius.circular(4.0),
+                  //         ),
+                  //       ),
+                  //       focusedBorder: OutlineInputBorder(
+                  //         borderSide: BorderSide(
+                  //           color: FlutterFlowTheme.of(context).primaryGray,
+                  //           width: 1,
+                  //         ),
+                  //         borderRadius: const BorderRadius.only(
+                  //           topLeft: Radius.circular(4.0),
+                  //           topRight: Radius.circular(4.0),
+                  //         ),
+                  //       ),
+                  //       prefixIcon: Icon(
+                  //         Icons.calendar_today,
+                  //       ),
+                  //     ),
+                  //     style: FlutterFlowTheme.of(context).title3,
+                  //   ),
+                  // ),
+                  // Row(
+                  //   mainAxisSize: MainAxisSize.max,
+                  //   crossAxisAlignment: CrossAxisAlignment.center,
+                  //   children: [
+                  //     Padding(
+                  //       padding: EdgeInsetsDirectional.fromSTEB(5, 10, 0, 0),
+                  //       child: Text(
+                  //         'เบอร์โทรติดต่อ',
+                  //         style: FlutterFlowTheme.of(context)
+                  //             .bodyText1
+                  //             .override(
+                  //               fontFamily: 'Mitr',
+                  //               color: FlutterFlowTheme.of(context).primaryGray,
+                  //               fontSize: 18,
+                  //             ),
+                  //       ),
+                  //     ),
+                  //     Text(
+                  //       '*',
+                  //       style: FlutterFlowTheme.of(context).bodyText1.override(
+                  //             fontFamily: 'Mitr',
+                  //             color: FlutterFlowTheme.of(context).primaryRed,
+                  //           ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // Padding(
+                  //   padding: EdgeInsetsDirectional.fromSTEB(10, 5, 10, 0),
+                  //   child: TextFormField(
+                  //     controller: textController4,
+                  //     onChanged: (_) => EasyDebounce.debounce(
+                  //       'textController4',
+                  //       Duration(milliseconds: 2000),
+                  //       () => setState(() {}),
+                  //     ),
+                  //     autofocus: true,
+                  //     obscureText: false,
+                  //     decoration: InputDecoration(
+                  //       hintText: 'กรุณากรอกเบอร์โทร',
+                  //       enabledBorder: OutlineInputBorder(
+                  //         borderSide: BorderSide(
+                  //           color: FlutterFlowTheme.of(context).primaryGray,
+                  //           width: 1,
+                  //         ),
+                  //         borderRadius: const BorderRadius.only(
+                  //           topLeft: Radius.circular(4.0),
+                  //           topRight: Radius.circular(4.0),
+                  //         ),
+                  //       ),
+                  //       focusedBorder: OutlineInputBorder(
+                  //         borderSide: BorderSide(
+                  //           color: FlutterFlowTheme.of(context).primaryGray,
+                  //           width: 1,
+                  //         ),
+                  //         borderRadius: const BorderRadius.only(
+                  //           topLeft: Radius.circular(4.0),
+                  //           topRight: Radius.circular(4.0),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     style: FlutterFlowTheme.of(context).title3,
+                  //   ),
+                  // ),
+
                   Align(
                     alignment: AlignmentDirectional(0, 0),
                     child: Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(10, 20, 0, 0),
                       child: FFButtonWidget(
-                        onPressed: () {
-                          print('Button pressed ...');
-                        },
+                        onPressed: textController1?.text == null ||
+                                choiceChipsValue == null ||
+                                dutyList.length == 0
+                            ? () {
+                                print(
+                                    'Button pressed ... idDuty ${dutyStore["idDuty"]} ${dutyStore["duty"] == ""} - ${textController1?.text == null} - ${choiceChipsValue == null} - ${dutyList} - ${choiceChipsValue == null}');
+                              }
+                            : () async {
+                              // ตรงนี้ควรแก้
+                                 await updataLeave(
+                                  type: "$choiceChipsValue",
+                                  detail: '${textController1!.text}',
+                                  idDuty: '${dutyList[0]["idDuty"]}',
+                                  duty: '${dutyList[0]["duty"]}',
+                                  number: dutyList[0]["numberDuty"],
+                                );
+                                Navigator.pop(context);
+                              },
                         text: 'ส่งให้หัวหน้าพบาบาล',
                         options: FFButtonOptions(
                           width: 300,
                           height: 40,
-                          color: FlutterFlowTheme.of(context).primaryBlue,
+                          color: textController1?.text == null ||
+                                  choiceChipsValue == null ||
+                                  dutyList.length == 0
+                              ? FlutterFlowTheme.of(context).primaryGray
+                              : FlutterFlowTheme.of(context).primaryBlue,
                           textStyle: FlutterFlowTheme.of(context).bodyText1,
                           borderSide: BorderSide(
                             color: Colors.transparent,
@@ -442,6 +610,10 @@ class _LeaveWidgetState extends State<LeaveWidget> {
                         ),
                       ),
                     ),
+                  ),
+                  Container(
+                    width: 100.0,
+                    height: 100.0,
                   ),
                 ],
               ),

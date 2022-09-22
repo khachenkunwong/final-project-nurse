@@ -1,4 +1,5 @@
 import 'package:hos_mobile2/backend/api_requests/api_basic.dart';
+import 'package:hos_mobile2/index.dart';
 import 'package:hos_mobile2/model/me_all_model.dart';
 import 'package:hos_mobile2/model/present_model.dart';
 
@@ -45,6 +46,8 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
 
   @override
   void dispose() {
+    dayDutyEnglist.clear();
+    dayDuty.clear();
     super.dispose();
   }
 
@@ -162,6 +165,20 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 50),
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> LeaveWidget()));
+              },
+              child: Icon(Icons.send),
+            ),
+          ),
+        ],
+      ),
       appBar: AppBar(
         backgroundColor: FlutterFlowTheme.of(context).primaryBlue01,
         automaticallyImplyLeading: true,
@@ -469,7 +486,6 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                           ),
                                         ),
                                       );
-                                    
                                     },
                                   ),
                                 ],

@@ -1,6 +1,8 @@
 import 'package:hos_mobile2/firstscreen/firstscreen_widget.dart';
 
 import '../backend/api_requests/api_calls.dart';
+import '../backend/pubilc_.dart';
+import '../custom_code/actions/notifica.dart';
 import '../edited_profile/edited_profile_widget.dart';
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
@@ -11,6 +13,10 @@ import '../leavehistory/leavehistory_widget.dart';
 import '../custom_code/actions/index.dart' as actions;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
+
+import '../model/profile_model.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({Key? key}) : super(key: key);
@@ -22,6 +28,46 @@ class ProfileWidget extends StatefulWidget {
 class _ProfileWidgetState extends State<ProfileWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   ApiCallResponse? logoutCallOutput;
+  late Future<Data> futureProfile;
+  Future<Data> getProfile({required String token}) async {
+    try {
+      final res = await http.get(
+        Uri.parse("$url/api/me/profile"),
+        headers: {
+          'content-type': 'application/json',
+          'Access-Control_Allow_Origin': '*',
+          "x-access-token": "$token"
+        },
+      );
+      final _futureProfile1 = getProfileFromJson(res.body);
+      final futureProfile = _futureProfile1.data as Data;
+      if (res.statusCode == 200) {
+        await notifica(context, "แสดงข้อมูลโปรไฟล์สำเร็จ", color: Colors.green);
+        return futureProfile;
+      } else {
+        await notifica(context, "แสดงข้อมูลโปรไฟล์ไม่สำเร็จ");
+        await Future.delayed(Duration(seconds: 5));
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    } catch (error) {
+      await notifica(context, "เกิดข้อผิดพลาด");
+      await Future.delayed(Duration(seconds: 5));
+      if (mounted) {
+          setState(() {});
+        }
+    }
+    return Data();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    futureProfile = getProfile(token: FFAppState().tokenStore);
+    super.initState();
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -96,37 +142,38 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                   ),
                                 ),
                               ),
-                              Builder(
-                                builder: (context) {
-                                  final getProfileFullName =
-                                      GetProfileCall.getListFullName(
-                                            (profileGetProfileResponse
-                                                    .jsonBody ??
-                                                ''),
-                                          )?.toList() ??
-                                          [];
-                                  return Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children:
-                                        List.generate(getProfileFullName.length,
-                                            (getProfileFullNameIndex) {
-                                      final getProfileFullNameItem =
-                                          getProfileFullName[
-                                              getProfileFullNameIndex];
-                                      return Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            0, 20, 10, 0),
-                                        child: Text(
-                                          getProfileFullNameItem,
-                                          style: FlutterFlowTheme.of(context)
-                                              .title2,
+                              FutureBuilder<Data>(
+                                  future: futureProfile,
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: SizedBox(
+                                          width: 50,
+                                          height: 50,
+                                          child: CircularProgressIndicator(
+                                            color: FlutterFlowTheme.of(context)
+                                                .primaryColor,
+                                          ),
                                         ),
                                       );
-                                    }),
-                                  );
-                                },
-                              ),
+                                    }
+                                    return Builder(
+                                      builder: (context) {
+                                        final getProfileFullName =
+                                            "${snapshot.data!.fristName} ${snapshot.data!.lastName}";
+                                        return Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  0, 20, 10, 0),
+                                          child: Text(
+                                            getProfileFullName,
+                                            style: FlutterFlowTheme.of(context)
+                                                .title2,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }),
                               Padding(
                                 padding:
                                     EdgeInsetsDirectional.fromSTEB(0, 10, 0, 0),
