@@ -187,7 +187,7 @@
 - 2 GET
     - :heavy_check_mark: เชื่อมกับ $url/api/group/schedule/without/me (nameGroup ใส่ตรงไหนใน part)
         - ส่งค่าเพื่อไปขอข้อมูล
-            - :x: nameGroup (String) (ต้องการเชื่อมด่วน)
+            - nameGroup (String) (ต้องการเชื่อมด่วน)
             - token (String)
         - นำมาแสดง
             - frist_name (String)
@@ -213,7 +213,7 @@
 ### Application Program Interface(API) ที่เชื่อมต่อ
 
 - 1 GET (ดูภาที่ 1 , 2 มาเป็นตัวอย่างในการเขียน)
-    - :hourglass: เชื่อมกับ (ยังไม่ part)
+    - :heavy_check_mark: เชื่อมกับ (ยังไม่ part) *(แก้เมื่อ 24/09/2565)*
         - ส่งค่าเพื่อไปขอข้อมูล
             - token (String)
         - นำมาแสดง
@@ -232,7 +232,7 @@
             - they_nameGroup (String) (ทำไว้กรณีแลกเวรนอกกลุ่ม)
             - they_duty (`List[int]`) (ใน List คือ 0,1 ของ เช้า บ่าย ดึก ของวันที่แลกเวร) 
 - 1 PATCH (ดูภาที่ 1 , 2 มาเป็นตัวอย่างในการเขียน)
-    - :hourglass: เชื่อมกับ (ยังไม่ part)
+    - :heavy_check_mark: เชื่อมกับ (ยังไม่ part) *(แก้เมื่อ 24/09/2565)*
         - ส่งค่าเพื่อไปขอข้อมูล
             - ตอนนี้ยังไม่มี
         - นำมาแสดง
@@ -380,3 +380,5 @@
     - เพิ่ม model การลา
     - อัพ version gradle 
     - อัพ version kotlin
+
+- 1.13.1 (อัพเดต README.md)
