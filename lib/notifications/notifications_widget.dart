@@ -16,6 +16,7 @@ import '../model/invite_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
+import '../model/leave_model.dart';
 import '../model/present_model.dart';
 
 class NotificationsWidget extends StatefulWidget {
@@ -38,6 +39,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
   List dayDuty = ["เช้า", "บ่าย", "ดึก"];
   late String stoteDuty;
   late String stoteDuty2;
+  late Future<List<DatumLeave>> futureleave;
   putInvite(
       {required String groupId,
       required String userId,
@@ -174,6 +176,47 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
     }
     return [];
   }
+  // ยังไม่ได้ใช้ในนี้
+  Future<List<DatumLeave>> getLeaveModel({required String token}) async {
+    try {
+      print(token);
+      final res = await http.get(
+        Uri.parse("$url/api/req/leader/take/leave"),
+        headers: {
+          "Accept": "application/json",
+          "Access-Control_Allow_Origin": "*",
+          "x-access-token": "$token"
+        },
+      );
+      print("res.body3 ${res.statusCode}");
+      print("res.body3 ${res.body}");
+
+      final body = convert.json.decode(res.body) as Map<String, dynamic>;
+      final _futureLeave = GetLeave.fromJson(body as Map<String, dynamic>);
+      final futureLeave = _futureLeave.data as List<DatumLeave>;
+      if (res.statusCode == 200) {
+        await notifica(context, "แสดงคำขอแล้ว", color: Colors.green);
+        return futureLeave;
+      } else {
+        await notifica(context, "แสดงคำขอไม่สำเร็จ");
+      }
+      // print("_futurePresent ${_futurePresent.duty}");
+      // for (var dutylist in data) {
+      //   // list ออกมาทั้ง index
+      //   final _futurePresent =
+      //       PresentModel.fromJson(dutylist as Map<String, dynamic>);
+      //   // aa = _dutylist.duty!.first.day;
+      //   // print("_dutylist ${aa}");
+      //   setState(() {
+      //     futurePresent.add(_futurePresent);
+      //   });
+      // }
+      return futureLeave;
+    } catch (error) {
+      print(error);
+    }
+    return [];
+  }
 
   Future<void> _refresh() async {
     setState(() {
@@ -194,6 +237,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
     futureInvite = getInviteModel(token: FFAppState().tokenStore);
     futurePresent = getPresentModel(token: FFAppState().tokenStore);
     futureGetChangDuty = getChangDutyModel();
+    
   }
 
   @override
