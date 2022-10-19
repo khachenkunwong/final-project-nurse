@@ -201,7 +201,6 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       key: scaffoldKey,
       floatingActionButton: Column(
@@ -277,7 +276,6 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                   print(
                       "FFAppState().dutySelectwithoutme = ${FFAppState().dutySelectme}");
                 }
-                ;
               },
               child: Text(
                 selete == true ? "ยกเลิก" : 'เลือก',
@@ -646,6 +644,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                       thickness: 1,
                       color: FlutterFlowTheme.of(context).stokeLightGray,
                     ),
+
                     Builder(builder: (context) {
                       return FutureBuilder<List<DutyWithOutModel>>(
                         future: futureWithOut,
@@ -1201,6 +1200,5 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
         ),
       ),
     );
-  
   }
 }

@@ -1,5 +1,3 @@
-import 'package:hos_mobile2/custom_code/actions/index.dart';
-
 import '../backend/api_requests/api_calls.dart';
 import '../backend/pubilc_.dart';
 import '../flutter_flow/flutter_flow_calendar.dart';
@@ -9,7 +7,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../model/dutyseletewithoutme_model.dart';
 import '../model/present_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -37,6 +34,7 @@ class _SelectExchangeWorkscheduleWidget2State
   late String calendarSelectedDayString;
   late String calendarSelectedmonthString;
   late String calendarSelectedyearString;
+  Map<int, List<dynamic>> numberPointEven = {};
   Future<List<DutyPresent>> getPresentModel({required String token}) async {
     try {
       print(token);
@@ -52,8 +50,37 @@ class _SelectExchangeWorkscheduleWidget2State
       print("res.body1 ${res.body}");
 
       final body = convert.json.decode(res.body) as Map<String, dynamic>;
-      final _futureMeAll = PresentModel.fromJson(body as Map<String, dynamic>);
+      final _futureMeAll = PresentModel.fromJson(body);
       final futureMeAll = _futureMeAll.duty as List<DutyPresent>;
+
+      print("_futurePresent ${futureMeAll.length}");
+      for (int i = 1; i < futureMeAll.length + 1; i++) {
+        if (futureMeAll[i - 1].count == 1) {
+          numberPointEven.addAll({
+            i: [DateTime.utc(DateTime.now().year, DateTime.now().month, i)]
+          });
+        } else if (futureMeAll[i - 1].count == 2) {
+          numberPointEven.addAll({
+            i: [
+              DateTime.utc(DateTime.now().year, DateTime.now().month, i),
+              DateTime.utc(DateTime.now().year, DateTime.now().month, i)
+            ]
+          });
+        } else if (futureMeAll[i - 1].count == 3) {
+          numberPointEven.addAll({
+            i: [
+              DateTime.utc(DateTime.now().year, DateTime.now().month, i),
+              DateTime.utc(DateTime.now().year, DateTime.now().month, i),
+              DateTime.utc(DateTime.now().year, DateTime.now().month, i)
+            ]
+          });
+        } else {
+          numberPointEven.addAll({i: []});
+        }
+
+        print("numberPointEven$numberPointEven");
+      }
+
       // print("_futurePresent ${_futurePresent.duty}");
       // for (var dutylist in data) {
       //   // list ออกมาทั้ง index
@@ -137,68 +164,82 @@ class _SelectExchangeWorkscheduleWidget2State
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: FlutterFlowCalendar(
-                      daysOfWeekHeight: 18,
-                      color: FlutterFlowTheme.of(context).primaryColor,
-                      weekFormat: false,
-                      weekStartsMonday: false,
-                      // yearduty: widget.year,
-                      // monthduty: widget.month,
-                      // dayduty: widget.day,
-                      onChange: (DateTimeRange? newSelectedDate) {
-                        setState(() {
-                          calendarSelectedDay = newSelectedDate;
-                          // ทุกครั้งที่กดวันที่ในปฏิทิน จะได้วันที่มา
-                          calendarSelectedDayString = calendarSelectedDay
-                              .toString()
-                              .split(" - ")[0]
-                              .split(" ")[0]
-                              .split("-")[2]
-                              .toString();
-                          // ทุกครั้งที่กดวันที่ในปฏิทิน จะได้เดิอนมา
-                          calendarSelectedmonthString = calendarSelectedDay
-                              .toString()
-                              .split(" - ")[0]
-                              .split(" ")[0]
-                              .split("-")[1]
-                              .toString();
-                          calendarSelectedyearString = calendarSelectedDay
-                              .toString()
-                              .split(" - ")[0]
-                              .split(" ")[0]
-                              .split("-")[0]
-                              .toString();
-                          print(
-                              "calendarSelectedmonthString22 ${calendarSelectedmonthString}");
-                        });
-                      },
-                      titleStyle: GoogleFonts.getFont(
-                        'Mitr',
-                        color: Color(0xFF050000),
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20,
-                      ),
-                      dayOfWeekStyle: GoogleFonts.getFont(
-                        'Mitr',
-                        color: Color(0xFF050000),
-                        fontSize: 16,
-                      ),
-                      dateStyle: GoogleFonts.getFont(
-                        'Mitr',
-                        color: Color(0xFF050000),
-                        fontSize: 16,
-                      ),
-                      selectedDateStyle: GoogleFonts.getFont(
-                        'Mitr',
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                      inactiveDateStyle: GoogleFonts.getFont(
-                        'Mitr',
-                        color: Color(0xFF8E8E8E),
-                        fontSize: 16,
-                      ),
-                    ),
+                    child: FutureBuilder<List<DutyPresent>>(
+                        future: futurePresent,
+                        builder: (context, snapshotfuturePresent) {
+                          return FlutterFlowCalendar(
+                            daysOfWeekHeight: 18,
+                            color: FlutterFlowTheme.of(context).primaryColor,
+                            weekFormat: false,
+                            weekStartsMonday: false,
+                            // yearduty: widget.year,
+                            // monthduty: widget.month,
+                            // dayduty: widget.day,
+                            onChange: (DateTimeRange? newSelectedDate) {
+                              setState(() {
+                                calendarSelectedDay = newSelectedDate;
+                                // ทุกครั้งที่กดวันที่ในปฏิทิน จะได้วันที่มา
+                                calendarSelectedDayString = calendarSelectedDay
+                                    .toString()
+                                    .split(" - ")[0]
+                                    .split(" ")[0]
+                                    .split("-")[2]
+                                    .toString();
+                                // ทุกครั้งที่กดวันที่ในปฏิทิน จะได้เดิอนมา
+                                calendarSelectedmonthString =
+                                    calendarSelectedDay
+                                        .toString()
+                                        .split(" - ")[0]
+                                        .split(" ")[0]
+                                        .split("-")[1]
+                                        .toString();
+                                calendarSelectedyearString = calendarSelectedDay
+                                    .toString()
+                                    .split(" - ")[0]
+                                    .split(" ")[0]
+                                    .split("-")[0]
+                                    .toString();
+                                print(
+                                    "calendarSelectedmonthString22 $calendarSelectedmonthString");
+                              });
+                            },
+                            eventPoint: (day) {
+                              if (numberPointEven[day.day] != null &&
+                                  day.month == DateTime.now().month &&
+                                  day.year == DateTime.now().year) {
+                                return numberPointEven[day.day]!;
+                              }
+
+                              return [];
+                            },
+                            titleStyle: GoogleFonts.getFont(
+                              'Mitr',
+                              color: Color(0xFF050000),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                            ),
+                            dayOfWeekStyle: GoogleFonts.getFont(
+                              'Mitr',
+                              color: Color(0xFF050000),
+                              fontSize: 16,
+                            ),
+                            dateStyle: GoogleFonts.getFont(
+                              'Mitr',
+                              color: Color(0xFF050000),
+                              fontSize: 16,
+                            ),
+                            selectedDateStyle: GoogleFonts.getFont(
+                              'Mitr',
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                            inactiveDateStyle: GoogleFonts.getFont(
+                              'Mitr',
+                              color: Color(0xFF8E8E8E),
+                              fontSize: 16,
+                            ),
+                          );
+                        }),
                   ),
 
                   // ตารางเวรของฉัน
@@ -328,10 +369,9 @@ class _SelectExchangeWorkscheduleWidget2State
                                     scrollDirection: Axis.vertical,
                                     itemCount: 3,
                                     itemBuilder: (context, indexPresent) {
-                                      print("aaaaaa ${getMyduty}");
+                                      print("aaaaaa $getMyduty");
                                       // ถ้า เช้า บ่าย ดึก ไม่มีก็จะแสดงเป็น box ว่าง แต่ถ้า เช้ามีแต่บ่ายกับดึกไม่มีก็จะแสดงแต่เช้า
                                       if (getMyduty[indexPresent] == 1) {
-                                        
                                         return InkWell(
                                           onTap: () async {
                                             widget.dutyStore = {
@@ -339,9 +379,12 @@ class _SelectExchangeWorkscheduleWidget2State
                                                   "${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].id}",
                                               "duty":
                                                   "${dayDutyEnglist[indexPresent]}",
-                                              "numberDuty": getMyduty[indexPresent],
-                                              "firstname": "${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.fristName}",
-                                              "lastname": "${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.lastName}"
+                                              "numberDuty":
+                                                  getMyduty[indexPresent],
+                                              "firstname":
+                                                  "${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.fristName}",
+                                              "lastname":
+                                                  "${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.lastName}"
                                             };
                                             Navigator.pop(
                                                 context, widget.dutyStore);
@@ -425,7 +468,7 @@ class _SelectExchangeWorkscheduleWidget2State
                                     child: Text(
                                         "ตารางเวรเดือนนี้ยังไม่ได้สร้างหรือจัด")));
                           } catch (error) {
-                            print("error = ${error}");
+                            print("error = $error");
                             return Text("error นอกขอบเขตที่กำหนด");
                           }
                         },

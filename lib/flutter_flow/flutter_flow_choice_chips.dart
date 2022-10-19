@@ -70,59 +70,63 @@ class _FlutterFlowChoiceChipsState extends State<FlutterFlowChoiceChips> {
   }
 
   @override
-  Widget build(BuildContext context) => Wrap(
-        spacing: widget.chipSpacing,
-        runSpacing: widget.rowSpacing,
-        alignment: widget.alignment,
-        children: [
-          ...widget.options.map(
-            (option) {
-              final selected = choiceChipValues.contains(option.label);
-              final style = selected
-                  ? widget.selectedChipStyle
-                  : widget.unselectedChipStyle;
-              return Container(
-                height: _kChoiceChipsHeight,
-                child: ChoiceChip(
-                  selected: selected,
-                  onSelected: (isSelected) {
-                    if (isSelected) {
-                      widget.multiselect
-                          ? choiceChipValues.add(option.label)
-                          : choiceChipValues = [option.label];
+  Widget build(BuildContext context) {
+    if (widget.options.isEmpty) {
+      return Container();
+    }
+    return Wrap(
+      spacing: widget.chipSpacing,
+      runSpacing: widget.rowSpacing,
+      alignment: widget.alignment,
+      children: [
+        ...widget.options.map(
+          (option) {
+            final selected = choiceChipValues.contains(option.label);
+            final style = selected
+                ? widget.selectedChipStyle
+                : widget.unselectedChipStyle;
+            return Container(
+              height: _kChoiceChipsHeight,
+              child: ChoiceChip(
+                selected: selected,
+                onSelected: (isSelected) {
+                  if (isSelected) {
+                    widget.multiselect
+                        ? choiceChipValues.add(option.label)
+                        : choiceChipValues = [option.label];
+                    widget.onChanged(choiceChipValues);
+                    setState(() {});
+                  } else {
+                    if (widget.multiselect) {
+                      choiceChipValues.remove(option.label);
                       widget.onChanged(choiceChipValues);
                       setState(() {});
-                    } else {
-                      if (widget.multiselect) {
-                        choiceChipValues.remove(option.label);
-                        widget.onChanged(choiceChipValues);
-                        setState(() {});
-                      }
                     }
-                  },
-                  label: Text(
-                    option.label,
-                    style: style.textStyle,
-                  ),
-                  labelPadding: style.labelPadding,
-                  avatar: option.iconData != null
-                      ? FaIcon(
-                          option.iconData,
-                          size: style.iconSize,
-                          color: style.iconColor,
-                        )
-                      : null,
-                  elevation: style.elevation,
-                  selectedColor: selected
-                      ? widget.selectedChipStyle.backgroundColor
-                      : null,
-                  backgroundColor: selected
-                      ? null
-                      : widget.unselectedChipStyle.backgroundColor,
+                  }
+                },
+                label: Text(
+                  option.label,
+                  style: style.textStyle,
                 ),
-              );
-            },
-          ).toList(),
-        ],
-      );
+                labelPadding: style.labelPadding,
+                avatar: option.iconData != null
+                    ? FaIcon(
+                        option.iconData,
+                        size: style.iconSize,
+                        color: style.iconColor,
+                      )
+                    : null,
+                elevation: style.elevation,
+                selectedColor:
+                    selected ? widget.selectedChipStyle.backgroundColor : null,
+                backgroundColor: selected
+                    ? null
+                    : widget.unselectedChipStyle.backgroundColor,
+              ),
+            );
+          },
+        ).toList(),
+      ],
+    );
+  }
 }

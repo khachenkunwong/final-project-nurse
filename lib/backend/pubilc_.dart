@@ -1,4 +1,4 @@
-final url = "https://b912-2403-6200-8858-f0-d577-e9f8-c8c-1255.ap.ngrok.io";
+final url = "https://48ee-2403-6200-8858-f0-e01f-fc44-4590-aeb7.ap.ngrok.io";
 const productsGraphQL = """
 query ExampleQuery {
   notifications {
@@ -27,3 +27,17 @@ query Notifications($filter: JSON) {
 const sendLeave = r"""mutation CreateLeave($input: CreateLeaveInput!) {
   createLeave(input: $input)
 }""";
+
+const nameAll = r"""
+query Users {
+  users {
+    _id
+    frist_name
+    last_name
+    actor
+    groups {
+      name_group
+    }
+  }
+}
+""";

@@ -1,8 +1,10 @@
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hos_mobile2/backend/pubilc_.dart';
 import 'package:hos_mobile2/custom_code/actions/index.dart';
 import 'package:hos_mobile2/leave/select_exchange_workschedule_widget.dart';
 
 import '../flutter_flow/flutter_flow_choice_chips.dart';
+import '../flutter_flow/flutter_flow_drop_down.dart';
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
@@ -11,7 +13,8 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert' as convert;
+
+import '../model/listnameall_model_get.dart';
 
 class LeaveWidget extends StatefulWidget {
   const LeaveWidget({Key? key}) : super(key: key);
@@ -26,6 +29,10 @@ class _LeaveWidgetState extends State<LeaveWidget> {
   TextEditingController? textController2;
   TextEditingController? textController3;
   TextEditingController? textController4;
+  String? dropDownValue;
+  List<String> nameListAll = [];
+  int stopRerunSelectName = 0;
+  List<ChipData> afterSelectName = [];
   final scaffoldKey = GlobalKey<ScaffoldState>();
   Map<String, dynamic> dutyStore = {
     "idDuty": "",
@@ -35,6 +42,39 @@ class _LeaveWidgetState extends State<LeaveWidget> {
     "lastname": ""
   };
   List dutyList = [];
+
+  createLeave(
+      {required List<String> memberId,
+      required String dutyId,
+      required String dutyString,
+      required int dutynumber}) async {
+    var headers = {
+      'Authorization': '${FFAppState().tokenStore}',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse('$url/graphql'));
+    String remeberId = memberId
+        .toString()
+        .replaceAll(' ', '\"')
+        .replaceAll(' ', '\"')
+        .replaceAll("\"\"", "\"");
+
+    request.body =
+        '''{"query":"\\r\\nmutation Mutation(\$input: CreateLeaveInput!) {\\r\\n  createLeave(input: \$input)\\r\\n}\\r\\n","variables":{"input":{"memberIds":$remeberId,"dutyId":"$dutyId","shift":{"$dutyString":$dutynumber}}}}''';
+    print("request.body ${request.body}");
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      await notifica(context, "ส่งขอลาแล้ว", color: Colors.green);
+      Navigator.pop(context);
+    } else {
+      print(response.reasonPhrase);
+      await notifica(context, "ส่งคำขอไม่สำเร็จ");
+    }
+  }
 
   updataLeave(
       {required String type,
@@ -216,13 +256,13 @@ class _LeaveWidgetState extends State<LeaveWidget> {
                               ),
                         ),
                       ),
-                      Text(
-                        '*',
-                        style: FlutterFlowTheme.of(context).bodyText1.override(
-                              fontFamily: 'Mitr',
-                              color: FlutterFlowTheme.of(context).primaryRed,
-                            ),
-                      ),
+                      // Text(
+                      //   '*',
+                      //   style: FlutterFlowTheme.of(context).bodyText1.override(
+                      //         fontFamily: 'Mitr',
+                      //         color: FlutterFlowTheme.of(context).primaryRed,
+                      //       ),
+                      // ),
                     ],
                   ),
                   Padding(
@@ -290,6 +330,163 @@ class _LeaveWidgetState extends State<LeaveWidget> {
                   //     ),
                   //   ),
                   // ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(5, 10, 0, 0),
+                        child: Text(
+                          'เลือกเพื่อนที่ต้องการมาแทน',
+                          style: FlutterFlowTheme.of(context)
+                              .bodyText1
+                              .override(
+                                fontFamily: 'Mitr',
+                                color: FlutterFlowTheme.of(context).primaryGray,
+                                fontSize: 18,
+                              ),
+                        ),
+                      ),
+                      Text(
+                        '*',
+                        style: FlutterFlowTheme.of(context).bodyText1.override(
+                              fontFamily: 'Mitr',
+                              color: FlutterFlowTheme.of(context).primaryRed,
+                            ),
+                      ),
+                    ],
+                  ),
+
+                  Query(
+                      options: QueryOptions(
+                        document: gql(nameAll),
+                      ),
+                      builder: (QueryResult result, {fetchMore, refetch}) {
+                        if (result.hasException) {
+                          return Text(result.exception.toString());
+                        }
+                        if (result.isLoading) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        // final productList = Welcome.fromJson(result.data as Map<String, dynamic>);
+                        // print(productList);
+                        final nameList = GetListnameAll.fromJson(result.data!);
+                        print("nameList ${nameList.users!.first.fristName}");
+                        if (nameList.users?.isNotEmpty != null) {
+                          if (stopRerunSelectName == 0) {
+                            for (int i = 0; i < nameList.users!.length; i++) {
+                              if (nameList.users![i].actor != "admin" &&
+                                  nameList.users![i].actor != "ผู้อำนวยการ") {
+                                nameListAll.add(
+                                    "${nameList.users![i].fristName} ${nameList.users![i].lastName}");
+                              }
+                            }
+                            stopRerunSelectName = 1;
+                          }
+                        }
+                        return FlutterFlowDropDown(
+                          // initialOption: dropDownValue ??= nameListAll.first,
+                          options: nameListAll,
+                          onChanged: (val) {
+                            setState(() {
+                              dropDownValue = val;
+                              afterSelectName
+                                  .add(ChipData('$val', Icons.close));
+                            });
+                            print("afterSelectName $afterSelectName");
+                          },
+                          width: MediaQuery.of(context).size.width / 0.95,
+                          height: 50,
+                          textStyle: FlutterFlowTheme.of(context)
+                              .bodyText1
+                              .override(
+                                  fontFamily: 'Mitr',
+                                  color: Colors.black,
+                                  fontSize: 18),
+                          hintText: 'กรุณาเลือก',
+                          fillColor: Colors.white,
+                          elevation: 2,
+                          borderColor: Colors.transparent,
+                          borderWidth: 0,
+                          borderRadius: 0,
+                          margin: EdgeInsetsDirectional.fromSTEB(12, 4, 12, 4),
+                          hidesUnderline: true,
+                        );
+                      }),
+
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
+                    child: FlutterFlowChoiceChips(
+                      // initiallySelected: [
+                      //   if (choiceChipsValue != null) choiceChipsValue!
+                      // ],
+                      options: afterSelectName,
+                      onChanged: (val) {
+                        setState(() => choiceChipsValue = val?.first);
+                        int indexwherelist = afterSelectName.indexWhere(
+                            (element) => element.label == val?.first);
+
+                        afterSelectName.removeAt(indexwherelist);
+
+                        print("indexwherelist $indexwherelist");
+                      },
+                      selectedChipStyle: ChipStyle(
+                        backgroundColor:
+                            FlutterFlowTheme.of(context).primaryBlue01,
+                        textStyle:
+                            FlutterFlowTheme.of(context).bodyText1.override(
+                                  fontFamily: 'Mitr',
+                                  color: Colors.white,
+                                ),
+                        iconColor: Colors.white,
+                        iconSize: 18,
+                        elevation: 4,
+                      ),
+                      unselectedChipStyle: ChipStyle(
+                        backgroundColor:
+                            FlutterFlowTheme.of(context).secondaryWhite,
+                        textStyle: FlutterFlowTheme.of(context)
+                            .bodyText2
+                            .override(
+                              fontFamily: 'Mitr',
+                              color: FlutterFlowTheme.of(context).primaryGray,
+                              fontSize: 16,
+                            ),
+                        iconColor: FlutterFlowTheme.of(context).primaryGray,
+                        iconSize: 18,
+                        elevation: 4,
+                      ),
+                      chipSpacing: 20,
+                      multiselect: false,
+                      alignment: WrapAlignment.start,
+                    ),
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(5, 10, 0, 0),
+                        child: Text(
+                          'เลือกเวรของฉัน',
+                          style: FlutterFlowTheme.of(context)
+                              .bodyText1
+                              .override(
+                                fontFamily: 'Mitr',
+                                color: FlutterFlowTheme.of(context).primaryGray,
+                                fontSize: 18,
+                              ),
+                        ),
+                      ),
+                      Text(
+                        '*',
+                        style: FlutterFlowTheme.of(context).bodyText1.override(
+                              fontFamily: 'Mitr',
+                              color: FlutterFlowTheme.of(context).primaryRed,
+                            ),
+                      ),
+                    ],
+                  ),
 
                   ListView.builder(
                       padding: EdgeInsets.zero,
@@ -351,6 +548,7 @@ class _LeaveWidgetState extends State<LeaveWidget> {
                           ),
                         );
                       }),
+
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(10, 10, 0, 0),
                     child: FFButtonWidget(
@@ -569,48 +767,97 @@ class _LeaveWidgetState extends State<LeaveWidget> {
                   //   ),
                   // ),
 
-                  Align(
-                    alignment: AlignmentDirectional(0, 0),
-                    child: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(10, 20, 0, 0),
-                      child: FFButtonWidget(
-                        onPressed: textController1?.text == null ||
-                                choiceChipsValue == null ||
-                                dutyList.length == 0
-                            ? () {
-                                print(
-                                    'Button pressed ... idDuty ${dutyStore["idDuty"]} ${dutyStore["duty"] == ""} - ${textController1?.text == null} - ${choiceChipsValue == null} - ${dutyList} - ${choiceChipsValue == null}');
-                              }
-                            : () async {
-                              // ตรงนี้ควรแก้
-                                 await updataLeave(
-                                  type: "$choiceChipsValue",
-                                  detail: '${textController1!.text}',
-                                  idDuty: '${dutyList[0]["idDuty"]}',
-                                  duty: '${dutyList[0]["duty"]}',
-                                  number: dutyList[0]["numberDuty"],
-                                );
-                                Navigator.pop(context);
-                              },
-                        text: 'ส่งให้หัวหน้าพบาบาล',
-                        options: FFButtonOptions(
-                          width: 300,
-                          height: 40,
-                          color: textController1?.text == null ||
-                                  choiceChipsValue == null ||
-                                  dutyList.length == 0
-                              ? FlutterFlowTheme.of(context).primaryGray
-                              : FlutterFlowTheme.of(context).primaryBlue,
-                          textStyle: FlutterFlowTheme.of(context).bodyText1,
-                          borderSide: BorderSide(
-                            color: Colors.transparent,
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                  Query(
+                      options: QueryOptions(
+                        document: gql(nameAll),
                       ),
-                    ),
-                  ),
+                      builder: (QueryResult result, {fetchMore, refetch}) {
+                        if (result.hasException) {
+                          return Text(result.exception.toString());
+                        }
+                        if (result.isLoading) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        // final productList = Welcome.fromJson(result.data as Map<String, dynamic>);
+                        // print(productList);
+                        final nameList = GetListnameAll.fromJson(result.data!);
+                        print("nameList ${nameList.users!.first.fristName}");
+                        return Align(
+                          alignment: AlignmentDirectional(0, 0),
+                          child: Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(10, 20, 0, 0),
+                            child: FFButtonWidget(
+                              onPressed: textController1?.text == null ||
+                                      choiceChipsValue == null ||
+                                      dutyList.length == 0
+                                  ? () {
+                                      print(
+                                          'Button pressed ... idDuty ${dutyStore["idDuty"]} ${dutyStore["duty"] == ""} - ${textController1?.text == null} - ${choiceChipsValue == null} - $dutyList - ${choiceChipsValue == null}');
+                                    }
+                                  : () async {
+                                      // ตรงนี้ควรแก้
+                                      List<String> listMemberId = [];
+                                      int indexSearch = 0;
+                                      for (int t = 0;
+                                          t < afterSelectName.length;
+                                          t++) {
+                                        print(
+                                            "afterSelectName[t].label ${afterSelectName[t].label}");
+
+                                        indexSearch = nameList.users!
+                                            .indexWhere((element) =>
+                                                element.fristName ==
+                                                    afterSelectName[t]
+                                                        .label
+                                                        .split(" ")[0] &&
+                                                element.lastName ==
+                                                    afterSelectName[t]
+                                                        .label
+                                                        .split(" ")[1]);
+                                        listMemberId.add(
+                                            " ${nameList.users![indexSearch].id!} ");
+                                      }
+                                      print("indexSearch $indexSearch");
+                                      // listMemberId.add(afterSelectName[t].label);
+
+                                      createLeave(
+                                          memberId: listMemberId,
+                                          dutyId: '${dutyList[0]["idDuty"]}',
+                                          dutyString: '${dutyList[0]["duty"]}',
+                                          dutynumber: dutyList[0]
+                                              ["numberDuty"]);
+                                      // await updataLeave(
+                                      //   type: "$choiceChipsValue",
+                                      //   detail: '${textController1!.text}',
+                                      //   idDuty: '${dutyList[0]["idDuty"]}',
+                                      //   duty: '${dutyList[0]["duty"]}',
+                                      //   number: dutyList[0]["numberDuty"],
+                                      // );
+                                    },
+                              text: 'ส่งให้หัวหน้าพบาบาล',
+                              options: FFButtonOptions(
+                                width: 300,
+                                height: 40,
+                                color: textController1?.text == null ||
+                                        choiceChipsValue == null ||
+                                        dutyList.length == 0
+                                    ? FlutterFlowTheme.of(context).primaryGray
+                                    : FlutterFlowTheme.of(context).primaryBlue,
+                                textStyle:
+                                    FlutterFlowTheme.of(context).bodyText1,
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
                   Container(
                     width: 100.0,
                     height: 100.0,
