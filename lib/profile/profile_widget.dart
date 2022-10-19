@@ -16,6 +16,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
+import '../model/member_model.dart';
 import '../model/profile_model.dart';
 
 class ProfileWidget extends StatefulWidget {
@@ -29,6 +30,44 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   ApiCallResponse? logoutCallOutput;
   late Future<Data> futureProfile;
+  Future<List<Group>>? futureMember;
+  Future<List<Group>> getMemberModel({required String token}) async {
+    try {
+      print(token);
+      final res = await http.get(
+        Uri.parse("$url/api/group/me/member"),
+        headers: {
+          "Accept": "application/json",
+          "Access-Control_Allow_Origin": "*",
+          "x-access-token": "$token"
+        },
+      );
+      // print("res.body1 ${res.statusCode}");
+      // print("res.body1 ${res.body}");
+
+      final bodyMember = convert.json.decode(res.body) as Map<String, dynamic>;
+      final _futureMember =
+          MemberCall.fromJson(bodyMember as Map<String, dynamic>);
+      final futureMember = _futureMember.group as List<Group>;
+
+      // print("_futurePresent ${_futurePresent.duty}");
+      // for (var dutylist in data) {
+      //   // list ออกมาทั้ง index
+      //   final _futurePresent =
+      //       PresentModel.fromJson(dutylist as Map<String, dynamic>);
+      //   // aa = _dutylist.duty!.first.day;
+      //   // print("_dutylist ${aa}");
+      //   setState(() {
+      //     futurePresent.add(_futurePresent);
+      //   });
+      // }
+      return futureMember;
+    } catch (error) {
+      print(error);
+    }
+    return [];
+  }
+
   Future<Data> getProfile({required String token}) async {
     try {
       final res = await http.get(
@@ -55,8 +94,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       await notifica(context, "เกิดข้อผิดพลาด");
       await Future.delayed(Duration(seconds: 5));
       if (mounted) {
-          setState(() {});
-        }
+        setState(() {});
+      }
     }
     return Data();
   }
@@ -65,6 +104,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   void initState() {
     // TODO: implement initState
     futureProfile = getProfile(token: FFAppState().tokenStore);
+    futureMember = getMemberModel(token: FFAppState().tokenStore);
     super.initState();
   }
 
@@ -106,6 +146,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
+                      
                       Material(
                         color: Colors.transparent,
                         elevation: 2,
@@ -308,6 +349,38 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                           FlutterFlowTheme.of(context).title2,
                                     ),
                                   ),
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        0, 10, 10, 10),
+                                    child: FutureBuilder<List<Group>>(
+                                        future: futureMember,
+                                        builder: (context, snapshot) {
+                                          if (!snapshot.hasData) {
+                                            return Center(
+                                              child: SizedBox(
+                                                width: 50,
+                                                height: 50,
+                                                child: CircularProgressIndicator(
+                                                  color:
+                                                      FlutterFlowTheme.of(context)
+                                                          .primaryColor,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                          if (snapshot.data!.length >= 1) {
+                                            return Text(
+                                              "มีกลุ่ม",
+                                              style: GoogleFonts.mitr(
+                                                  fontSize: 16,
+                                                  color: Colors.green),
+                                            );
+                                          }
+                                          return Text("ไม่มีกลุ่ม",style: GoogleFonts.mitr(
+                                                  fontSize: 16,
+                                                  color: Colors.red),);
+                                        }),
+                                  )
                                 ],
                               ),
                             ),

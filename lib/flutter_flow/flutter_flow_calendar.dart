@@ -43,6 +43,7 @@ class FlutterFlowCalendar extends StatefulWidget {
     Key? key,
     required this.color,
     this.onChange,
+    this.eventPoint,
     this.initialDate,
     this.weekFormat = false,
     this.weekStartsMonday = false,
@@ -68,6 +69,7 @@ class FlutterFlowCalendar extends StatefulWidget {
   final bool weekStartsMonday;
   final Color color;
   final void Function(DateTimeRange?)? onChange;
+  final List<dynamic> Function(DateTime)? eventPoint;
   final DateTime? initialDate;
   final Color? iconColor;
   final TextStyle? dateStyle;
@@ -285,6 +287,7 @@ class _FlutterFlowCalendarState extends State<FlutterFlowCalendar> {
             // return true;
           },
           daysOfWeekHeight: widget.daysOfWeekHeight,
+          eventLoader: widget.eventPoint,
           firstDay: kFirstDay,
           lastDay: kLastDay,
           calendarFormat: calendarFormat,
@@ -315,7 +318,7 @@ class _FlutterFlowCalendarState extends State<FlutterFlowCalendar> {
               shape: BoxShape.circle,
             ),
             markerDecoration: BoxDecoration(
-              color: lightColor,
+              color: Colors.orange,
               shape: BoxShape.circle,
             ),
             markersMaxCount: 3,

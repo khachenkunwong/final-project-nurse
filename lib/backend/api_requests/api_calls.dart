@@ -16,9 +16,9 @@ class PutInviteCall {
       required String token}) {
     final body = '''
 {
-  "groupId": "${groupId}",
-  "userId": "${userId}",
-  "id":"${inviteId}"
+  "groupId": "$groupId",
+  "userId": "$userId",
+  "id":"$inviteId"
   "approve": $approve
 }''';
     return ApiManager.instance.makeApiCall(
@@ -135,10 +135,10 @@ class PostRegisterCall {
   }) {
     final body = '''
 {
-  "frist_name": "${fristName}",
-  "last_name": "${lastName}",
-  "email": "${email}",
-  "password": "${password}"
+  "frist_name": "$fristName",
+  "last_name": "$lastName",
+  "email": "$email",
+  "password": "$password"
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'postRegister',
@@ -169,8 +169,8 @@ class PostInviteCall {
       required String token}) {
     final body = '''
 {
-  "email": "${email}",
-  "name_group": "${nameGroup}"
+  "email": "$email",
+  "name_group": "$nameGroup"
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'PostInvite',
@@ -205,8 +205,8 @@ class PostLoginCall {
   }) {
     final body = '''
 {
-  "email": "${email}",
-  "password": "${password}"
+  "email": "$email",
+  "password": "$password"
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'postLogin',
@@ -226,6 +226,7 @@ class PostLoginCall {
       returnBody: true,
     );
   }
+
   static dynamic resAll(dynamic response) => getJsonField(
         response,
         r'''$.''',
@@ -423,8 +424,8 @@ class UpdateProfileCall {
   }) {
     final body = '''
 {
-  "frist_name": "${fristName}",
-  "last_name": "${lastName}"
+  "frist_name": "$fristName",
+  "last_name": "$lastName"
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'updateProfile',
@@ -445,6 +446,7 @@ class UpdateProfileCall {
     );
   }
 }
+
 class updateChangdutyCall {
   static Future<ApiCallResponse> call({
     required String token,
@@ -453,8 +455,8 @@ class updateChangdutyCall {
   }) {
     final body = '''
 {
-  "apporve": ${apporve},
-  "chagnId": "${chagnId}"
+  "apporve": $apporve,
+  "chagnId": "$chagnId"
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'updateChangduty',
@@ -474,6 +476,7 @@ class updateChangdutyCall {
       returnBody: true,
     );
   }
+
   static dynamic resState(dynamic response) => getJsonField(
         response,
         r'''$''',

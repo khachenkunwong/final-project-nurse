@@ -17,6 +17,8 @@ class FFAppState {
     _chcknull = prefs.getString('ff_chcknull') ?? _chcknull;
     _tokenStore = prefs.getString('ff_tokenStore') ?? _tokenStore;
     _namegroup = prefs.getString('ff_namegroup') ?? _namegroup;
+    _dutySelectwithoutme = prefs.getStringList('ff_dutySelectwithoutme') ?? _dutySelectwithoutme;
+     _dutySelectme = prefs.getStringList('ff_dutySelectme') ?? _dutySelectme;
   }
 
   late SharedPreferences prefs;
@@ -40,6 +42,20 @@ class FFAppState {
   set namegroup(String _value) {
     _namegroup = _value;
     prefs.setString('ff_namegroup', _value);
+  }
+
+  List<String> _dutySelectwithoutme = [];
+  List<String> get dutySelectwithoutme => _dutySelectwithoutme;
+  set dutySelectwithoutme(List<String> _value) {
+    _dutySelectwithoutme = _value;
+    prefs.setStringList('ff_dutySelectwithoutme', _value);
+  }
+
+  List<String> _dutySelectme = [];
+  List<String> get dutySelectme => _dutySelectme;
+  set dutySelectme(List<String> _value) {
+    _dutySelectme = _value;
+    prefs.setStringList('ff_dutySelectme', _value);
   }
 }
 

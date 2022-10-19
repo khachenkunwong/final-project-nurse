@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../model/dutyseletewithoutme_model.dart';
 import '../model/present_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -160,7 +161,6 @@ class _SelectExchangeWorkscheduleWidget2State
                               .split(" - ")[0]
                               .split(" ")[0]
                               .split("-")[1]
-                              .split("0")[1]
                               .toString();
                           calendarSelectedyearString = calendarSelectedDay
                               .toString()
@@ -169,7 +169,7 @@ class _SelectExchangeWorkscheduleWidget2State
                               .split("-")[0]
                               .toString();
                           print(
-                              "calendarSelectedmonthString ${calendarSelectedmonthString}");
+                              "calendarSelectedmonthString22 ${calendarSelectedmonthString}");
                         });
                       },
                       titleStyle: GoogleFonts.getFont(
@@ -331,6 +331,7 @@ class _SelectExchangeWorkscheduleWidget2State
                                       print("aaaaaa ${getMyduty}");
                                       // ถ้า เช้า บ่าย ดึก ไม่มีก็จะแสดงเป็น box ว่าง แต่ถ้า เช้ามีแต่บ่ายกับดึกไม่มีก็จะแสดงแต่เช้า
                                       if (getMyduty[indexPresent] == 1) {
+                                        
                                         return InkWell(
                                           onTap: () async {
                                             widget.dutyStore = {
