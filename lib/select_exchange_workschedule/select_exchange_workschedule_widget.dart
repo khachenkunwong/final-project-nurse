@@ -10,6 +10,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../model/changdutyall_model.dart';
 import '../model/present_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -55,7 +56,9 @@ class _SelectExchangeWorkscheduleWidgetState
   Completer<ApiCallResponse>? _apiRequestCompleter2;
   List dayDuty = ["เช้า", "บ่าย", "ดึก"];
   List dayDutyEnglist = ["morning", "noon", "night"];
-  Map<int, List<bool>> checkboxdaybool = {};
+  Map<String, List<bool>> checkboxdaybool = {};
+  Map<String, bool> checkboxValuesbool = {};
+  Map<String, List<bool>> checkboxdayboolcopy = {};
   final scaffoldKey = GlobalKey<ScaffoldState>();
   late String calendarSelectedDayString;
   late String calendarSelectedmonthString;
@@ -63,6 +66,7 @@ class _SelectExchangeWorkscheduleWidgetState
   bool selete = false;
   List<String> checkboxGroupValues = [];
   List<String> checkboxValues = [];
+
   /// ใช้สำหรับจำนวนจุด even บนปฎิทิน
   Map<int, List<dynamic>> numberPointEven = {};
 
@@ -83,12 +87,14 @@ class _SelectExchangeWorkscheduleWidgetState
       final body = convert.json.decode(res.body) as Map<String, dynamic>;
       final _futureMeAll = PresentModel.fromJson(body);
       final futureMeAll = _futureMeAll.duty as List<DutyPresent>;
-      for (int i = 1; i < futureMeAll.length + 1; i++) {
+      for (int i = 0; i < futureMeAll.length; i++) {
         checkboxdaybool.addAll({
-          i: [false, false, false]
+          "${futureMeAll[i].day}/${futureMeAll[i].month}/${futureMeAll[i].year} ${futureMeAll[i].user!.id}":
+              [false, false, false]
         });
         // checkboxbool.add("":[]);
       }
+      print("checkboxdaybool2 ${checkboxdaybool}");
       for (int i = 1; i < futureMeAll.length + 1; i++) {
         if (futureMeAll[i - 1].count == 1) {
           numberPointEven.addAll({
@@ -179,7 +185,18 @@ class _SelectExchangeWorkscheduleWidgetState
                     onPressed: () async {
                       // ส่งข้อมูลไปยัง api
                       if (FFAppState().dutySelectme.isNotEmpty) {
-                        Navigator.pop(context);
+                        print("ตัวที่เลือกตอนแรก ${FFAppState().dutySelectme}");
+                        print(
+                            "ตัวที่เลือกเวรของเรา ${FFAppState().dutySelectwithoutme}");
+                        // for ()
+                        final body =
+                            '''{"me":${FFAppState().dutySelectme},"withoutme":${FFAppState().dutySelectwithoutme}}''';
+
+                        // var test = cheagedutyallFromJson(body);
+
+                        print("body1111 $body");
+                        print("bodybodybody $body");
+                        // Navigator.pop(context);
                       } else {
                         await notifica(context, "กรุณาเลือกรายการ",
                             color: Colors.yellow, textColor: Colors.black);
@@ -211,6 +228,9 @@ class _SelectExchangeWorkscheduleWidgetState
                   FFAppState().dutySelectme = [];
                   print(
                       "FFAppState().dutySelectme = ${FFAppState().dutySelectme}");
+                  setState(() {
+                    checkboxdaybool = checkboxdayboolcopy;
+                  });
                 }
                 ;
               },
@@ -251,81 +271,81 @@ class _SelectExchangeWorkscheduleWidgetState
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: FutureBuilder<List<DutyPresent>>(
-                          future: futurePresent,
-                          builder: (context, snapshotfuturePresent) {
-                        return FlutterFlowCalendar(
-                          daysOfWeekHeight: 18,
-                          color: FlutterFlowTheme.of(context).primaryColor,
-                          weekFormat: false,
-                          weekStartsMonday: false,
-                          yearduty: widget.year,
-                          monthduty: widget.month,
-                          dayduty: widget.day,
-                          onChange: (DateTimeRange? newSelectedDate) {
-                            setState(() {
-                              calendarSelectedDay = newSelectedDate;
-                              // ทุกครั้งที่กดวันที่ในปฏิทิน จะได้วันที่มา
-                              calendarSelectedDayString = calendarSelectedDay
-                                  .toString()
-                                  .split(" - ")[0]
-                                  .split(" ")[0]
-                                  .split("-")[2]
-                                  .toString();
-                              // ทุกครั้งที่กดวันที่ในปฏิทิน จะได้เดิอนมา
-                              calendarSelectedmonthString = calendarSelectedDay
-                                  .toString()
-                                  .split(" - ")[0]
-                                  .split(" ")[0]
-                                  .split("-")[1]
-                                  .toString();
-                              calendarSelectedyearString = calendarSelectedDay
-                                  .toString()
-                                  .split(" - ")[0]
-                                  .split(" ")[0]
-                                  .split("-")[0]
-                                  .toString();
-                              print(
-                                  "calendarSelectedmonthString $calendarSelectedDayString");
-                            });
-                          },
-                          eventPoint: (day) {
-                                    if (numberPointEven[day.day] != null &&
-                                        day.month == DateTime.now().month &&
-                                        day.year == DateTime.now().year) {
-                                      return numberPointEven[day.day]!;
-                                    }
-                    
-                                    return [];
-                                  },
-                          titleStyle: GoogleFonts.getFont(
-                            'Mitr',
-                            color: Color(0xFF050000),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 20,
-                          ),
-                          dayOfWeekStyle: GoogleFonts.getFont(
-                            'Mitr',
-                            color: Color(0xFF050000),
-                            fontSize: 16,
-                          ),
-                          dateStyle: GoogleFonts.getFont(
-                            'Mitr',
-                            color: Color(0xFF050000),
-                            fontSize: 16,
-                          ),
-                          selectedDateStyle: GoogleFonts.getFont(
-                            'Mitr',
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                          inactiveDateStyle: GoogleFonts.getFont(
-                            'Mitr',
-                            color: Color(0xFF8E8E8E),
-                            fontSize: 16,
-                          ),
-                        );
-                      }
-                    ),
+                        future: futurePresent,
+                        builder: (context, snapshotfuturePresent) {
+                          return FlutterFlowCalendar(
+                            daysOfWeekHeight: 18,
+                            color: FlutterFlowTheme.of(context).primaryColor,
+                            weekFormat: false,
+                            weekStartsMonday: false,
+                            yearduty: widget.year,
+                            monthduty: widget.month,
+                            dayduty: widget.day,
+                            onChange: (DateTimeRange? newSelectedDate) {
+                              setState(() {
+                                calendarSelectedDay = newSelectedDate;
+                                // ทุกครั้งที่กดวันที่ในปฏิทิน จะได้วันที่มา
+                                calendarSelectedDayString = calendarSelectedDay
+                                    .toString()
+                                    .split(" - ")[0]
+                                    .split(" ")[0]
+                                    .split("-")[2]
+                                    .toString();
+                                // ทุกครั้งที่กดวันที่ในปฏิทิน จะได้เดิอนมา
+                                calendarSelectedmonthString =
+                                    calendarSelectedDay
+                                        .toString()
+                                        .split(" - ")[0]
+                                        .split(" ")[0]
+                                        .split("-")[1]
+                                        .toString();
+                                calendarSelectedyearString = calendarSelectedDay
+                                    .toString()
+                                    .split(" - ")[0]
+                                    .split(" ")[0]
+                                    .split("-")[0]
+                                    .toString();
+                                print(
+                                    "calendarSelectedmonthString $calendarSelectedDayString");
+                              });
+                            },
+                            eventPoint: (day) {
+                              if (numberPointEven[day.day] != null &&
+                                  day.month == DateTime.now().month &&
+                                  day.year == DateTime.now().year) {
+                                return numberPointEven[day.day]!;
+                              }
+
+                              return [];
+                            },
+                            titleStyle: GoogleFonts.getFont(
+                              'Mitr',
+                              color: Color(0xFF050000),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                            ),
+                            dayOfWeekStyle: GoogleFonts.getFont(
+                              'Mitr',
+                              color: Color(0xFF050000),
+                              fontSize: 16,
+                            ),
+                            dateStyle: GoogleFonts.getFont(
+                              'Mitr',
+                              color: Color(0xFF050000),
+                              fontSize: 16,
+                            ),
+                            selectedDateStyle: GoogleFonts.getFont(
+                              'Mitr',
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                            inactiveDateStyle: GoogleFonts.getFont(
+                              'Mitr',
+                              color: Color(0xFF8E8E8E),
+                              fontSize: 16,
+                            ),
+                          );
+                        }),
                   ),
 
                   // ตารางเวรของฉัน
@@ -463,6 +483,10 @@ class _SelectExchangeWorkscheduleWidgetState
                                       final selected = getMyduty[indexPresent];
                                       // ถ้า เช้า บ่าย ดึก ไม่มีก็จะแสดงเป็น box ว่าง แต่ถ้า เช้ามีแต่บ่ายกับดึกไม่มีก็จะแสดงแต่เช้า
                                       if (getMyduty[indexPresent] == 0) {
+                                        checkboxValuesbool.addAll({
+                                          "${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].day}/${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month}/${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].year} ${listViewPresent[indexPresent].id} ${dayDutyEnglist[indexPresent]}":
+                                              false
+                                        });
                                         return selete == false
                                             ? InkWell(
                                                 onTap: () async {
@@ -470,14 +494,17 @@ class _SelectExchangeWorkscheduleWidgetState
                                                       [];
                                                   print("รอส่งค่าไปยัง api");
                                                   FFAppState().dutySelectme.add(
-                                                      """{"id": ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].id},"userID":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.id},"year":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].year},"month":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month},"day": ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].day},"group":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].group},"v": ${int.parse("${listViewPresent[int.parse(calendarSelectedDayString) - 1].v}")},"dutyString":${dayDutyEnglist[indexPresent]},"dutyNumber":0,}""");
+                                                      """{"id": "${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].id}","userID":"${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.id}","year":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].year},"month":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month},"day": ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].day},"group":"${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].group}","v": ${int.parse("${listViewPresent[int.parse(calendarSelectedDayString) - 1].v}")},"dutyString":"${dayDutyEnglist[indexPresent]}","dutyNumber":0}""");
                                                   print(
                                                       "dutySelectwithoutme ${FFAppState().dutySelectme.length}");
                                                   if (FFAppState()
                                                           .dutySelectme
                                                           .length ==
                                                       1) {
-                                                    Navigator.pop(context);
+                                                    await notifica(
+                                                        context, "แลกเวรสำเร็จ",
+                                                        color: Colors.green);
+                                                    // Navigator.pop(context);
                                                   } else {
                                                     await notifica(context,
                                                         "กรุณาลองใหม่อีกครั้งเนื่องจากรายการที่เลือกมากกว่า 1");
@@ -692,7 +719,7 @@ class _SelectExchangeWorkscheduleWidgetState
                                                   // เมื่อมีการกดติก
                                                   if (isSelected == true) {
                                                     FFAppState().dutySelectme.add(
-                                                        """{"id": $id,"userID":$userID,"year":$year,"month":$month,"day": $day,"group":$group,"v": $v,"dutyString":$dutyString,"dutyNumber":$dutyNumber,}""");
+                                                        """{"id": "$id","userID":"$userID","year":$year,"month":$month,"day": $day,"group":"$group","v": $v,"dutyString":"$dutyString","dutyNumber":$dutyNumber}""");
                                                     print(
                                                         "dutySelectme ${FFAppState().dutySelectme}");
                                                   } else {
@@ -742,8 +769,8 @@ class _SelectExchangeWorkscheduleWidgetState
                                                   color: Color(0xFF8E8E8E),
                                                   fontSize: 16,
                                                 ),
-                                                initiallySelected:
-                                                    checkboxGroupValues,
+                                                // initiallySelected:
+                                                //     checkboxGroupValues,
                                                 child: SizedBox(
                                                   width: MediaQuery.of(context)
                                                           .size
@@ -829,7 +856,7 @@ class _SelectExchangeWorkscheduleWidgetState
 
                                                 print("รอส่งค่าไปยัง api");
                                                 FFAppState().dutySelectme.add(
-                                                    """{"id": ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].id},"userID":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.id},"year":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].year},"month":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month},"day": ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].day},"group":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].group},"v": ${int.parse("${listViewPresent[int.parse(calendarSelectedDayString) - 1].v}")},"dutyString":${dayDutyEnglist[indexPresent]},"dutyNumber":0,}""");
+                                                    """{"id": ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].id},"userID":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.id},"year":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].year},"month":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month},"day": ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].day},"group":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].group},"v": ${int.parse("${listViewPresent[int.parse(calendarSelectedDayString) - 1].v}")},"dutyString":${dayDutyEnglist[indexPresent]},"dutyNumber":0}""");
                                                 print(
                                                     "dutySelectwithoutme ${FFAppState().dutySelectme.length}");
                                                 if (FFAppState()
@@ -1051,7 +1078,7 @@ class _SelectExchangeWorkscheduleWidgetState
                                                 // เมื่อมีการกดติก
                                                 if (isSelected == true) {
                                                   FFAppState().dutySelectme.add(
-                                                      """{"id": $id,"userID":$userID,"year":$year,"month":$month,"day": $day,"group":$group,"v": $v,"dutyString":$dutyString,"dutyNumber":$dutyNumber,}""");
+                                                      """{"id": $id,"userID":$userID,"year":$year,"month":$month,"day": $day,"group":$group,"v": $v,"dutyString":$dutyString,"dutyNumber":$dutyNumber}""");
                                                   print(
                                                       "dutySelectme ${FFAppState().dutySelectme}");
                                                 } else {
@@ -1093,8 +1120,8 @@ class _SelectExchangeWorkscheduleWidgetState
                                                 color: Color(0xFF8E8E8E),
                                                 fontSize: 16,
                                               ),
-                                              initiallySelected:
-                                                  checkboxGroupValues,
+                                              // initiallySelected:
+                                              //     checkboxGroupValues,
 
                                               child: SizedBox(
                                                 width: MediaQuery.of(context)

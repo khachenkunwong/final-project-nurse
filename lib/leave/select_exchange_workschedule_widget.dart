@@ -155,6 +155,7 @@ class _SelectExchangeWorkscheduleWidget2State
           child: RefreshIndicator(
             onRefresh: _refresh,
             child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -364,6 +365,7 @@ class _SelectExchangeWorkscheduleWidget2State
                                     await waitForApiRequestCompleter2();
                                   },
                                   child: ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
                                     padding: EdgeInsets.zero,
                                     shrinkWrap: true,
                                     scrollDirection: Axis.vertical,

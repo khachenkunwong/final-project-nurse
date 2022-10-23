@@ -1,4 +1,4 @@
-final url = "https://48ee-2403-6200-8858-f0-e01f-fc44-4590-aeb7.ap.ngrok.io";
+final url = "https://a291-2403-6200-8858-f0-c361-9441-5497-5597.ap.ngrok.io";
 const productsGraphQL = """
 query ExampleQuery {
   notifications {
@@ -38,6 +38,17 @@ query Users {
     groups {
       name_group
     }
+  }
+}
+""";
+
+const shownotificationLeave = r"""
+query Notifications($filter: JSON) {
+  notifications(filter: $filter) {
+    type
+    _id
+    fields
+    noift
   }
 }
 """;

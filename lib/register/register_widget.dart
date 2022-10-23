@@ -24,14 +24,16 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   TextEditingController? passwordRegister2Controller;
   late bool passwordRegister2Visibility;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  late ApiCallResponse updataschedule;
+  late ApiCallResponse updataschedule1;
 
   @override
   void initState() {
     super.initState();
-    emailRegisterController = TextEditingController(text: "headmanager@gmail.com");
-    fristNameRegisterController = TextEditingController(text: "headmanager");
-    lastNameRegisterController = TextEditingController(text: "headmanagerLast");
-    passwordRegister1Controller = TextEditingController(text: "headmanager");
+    emailRegisterController = TextEditingController(text: "member1@gmail.com");
+    fristNameRegisterController = TextEditingController(text: "พยาบาล");
+    lastNameRegisterController = TextEditingController(text: "คนที่ 1");
+    passwordRegister1Controller = TextEditingController(text: "member1");
     passwordRegister1Visibility = false;
     passwordRegister2Controller =
         TextEditingController(text: passwordRegister1Controller!.text);
@@ -100,9 +102,37 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                               ),
                             ),
                           ),
-                          Text(
-                            'สมัครสมาชิก',
-                            style: FlutterFlowTheme.of(context).title1,
+                          InkWell(
+                            onTap: () async {
+                              updataschedule1 = await ManageSchedule.call();
+                              final gg = await ManageSchedule.resUpdateSchedule(
+                                  updataschedule.jsonBody);
+                              print("ooo" + gg.toString());
+                              print("5515${updataschedule.jsonBody}");
+                              if (updataschedule.statusCode == 200) {
+                                // if (mounted) {
+                                //   setState(() {
+                                //     loadSave = false;
+                                //   });
+                                // }
+                                await actions.notifica(context, 'สำเร็จ',
+                                    color: Colors.green);
+                              } else {
+                                // if (mounted) {
+                                //   setState(() {
+                                //     loadSave = false;
+                                //   });
+                                // }
+                                await actions.notifica(
+                                  context,
+                                  'ไม่สำเร็จ',
+                                );
+                              }
+                            },
+                            child: Text(
+                              'สมัครสมาชิก',
+                              style: FlutterFlowTheme.of(context).title1,
+                            ),
                           ),
                           Padding(
                             padding:
@@ -116,8 +146,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                       0, 20, 0, 0),
                                   child: Text(
                                     'ชื่อ',
-                                    style:
-                                        FlutterFlowTheme.of(context).title2,
+                                    style: FlutterFlowTheme.of(context).title2,
                                   ),
                                 ),
                                 TextFormField(
@@ -256,8 +285,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                         () => passwordRegister1Visibility =
                                             !passwordRegister1Visibility,
                                       ),
-                                      focusNode:
-                                          FocusNode(skipTraversal: true),
+                                      focusNode: FocusNode(skipTraversal: true),
                                       child: Icon(
                                         passwordRegister1Visibility
                                             ? Icons.visibility_outlined
@@ -278,8 +306,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                       0, 10, 0, 0),
                                   child: Text(
                                     'รหัสผ่านอีกครั้ง',
-                                    style:
-                                        FlutterFlowTheme.of(context).title2,
+                                    style: FlutterFlowTheme.of(context).title2,
                                   ),
                                 ),
                                 TextFormField(
@@ -313,8 +340,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                         () => passwordRegister2Visibility =
                                             !passwordRegister2Visibility,
                                       ),
-                                      focusNode:
-                                          FocusNode(skipTraversal: true),
+                                      focusNode: FocusNode(skipTraversal: true),
                                       child: Icon(
                                         passwordRegister2Visibility
                                             ? Icons.visibility_outlined
@@ -355,8 +381,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                         if ((passwordRegister1Controller!
                                                     .text !=
                                                 null &&
-                                            passwordRegister1Controller!
-                                                    .text !=
+                                            passwordRegister1Controller!.text !=
                                                 '')) {
                                           if ((passwordRegister2Controller!
                                                       .text !=
@@ -368,7 +393,6 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                                     .text) ==
                                                 (passwordRegister2Controller!
                                                     .text)) {
-                                              
                                               registerOutput =
                                                   await PostRegisterCall.call(
                                                 fristName:
@@ -377,9 +401,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                                 lastName:
                                                     lastNameRegisterController!
                                                         .text,
-                                                email:
-                                                    emailRegisterController!
-                                                        .text,
+                                                email: emailRegisterController!
+                                                    .text,
                                                 password:
                                                     passwordRegister2Controller!
                                                         .text,
@@ -389,7 +412,56 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                                 'สมัครเสร็จสิ้น',
                                                 color: Colors.green,
                                               );
-                                              Navigator.pop(context);
+                                              if (fristNameRegisterController!
+                                                          .text !=
+                                                      "admin" &&
+                                                  emailRegisterController!
+                                                          .text !=
+                                                      "admin@gmail.com" &&
+                                                  fristNameRegisterController!
+                                                          .text !=
+                                                      "leader" &&
+                                                  emailRegisterController!
+                                                          .text !=
+                                                      "leader@gmail.com" &&
+                                                  fristNameRegisterController!
+                                                          .text !=
+                                                      "headmanager" &&
+                                                  emailRegisterController!
+                                                          .text !=
+                                                      "headmanager@gmail.com") {
+                                                updataschedule =
+                                                    await ManageSchedule.call();
+                                                final gg = await ManageSchedule
+                                                    .resUpdateSchedule(
+                                                        updataschedule
+                                                            .jsonBody);
+                                                print("ooo" + gg.toString());
+                                                print(
+                                                    "5515${updataschedule.jsonBody}");
+                                                if (updataschedule.statusCode ==
+                                                    200) {
+                                                  // if (mounted) {
+                                                  //   setState(() {
+                                                  //     loadSave = false;
+                                                  //   });
+                                                  // }
+                                                  await actions.notifica(
+                                                      context, 'สำเร็จ',
+                                                      color: Colors.green);
+                                                } else {
+                                                  // if (mounted) {
+                                                  //   setState(() {
+                                                  //     loadSave = false;
+                                                  //   });
+                                                  // }
+                                                  await actions.notifica(
+                                                    context,
+                                                    'ไม่สำเร็จ',
+                                                  );
+                                                }
+                                                Navigator.pop(context);
+                                              }
                                             } else {
                                               await actions.notifica(
                                                 context,
@@ -461,8 +533,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                               children: [
                                 Text(
                                   'มีบัญชี?',
-                                  style:
-                                      FlutterFlowTheme.of(context).subtitle1,
+                                  style: FlutterFlowTheme.of(context).subtitle1,
                                 ),
                                 InkWell(
                                   onTap: () async {
@@ -470,8 +541,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                   },
                                   child: Text(
                                     'เข้าสู่ระบบ',
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyText2,
+                                    style:
+                                        FlutterFlowTheme.of(context).bodyText2,
                                   ),
                                 ),
                               ],
@@ -482,7 +553,6 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                     ),
                   ),
                 ),
-                
               ],
             ),
           ),

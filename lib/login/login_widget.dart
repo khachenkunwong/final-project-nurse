@@ -187,7 +187,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                                         passwordVisibility
                                             ? Icons.visibility_outlined
                                             : Icons.visibility_off_outlined,
-                                        color: passwordVisibility?Color(0xFF757575):Color(0xFFBDBDBD),
+                                        color: passwordVisibility
+                                            ? Color(0xFF757575)
+                                            : Color(0xFFBDBDBD),
                                         size: 22,
                                       ),
                                     ),
@@ -211,6 +213,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                                     email: textController1!.text,
                                     password: textController2!.text,
                                   );
+                                  // var resAll = await PostLoginCall.resAll(
+                                  //     stateLogin?.jsonBody);
+                                  print("Login reture $stateLogin");
 
                                   print(
                                       "stateLogin?.statusCode ${stateLogin?.statusCode}");

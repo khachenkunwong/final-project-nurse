@@ -146,7 +146,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      
                       Material(
                         color: Colors.transparent,
                         elevation: 2,
@@ -360,10 +359,11 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                               child: SizedBox(
                                                 width: 50,
                                                 height: 50,
-                                                child: CircularProgressIndicator(
-                                                  color:
-                                                      FlutterFlowTheme.of(context)
-                                                          .primaryColor,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .primaryColor,
                                                 ),
                                               ),
                                             );
@@ -376,9 +376,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                                   color: Colors.green),
                                             );
                                           }
-                                          return Text("ไม่มีกลุ่ม",style: GoogleFonts.mitr(
-                                                  fontSize: 16,
-                                                  color: Colors.red),);
+                                          return Text(
+                                            "ไม่มีกลุ่ม",
+                                            style: GoogleFonts.mitr(
+                                                fontSize: 16,
+                                                color: Colors.red),
+                                          );
                                         }),
                                   )
                                 ],
@@ -461,6 +464,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                   context,
                                   'Not fount',
                                 );
+                                FFAppState().tokenStore = "";
+                                await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FirstscreenWidget(),
+                                    ));
                               } else {
                                 await actions.notifica(
                                   context,

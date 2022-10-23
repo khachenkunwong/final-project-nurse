@@ -12,7 +12,8 @@ import 'flutter_flow_theme.dart';
 //           return
 class FlutterFlowCheckboxGroup extends StatefulWidget {
   FlutterFlowCheckboxGroup(
-      {this.initiallySelected,
+      {
+      // this.initiallySelected,
       required this.onChanged,
       required this.textStyle,
       this.labelPadding,
@@ -41,8 +42,9 @@ class FlutterFlowCheckboxGroup extends StatefulWidget {
       // required this.data
       });
 
-  final List<String>? initiallySelected;
-  final void Function(List<String>, String, String, int, int ,int, String, int, String, int, bool) onChanged;
+  // final List<String>? initiallySelected;
+  final void Function(List<String>, String, String, int, int, int, String, int,
+      String, int, bool) onChanged;
   final TextStyle textStyle;
   final EdgeInsetsGeometry? labelPadding;
   final EdgeInsetsGeometry? itemPadding;
@@ -51,9 +53,9 @@ class FlutterFlowCheckboxGroup extends StatefulWidget {
   final BorderRadius? checkboxBorderRadius;
   final Color checkboxBorderColor;
   final Widget? child;
-  final List<String> checkboxValues;
   var selected;
-  final Map<int, List<bool>> checkboxbool;
+  final List<String> checkboxValues;
+  final Map<String, List<bool>> checkboxbool;
   final int index;
   final int day;
   final String idSelect;
@@ -82,7 +84,7 @@ class _FlutterFlowCheckboxGroupState extends State<FlutterFlowCheckboxGroup> {
 
   @override
   Widget build(BuildContext context) {
-    print("widget.day ${widget.day}");
+    print("widget.day ${widget.day}/${widget.monthSelect}/${widget.yearSelect} ${widget.userIDSelect}");
     return Theme(
       data: ThemeData(unselectedWidgetColor: widget.checkboxBorderColor),
       child: Padding(
@@ -90,22 +92,32 @@ class _FlutterFlowCheckboxGroupState extends State<FlutterFlowCheckboxGroup> {
         child: Row(
           children: [
             Checkbox(
-              value: widget.checkboxbool[widget.day]![widget.index],
+              value: widget.checkboxbool["${widget.day}/${widget.monthSelect}/${widget.yearSelect} ${widget.userIDSelect}"]![widget.index],
               // value: widget.checkboxbool[widget.index],
               onChanged: (isSelected) {
                 print(isSelected);
                 if (isSelected == null) {
                   return;
                 }
-                widget.checkboxbool[widget.day]![widget.index] =
-                    !widget.checkboxbool[widget.day]![widget.index];
+                widget.checkboxbool["${widget.day}/${widget.monthSelect}/${widget.yearSelect} ${widget.userIDSelect}"]?[widget.index] =
+                    !widget.checkboxbool["${widget.day}/${widget.monthSelect}/${widget.yearSelect} ${widget.userIDSelect}"]![widget.index];
                 // !widget.checkboxbool[widget.index];
                 if (isSelected == true) {
                   widget.checkboxValues.add(widget.selected.toString());
                 } else
                   widget.checkboxValues.remove(widget.selected.toString());
-                widget.onChanged(widget.checkboxValues, widget.idSelect,
-                    widget.userIDSelect, widget.yearSelect,widget.monthSelect,widget.daySelect,widget.groupSelect,widget.vSelect,widget.dutyStringSelect,widget.dutyNumberSelect,isSelected);
+                widget.onChanged(
+                    widget.checkboxValues,
+                    widget.idSelect,
+                    widget.userIDSelect,
+                    widget.yearSelect,
+                    widget.monthSelect,
+                    widget.daySelect,
+                    widget.groupSelect,
+                    widget.vSelect,
+                    widget.dutyStringSelect,
+                    widget.dutyNumberSelect,
+                    isSelected);
                 setState(() {});
               },
               activeColor: widget.activeColor,

@@ -801,25 +801,44 @@ class _LeaveWidgetState extends State<LeaveWidget> {
                                       // ตรงนี้ควรแก้
                                       List<String> listMemberId = [];
                                       int indexSearch = 0;
+                                      // if (afterSelectName.length > 1) {
                                       for (int t = 0;
                                           t < afterSelectName.length;
                                           t++) {
-                                        print(
-                                            "afterSelectName[t].label ${afterSelectName[t].label}");
+                                        // print(
+                                        //     "afterSelectName[t].label${nameList.users!.first.fristName!.replaceAll(" ", "")}  ${afterSelectName[t].label.replaceAll(" ", "")} ${afterSelectName[t]
+                                        //                 .label
+                                        //                 .replaceAll(" ", "")}");
 
                                         indexSearch = nameList.users!
                                             .indexWhere((element) =>
-                                                element.fristName ==
+                                                (element.fristName!.replaceAll(" ", "") + element.lastName!.replaceAll(" ", "")) ==
                                                     afterSelectName[t]
                                                         .label
-                                                        .split(" ")[0] &&
-                                                element.lastName ==
-                                                    afterSelectName[t]
-                                                        .label
-                                                        .split(" ")[1]);
-                                        listMemberId.add(
-                                            " ${nameList.users![indexSearch].id!} ");
+                                                        .replaceAll(" ", "")
+
+                                                );
+                                        print("request.body 1111 ${indexSearch}");
+                                        if (indexSearch >= 0) {
+                                          listMemberId.add(
+                                              " ${nameList.users![indexSearch].id!} ");
+                                        }
+                                        
                                       }
+                                      // } else{
+                                      //   indexSearch = nameList.users!
+                                      //         .indexWhere((element) =>
+                                      //             element.fristName ==
+                                      //                 afterSelectName[t]
+                                      //                     .label
+                                      //                     .split(" ")[0] &&
+                                      //             element.lastName ==
+                                      //                 afterSelectName[t]
+                                      //                     .label
+                                      //                     .split(" ")[1]);
+                                      //   listMemberId.add(
+                                      //           " ${nameList.users![indexSearch].id!} ");
+                                      // }
                                       print("indexSearch $indexSearch");
                                       // listMemberId.add(afterSelectName[t].label);
 

@@ -1,3 +1,4 @@
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hos_mobile2/custom_code/actions/index.dart';
 import 'package:hos_mobile2/index.dart';
 import 'package:hos_mobile2/model/present_model.dart';
@@ -15,6 +16,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../model/changdutyall_model.dart';
 import '../model/without_model.dart';
 // เหลือเวรของเพื่อน
 
@@ -36,12 +38,18 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
   List dayDuty = ["เช้า", "บ่าย", "ดึก"];
   List dayDutyEnglist = ["morning", "noon", "night"];
   List<String> checkboxValues = [];
+  Map<String, bool> checkboxValuesbool = {};
   List dutySelectwithoutme = [];
   var index1 = 0;
   String DutySelect = "";
   List<String> checkboxGroupValues = [];
-  Map<int, List<bool>> checkboxdaybool = {};
+  Map<String, List<bool>> checkboxdaybool = {};
+  Map<String, List<bool>> checkboxdayboolcopy = {};
   Map<int, List<dynamic>> numberPointEven = {};
+  Map<String, List<int>> itemmemberinday = {};
+
+  int saveindex = -1;
+  // List<int>
 
   late String calendarSelectedDayString;
   late String calendarSelectedmonthString;
@@ -137,11 +145,36 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
       final _futureWithOut = WithOutCall.fromJson(body);
       final futureWithOut = _futureWithOut.duty as List<DutyWithOutModel>;
       print("res.body11จำนวนวัน ${futureWithOut[1].duty!.length}");
-      for (int i = 1; i < futureWithOut.first.duty!.length + 1; i++) {
-        checkboxdaybool.addAll({
-          i: [false, false, false]
-        });
+
+      // for (int v = 1; v < futureWithOut.first.duty!.length + 1; v++) {
+      //   for (int p = 1; p < futureWithOut[v].duty!.length + 1; p++ )
+      //   print("futureWithOut.first.duty ${futureWithOut[v].duty?[p].count}");
+      // }
+
+      for (int i = 0; i < futureWithOut.length; i++) {
+        for (int c = 0; c < futureWithOut[i].duty!.length; c++) {
+          checkboxdaybool.addAll({
+            "${futureWithOut[i].duty![c].day}/${futureWithOut[i].duty![c].month}/${futureWithOut[i].duty![c].year} ${futureWithOut[i].user!.id}":
+                [false, false, false]
+          });
+          checkboxdayboolcopy.addAll({
+            "${futureWithOut[i].duty![c].day}/${futureWithOut[i].duty![c].month}/${futureWithOut[i].duty![c].year} ${futureWithOut[i].user!.id}":
+                [false, false, false]
+          });
+        }
+        print("chckbox ${checkboxdaybool.length}");
+
+        // checkboxdaybool
+        //     .addAll({"$i": List<bool>.filled(3, false, growable: false)});
+
+        // checkboxValuesbool.addAll({
+        //   "${i}/${itemWityOutMeDuty.month}/${itemWityOutMeDuty.year} ${itemWithOut.duty![indexWithOutMeDuty].id} ${dayDutyEnglist[indexDutyList]}":
+        //       false
+        // });
       }
+      List arms = List<bool>.filled(10, true, growable: false);
+      print("armssss $arms");
+
       // print("data ${data}");
       // for (var dutylist in data) {
       //   // list ออกมาทั้ง index
@@ -155,7 +188,8 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
       // }
       return futureWithOut;
     } catch (error) {
-      print(error);
+      await notifica(context, "เกิดข้อผิดพลายในการเรียกรายการเพื่อนของฉัน");
+      print("เกิดข้อผิดพลายในการเรียกรายการเพื่อนของฉัน ${error}");
     }
     return [];
   }
@@ -236,6 +270,8 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                   alignment: AlignmentDirectional(0, 0),
                   child: TextButton(
                     onPressed: () async {
+                      print(
+                          "FFAppState().dutySelectwithoutme ${FFAppState().dutySelectwithoutme.last}");
                       if (FFAppState().dutySelectwithoutme.isNotEmpty) {
                         Navigator.push(
                           context,
@@ -273,6 +309,9 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                 });
                 if (!selete) {
                   FFAppState().dutySelectwithoutme = [];
+                  setState(() {
+                    checkboxdaybool = checkboxdayboolcopy;
+                  });
                   print(
                       "FFAppState().dutySelectwithoutme = ${FFAppState().dutySelectme}");
                 }
@@ -537,6 +576,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                   //   ),
                                   // ),
                                   ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
                                     padding: EdgeInsets.zero,
                                     shrinkWrap: true,
                                     scrollDirection: Axis.vertical,
@@ -689,11 +729,13 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                               // }
 
                               return ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
                                 padding: EdgeInsets.zero,
                                 shrinkWrap: true,
                                 scrollDirection: Axis.vertical,
                                 itemCount: listViewWithOut.length,
                                 itemBuilder: (context, indexWithOut) {
+                                  print("arms8888 ${indexWithOut}");
                                   final itemWithOut =
                                       listViewWithOut[indexWithOut];
                                   final itemFristName =
@@ -707,6 +749,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
 
                                   return Builder(builder: (context) {
                                     return ListView.builder(
+                                        physics: NeverScrollableScrollPhysics(),
                                         padding: EdgeInsets.zero,
                                         shrinkWrap: true,
                                         scrollDirection: Axis.vertical,
@@ -757,11 +800,30 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                                 itemWityOutMeDuty.night
                                               ];
 
+                                              // for (int y = 0; y < 3; y++) {
+                                              //   if (dutylist[y] != 0) {
+                                              //     saveindex += 1;
+                                              //     print(
+                                              //         "saveindex1 $saveindex");
+                                              //   }
+                                              // }
+
+                                              // itemmemberinday.addAll({
+                                              //   "50": [].add(saveindex),
+                                              // });
+                                              // // saveindex = -1;
+
+                                              // print(
+                                              //     "armmmmmm $itemmemberinday");
+
                                               return Builder(
                                                   builder: (context) {
                                                 print("object");
                                                 // แสดงเวรของเพื่อน
                                                 return ListView.builder(
+                                                    physics:
+                                                        NeverScrollableScrollPhysics(),
+                                                    padding: EdgeInsets.zero,
                                                     shrinkWrap: true,
                                                     itemCount: 3,
                                                     itemBuilder: (context,
@@ -773,6 +835,13 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                                       }
                                                       final selected = dutylist[
                                                           indexDutyList];
+
+                                                      // print(
+                                                      //     "checkboxValuesbool ${checkboxValuesbool}");
+                                                      // if (saveindex ==)
+
+                                                      // print(
+                                                      //     "saveindex $saveindex");
                                                       return selete == true
                                                           ? FlutterFlowCheckboxGroup(
                                                               idSelect:
@@ -857,13 +926,54 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                                                   //   "dutyNumber":
                                                                   //       dutyNumber,
                                                                   // });
+                                                                  Me reStringtoClass =
+                                                                      Me.fromJson({
+                                                                    "id":
+                                                                        "${itemWityOutMeDuty.id}",
+                                                                    "userID":
+                                                                        "${itemWityOutMeDuty.user}",
+                                                                    "year": int.parse(
+                                                                        itemWityOutMeDuty
+                                                                            .year
+                                                                            .toString()),
+                                                                    "month": int.parse(
+                                                                        itemWityOutMeDuty
+                                                                            .month
+                                                                            .toString()),
+                                                                    "day": int.parse(
+                                                                        itemWityOutMeDuty
+                                                                            .day
+                                                                            .toString()),
+                                                                    "group":
+                                                                        "${itemWityOutMeDuty.group.toString()}",
+                                                                    "v":
+                                                                        itemWityOutMeDuty
+                                                                            .v!,
+                                                                    "dutyString":
+                                                                        "${dayDutyEnglist[indexDutyList]}",
+                                                                    "dutyNumber":
+                                                                        1,
+                                                                  });
+                                                                  String
+                                                                      classtojson =
+                                                                      meallToJson(
+                                                                          reStringtoClass);
 
+                                                                  print(
+                                                                      "ทำงานน");
+                                                                  print(
+                                                                      "tttt $classtojson");
+
+                                                                  // FFAppState()
+                                                                  //     .dutySelectwithoutme
+                                                                  //     .add(
+                                                                  //         """{"id": $id,"userID":$userID,"year":$year,"month":$month,"day": $day,"group":$group,"v": $v,"dutyString":$dutyString,"dutyNumber":$dutyNumber,}""");
                                                                   FFAppState()
                                                                       .dutySelectwithoutme
                                                                       .add(
-                                                                          """{"id": $id,"userID":$userID,"year":$year,"month":$month,"day": $day,"group":$group,"v": $v,"dutyString":$dutyString,"dutyNumber":$dutyNumber,}""");
+                                                                          classtojson);
                                                                   print(
-                                                                      "dutySelectwithoutme ${FFAppState().dutySelectwithoutme}");
+                                                                      "dutySelectwithoutme1 ${FFAppState().dutySelectwithoutme}");
                                                                 } else {
                                                                   //                                             widget.listvievDutySearch
 
@@ -923,8 +1033,8 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                                                     0xFF8E8E8E),
                                                                 fontSize: 16,
                                                               ),
-                                                              initiallySelected:
-                                                                  checkboxGroupValues,
+                                                              // initiallySelected:
+                                                              //     checkboxGroupValues,
                                                               child: SizedBox(
                                                                 width: MediaQuery.of(
                                                                             context)
@@ -1022,9 +1132,44 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                                                       FFAppState()
                                                                           .dutySelectwithoutme
                                                                           .add(
-                                                                              """{"id": ${itemWityOutMeDuty.id},"userID":${itemWityOutMeDuty.user},"year":${int.parse(itemWityOutMeDuty.year.toString())},"month":${int.parse(itemWityOutMeDuty.month.toString())},"day": ${int.parse(itemWityOutMeDuty.day.toString())},"group":${itemWityOutMeDuty.group.toString()},"v": ${itemWityOutMeDuty.v!},"dutyString":${dayDutyEnglist[indexDutyList]},"dutyNumber":1,}""");
+                                                                              """{"id": "${itemWityOutMeDuty.id}","userID":"${itemWityOutMeDuty.user}","year":${int.parse(itemWityOutMeDuty.year.toString())},"month":${int.parse(itemWityOutMeDuty.month.toString())},"day": ${int.parse(itemWityOutMeDuty.day.toString())},"group":"${itemWityOutMeDuty.group.toString()}","v": ${itemWityOutMeDuty.v!},"dutyString":"${dayDutyEnglist[indexDutyList]}","dutyNumber":1}""");
+
+                                                                      // Me ttt = Me
+                                                                      //     .fromJson({
+                                                                      //   "id":
+                                                                      //       "${itemWityOutMeDuty.id}",
+                                                                      //   "userID":
+                                                                      //       "${itemWityOutMeDuty.user}",
+                                                                      //   "year": int.parse(itemWityOutMeDuty
+                                                                      //       .year
+                                                                      //       .toString()),
+                                                                      //   "month": int.parse(itemWityOutMeDuty
+                                                                      //       .month
+                                                                      //       .toString()),
+                                                                      //   "day": int.parse(itemWityOutMeDuty
+                                                                      //       .day
+                                                                      //       .toString()),
+                                                                      //   "group":
+                                                                      //       "${itemWityOutMeDuty.group.toString()}",
+                                                                      //   "v": itemWityOutMeDuty
+                                                                      //       .v!,
+                                                                      //   "dutyString":
+                                                                      //       "${dayDutyEnglist[indexDutyList]}",
+                                                                      //   "dutyNumber":
+                                                                      //       1,
+                                                                      // });
+                                                                      // String
+                                                                      //     tttt =
+                                                                      //     meallToJson(
+                                                                      //         ttt);
+
+                                                                      // print(
+                                                                      //     "ทำงานน");
+                                                                      // print(
+                                                                      //     "tttt $tttt");
+
                                                                       print(
-                                                                          "dutySelectwithoutme ${FFAppState().dutySelectwithoutme.length}");
+                                                                          "dutySelectwithoutme ${FFAppState().dutySelectwithoutme}");
                                                                       if (FFAppState()
                                                                               .dutySelectwithoutme
                                                                               .length ==
@@ -1192,6 +1337,10 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                         },
                       );
                     }),
+                    Container(
+                      width: 100.0,
+                      height: 100.0,
+                    ),
                   ],
                 ),
               ),
