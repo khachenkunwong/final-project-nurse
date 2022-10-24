@@ -296,6 +296,277 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                 physics: AlwaysScrollableScrollPhysics(),
                 child: Column(
                   children: [
+                    // แสดงเมื่อมีการแลกเวรตัวใหม่
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.99,
+                        // height: 400,
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/images/noti.svg',
+                                        width: 27.89,
+                                        height: 30.72,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            16, 0, 0, 0),
+                                        child: Text(
+                                          "มีการขอแลกเวร",
+                                          style: GoogleFonts.mitr(
+                                            color: Color(0xff727272),
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    "วันนี้ 07:14 น.",
+                                    style: GoogleFonts.mitr(
+                                      color: Color(0xffbdbdbd),
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(16, 16, 0, 0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "ชื่อกลุ่ม: nameGroup",
+                                    style: GoogleFonts.mitr(
+                                      color: Color(0xff727272),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(16, 0, 0, 16),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "คนที่ขอแลกเวร: fristName lastName",
+                                    style: GoogleFonts.mitr(
+                                      color: Color(0xff727272),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.95,
+                                // height: 280,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Color(0xffececec),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "กรุณาเลือกเวร 1 ในนี้",
+                                            style: GoogleFonts.mitr(
+                                              color: Colors.red,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          Text(
+                                            "วันที่ null/null/null ยังไม่ได้ใส่ค่า",
+                                            style: GoogleFonts.mitr(
+                                              color: Color(0xff727272),
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          ListView.builder(
+                                              physics:
+                                                  NeverScrollableScrollPhysics(),
+                                              padding: EdgeInsets.zero,
+                                              shrinkWrap: true,
+                                              scrollDirection: Axis.vertical,
+                                              itemCount: 2,
+                                              itemBuilder:
+                                                  (context, indexduty) {
+                                                return Container(
+                                                  child: Card(
+                                                    clipBehavior: Clip
+                                                        .antiAliasWithSaveLayer,
+                                                    color: FlutterFlowTheme.of(
+                                                            context)
+                                                        .secondaryWhite,
+                                                    elevation: 2,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                    child: Padding(
+                                                      padding:
+                                                          EdgeInsetsDirectional
+                                                              .fromSTEB(
+                                                                  5, 5, 5, 5),
+                                                      child: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Container(
+                                                            width: 50,
+                                                            height: 50,
+                                                            clipBehavior:
+                                                                Clip.antiAlias,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                            ),
+                                                            child:
+                                                                Image.network(
+                                                              'https://picsum.photos/seed/260/600',
+                                                            ),
+                                                          ),
+                                                          Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .max,
+                                                            children: [
+                                                              Text(
+                                                                'fristName',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .title2,
+                                                              ),
+                                                              Text(
+                                                                ' lastName',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .title2,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Text(
+                                                            "ว่างบ่าย",
+                                                            // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                                                            // '${dayDuty[IndexWithOutList]}',
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .title2,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            0, 15, 0, 15),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            InkWell(
+                                              onTap: () async {
+                                                // await apporveLaeve(
+                                                //     notificationId:
+                                                //         "${shownotificationLeave[indexGetLeaveMyDuty].id}",
+                                                //     approve: true);
+                                                // // ตัวนี้ต้องเช็คว่ามันโหลดไหม
+                                                // refetch!.call();
+                                              },
+                                              child: Text(
+                                                'อนุมัติ',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyText1
+                                                        .override(
+                                                          fontFamily: 'Mitr',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryColor,
+                                                        ),
+                                              ),
+                                            ),
+                                            InkWell(
+                                              onTap: () async {
+                                                // apporveLaeve(
+                                                //     notificationId:
+                                                //         "${shownotificationLeave[indexGetLeaveMyDuty].id}",
+                                                //     approve: false);
+                                                // refetch!.call();
+                                              },
+                                              child: Text(
+                                                'ปฏิเสธ',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyText1
+                                                        .override(
+                                                          fontFamily: 'Mitr',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryRed,
+                                                        ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // 2ตัวนี้เอาคอมเม้นออก
+                    // แสดงตัวขอลา
                     Query(
                         options: QueryOptions(
                             document: gql(shownotificationLeave),
@@ -662,7 +933,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                 return Container();
                               });
                         }),
-
+                    // แสดงเมื่อมีการเปลียนแปลงเวร
                     Query(
                         options: QueryOptions(
                             document: gql(changMyDutyGraphQL),
@@ -1024,360 +1295,362 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                               });
                         }),
 
-                    // Container(
-                    //   width: MediaQuery.of(context).size.width * 0.99,
-                    //   color: Colors.white,
-                    //   child: Column(
-                    //     children: [
-                    //       Padding(
-                    //         padding:
-                    //             EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                    //         child: Row(
-                    //           mainAxisSize: MainAxisSize.max,
-                    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //           crossAxisAlignment: CrossAxisAlignment.start,
-                    //           children: [
-                    //             Row(
-                    //               children: [
-                    //                 SvgPicture.asset(
-                    //                   'assets/images/noti.svg',
-                    //                   width: 27.89,
-                    //                   height: 30.72,
-                    //                   fit: BoxFit.cover,
-                    //                 ),
-                    //                 Padding(
-                    //                   padding: EdgeInsetsDirectional.fromSTEB(
-                    //                       16, 0, 0, 0),
-                    //                   child: Text(
-                    //                     "มีการเปลี่ยนแปลงเวร",
-                    //                     style: GoogleFonts.mitr(
-                    //                       color: Color(0xff727272),
-                    //                       fontSize: 18,
-                    //                     ),
-                    //                   ),
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //             Text(
-                    //               "วันนี้ 07:14 น.",
-                    //               style: GoogleFonts.mitr(
-                    //                 color: Color(0xffbdbdbd),
-                    //                 fontSize: 14,
-                    //               ),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ),
-                    //       Padding(
-                    //         padding: const EdgeInsets.all(16.0),
-                    //         child: Row(
-                    //           mainAxisAlignment: MainAxisAlignment.start,
-                    //           children: [
-                    //             Text(
-                    //               "ชื่อกลุ่ม: โรงพยาบาลบ้านดุง",
-                    //               style: GoogleFonts.mitr(
-                    //                 color: Color(0xff727272),
-                    //                 fontSize: 16,
-                    //               ),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ),
-                    //       Container(
-                    //         width: MediaQuery.of(context).size.width * 0.95,
-                    //         height: 280,
-                    //         decoration: BoxDecoration(
-                    //           borderRadius: BorderRadius.circular(10),
-                    //           color: Color(0xffececec),
-                    //         ),
-                    //         child: Padding(
-                    //           padding: const EdgeInsets.all(16.0),
-                    //           child: Column(
-                    //             mainAxisSize: MainAxisSize.max,
-                    //             mainAxisAlignment: MainAxisAlignment.start,
-                    //             crossAxisAlignment: CrossAxisAlignment.start,
-                    //             children: [
-                    //               Column(
-                    //                 mainAxisSize: MainAxisSize.max,
-                    //                 mainAxisAlignment: MainAxisAlignment.start,
-                    //                 crossAxisAlignment:
-                    //                     CrossAxisAlignment.start,
-                    //                 children: [
-                    //                   Text(
-                    //                     "วันที่ 11/10/2565",
-                    //                     style: GoogleFonts.mitr(
-                    //                       color: Color(0xff727272),
-                    //                       fontSize: 16,
-                    //                     ),
-                    //                   ),
-                    //                   Container(
-                    //                     child: Card(
-                    //                       clipBehavior:
-                    //                           Clip.antiAliasWithSaveLayer,
-                    //                       color: FlutterFlowTheme.of(context)
-                    //                           .secondaryWhite,
-                    //                       elevation: 2,
-                    //                       shape: RoundedRectangleBorder(
-                    //                         borderRadius:
-                    //                             BorderRadius.circular(10),
-                    //                       ),
-                    //                       child: Padding(
-                    //                         padding:
-                    //                             EdgeInsetsDirectional.fromSTEB(
-                    //                                 10, 5, 10, 5),
-                    //                         child: Row(
-                    //                           mainAxisSize: MainAxisSize.max,
-                    //                           mainAxisAlignment:
-                    //                               MainAxisAlignment
-                    //                                   .spaceBetween,
-                    //                           children: [
-                    //                             Container(
-                    //                               width: 56,
-                    //                               height: 56,
-                    //                               clipBehavior: Clip.antiAlias,
-                    //                               decoration: BoxDecoration(
-                    //                                 shape: BoxShape.circle,
-                    //                               ),
-                    //                               child: Image.network(
-                    //                                 'https://picsum.photos/seed/260/600',
-                    //                               ),
-                    //                             ),
-                    //                             Row(
-                    //                               mainAxisSize:
-                    //                                   MainAxisSize.max,
-                    //                               children: [
-                    //                                 Text(
-                    //                                   'นาย Anohan',
-                    //                                   style:
-                    //                                       FlutterFlowTheme.of(
-                    //                                               context)
-                    //                                           .title2,
-                    //                                 ),
-                    //                                 Text(
-                    //                                   ' kai',
-                    //                                   style:
-                    //                                       FlutterFlowTheme.of(
-                    //                                               context)
-                    //                                           .title2,
-                    //                                 ),
-                    //                               ],
-                    //                             ),
-                    //                             Text(
-                    //                               "ว่างบ่าย",
-                    //                               // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
-                    //                               // '${dayDuty[IndexWithOutList]}',
-                    //                               style: FlutterFlowTheme.of(
-                    //                                       context)
-                    //                                   .title2,
-                    //                             ),
-                    //                           ],
-                    //                         ),
-                    //                       ),
-                    //                     ),
-                    //                   ),
-                    //                 ],
-                    //               ),
-                    //               SizedBox(height: 9.50),
-                    //               Row(
-                    //                 mainAxisSize: MainAxisSize.max,
-                    //                 mainAxisAlignment: MainAxisAlignment.center,
-                    //                 crossAxisAlignment:
-                    //                     CrossAxisAlignment.center,
-                    //                 children: [
-                    //                   Icon(
-                    //                     Icons.arrow_downward_outlined,
-                    //                     size: 20,
-                    //                     color: Colors.black,
-                    //                   ),
-                    //                 ],
-                    //               ),
-                    //               SizedBox(height: 9.50),
-                    //               Column(
-                    //                 mainAxisSize: MainAxisSize.max,
-                    //                 mainAxisAlignment: MainAxisAlignment.start,
-                    //                 crossAxisAlignment:
-                    //                     CrossAxisAlignment.start,
-                    //                 children: [
-                    //                   Text(
-                    //                     "วันที่ 11/10/2565",
-                    //                     style: GoogleFonts.mitr(
-                    //                       color: Color(0xff727272),
-                    //                       fontSize: 16,
-                    //                     ),
-                    //                   ),
-                    //                   Container(
-                    //                     child: Card(
-                    //                       clipBehavior:
-                    //                           Clip.antiAliasWithSaveLayer,
-                    //                       color: FlutterFlowTheme.of(context)
-                    //                           .secondaryWhite,
-                    //                       elevation: 2,
-                    //                       shape: RoundedRectangleBorder(
-                    //                         borderRadius:
-                    //                             BorderRadius.circular(10),
-                    //                       ),
-                    //                       child: Padding(
-                    //                         padding:
-                    //                             EdgeInsetsDirectional.fromSTEB(
-                    //                                 10, 5, 10, 5),
-                    //                         child: Row(
-                    //                           mainAxisSize: MainAxisSize.max,
-                    //                           mainAxisAlignment:
-                    //                               MainAxisAlignment
-                    //                                   .spaceBetween,
-                    //                           children: [
-                    //                             Container(
-                    //                               width: 56,
-                    //                               height: 56,
-                    //                               clipBehavior: Clip.antiAlias,
-                    //                               decoration: BoxDecoration(
-                    //                                 shape: BoxShape.circle,
-                    //                               ),
-                    //                               child: Image.network(
-                    //                                 'https://picsum.photos/seed/260/600',
-                    //                               ),
-                    //                             ),
-                    //                             Row(
-                    //                               mainAxisSize:
-                    //                                   MainAxisSize.max,
-                    //                               children: [
-                    //                                 Text(
-                    //                                   'นาย Anohan',
-                    //                                   style:
-                    //                                       FlutterFlowTheme.of(
-                    //                                               context)
-                    //                                           .title2,
-                    //                                 ),
-                    //                                 Text(
-                    //                                   ' kai',
-                    //                                   style:
-                    //                                       FlutterFlowTheme.of(
-                    //                                               context)
-                    //                                           .title2,
-                    //                                 ),
-                    //                               ],
-                    //                             ),
-                    //                             Text(
-                    //                               "บ่าย",
-                    //                               // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
-                    //                               // '${dayDuty[IndexWithOutList]}',
-                    //                               style: FlutterFlowTheme.of(
-                    //                                       context)
-                    //                                   .title2,
-                    //                             ),
-                    //                           ],
-                    //                         ),
-                    //                       ),
-                    //                     ),
-                    //                   ),
-                    //                 ],
-                    //               ),
-                    //             ],
-                    //           ),
-                    //         ),
-                    //       ),
-                    //       Padding(
-                    //         padding:
-                    //             EdgeInsetsDirectional.fromSTEB(0, 15, 0, 15),
-                    //         child: Row(
-                    //           mainAxisSize: MainAxisSize.max,
-                    //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    //           children: [
-                    //             InkWell(
-                    //               onTap: () async {
-                    //                 // try {
-                    //                 //   final getState =
-                    //                 //       await updateChangdutyCall.call(
-                    //                 //           token: FFAppState()
-                    //                 //               .tokenStore,
-                    //                 //           apporve: true,
-                    //                 //           chagnId:
-                    //                 //               '${snapshot.data![indexgetInvite].id}');
-                    //                 //   if (getState
-                    //                 //           .statusCode ==
-                    //                 //       200) {
-                    //                 //     print(
-                    //                 //         "getstata ${getState.jsonBody}");
-                    //                 //     await notifica(
-                    //                 //         context,
-                    //                 //         "ส่งคำขอสำเร็จ",
-                    //                 //         color:
-                    //                 //             Colors.green);
-                    //                 //   } else {
-                    //                 //     print(
-                    //                 //         "getstata ${getState.jsonBody}");
-                    //                 //     await notifica(
-                    //                 //         context,
-                    //                 //         "ส่งคำขอไม่สำเร็จ");
-                    //                 //   }
-                    //                 //   _refresh();
-                    //                 // } catch (error) {
-                    //                 //   print(
-                    //                 //       "เกิดข้อผิดพลาดตอนแลกเวร $error");
-                    //                 // }
-                    //               },
-                    //               child: Text(
-                    //                 'อนุมัติ',
-                    //                 style: FlutterFlowTheme.of(context)
-                    //                     .bodyText1
-                    //                     .override(
-                    //                       fontFamily: 'Mitr',
-                    //                       color: FlutterFlowTheme.of(context)
-                    //                           .primaryColor,
-                    //                     ),
-                    //               ),
-                    //             ),
-                    //             InkWell(
-                    //               onTap: () async {
-                    //                 // try {
-                    //                 //   final getState =
-                    //                 //       await updateChangdutyCall.call(
-                    //                 //           token: FFAppState()
-                    //                 //               .tokenStore,
-                    //                 //           apporve: false,
-                    //                 //           chagnId:
-                    //                 //               '${snapshot.data![indexgetInvite].id}');
-                    //                 //   if (getState
-                    //                 //           .statusCode ==
-                    //                 //       200) {
-                    //                 //     print(
-                    //                 //         "getstata ${getState.jsonBody}");
-                    //                 //     await notifica(
-                    //                 //         context,
-                    //                 //         "ยกเลิกสำเร็จ",
-                    //                 //         color:
-                    //                 //             Colors.green);
-                    //                 //   } else {
-                    //                 //     print(
-                    //                 //         "getstata ${getState.jsonBody}");
-                    //                 //     await notifica(
-                    //                 //         context,
-                    //                 //         "ยกเลิกไม่สำเร็จกรุณากดใหม่อีกครั้ง");
-                    //                 //   }
-                    //                 //   _refresh();
-                    //                 // } catch (error) {
-                    //                 //   print(
-                    //                 //       "เกิดข้อผิดพลาดตอนแลกเวร $error");
-                    //                 // }
-                    //               },
-                    //               child: Text(
-                    //                 'ปฏิเสธ',
-                    //                 style: FlutterFlowTheme.of(context)
-                    //                     .bodyText1
-                    //                     .override(
-                    //                       fontFamily: 'Mitr',
-                    //                       color: FlutterFlowTheme.of(context)
-                    //                           .primaryRed,
-                    //                     ),
-                    //               ),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.99,
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/images/noti.svg',
+                                      width: 27.89,
+                                      height: 30.72,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          16, 0, 0, 0),
+                                      child: Text(
+                                        "มีการเปลี่ยนแปลงเวร",
+                                        style: GoogleFonts.mitr(
+                                          color: Color(0xff727272),
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  "วันนี้ 07:14 น.",
+                                  style: GoogleFonts.mitr(
+                                    color: Color(0xffbdbdbd),
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "ชื่อกลุ่ม: โรงพยาบาลบ้านดุง",
+                                  style: GoogleFonts.mitr(
+                                    color: Color(0xff727272),
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.95,
+                            height: 280,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Color(0xffececec),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "วันที่ 11/10/2565",
+                                        style: GoogleFonts.mitr(
+                                          color: Color(0xff727272),
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      Container(
+                                        child: Card(
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryWhite,
+                                          elevation: 2,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Padding(
+                                            padding:
+                                                EdgeInsetsDirectional.fromSTEB(
+                                                    10, 5, 10, 5),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Container(
+                                                  width: 56,
+                                                  height: 56,
+                                                  clipBehavior: Clip.antiAlias,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: Image.network(
+                                                    'https://picsum.photos/seed/260/600',
+                                                  ),
+                                                ),
+                                                Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  children: [
+                                                    Text(
+                                                      'นาย Anohan',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .title2,
+                                                    ),
+                                                    Text(
+                                                      ' kai',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .title2,
+                                                    ),
+                                                  ],
+                                                ),
+                                                Text(
+                                                  "ว่างบ่าย",
+                                                  // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                                                  // '${dayDuty[IndexWithOutList]}',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .title2,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 9.50),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.arrow_downward_outlined,
+                                        size: 20,
+                                        color: Colors.black,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 9.50),
+                                  Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "วันที่ 11/10/2565",
+                                        style: GoogleFonts.mitr(
+                                          color: Color(0xff727272),
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      Container(
+                                        child: Card(
+                                          clipBehavior:
+                                              Clip.antiAliasWithSaveLayer,
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryWhite,
+                                          elevation: 2,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Padding(
+                                            padding:
+                                                EdgeInsetsDirectional.fromSTEB(
+                                                    10, 5, 10, 5),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Container(
+                                                  width: 56,
+                                                  height: 56,
+                                                  clipBehavior: Clip.antiAlias,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: Image.network(
+                                                    'https://picsum.photos/seed/260/600',
+                                                  ),
+                                                ),
+                                                Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  children: [
+                                                    Text(
+                                                      'นาย Anohan',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .title2,
+                                                    ),
+                                                    Text(
+                                                      ' kai',
+                                                      style:
+                                                          FlutterFlowTheme.of(
+                                                                  context)
+                                                              .title2,
+                                                    ),
+                                                  ],
+                                                ),
+                                                Text(
+                                                  "บ่าย",
+                                                  // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                                                  // '${dayDuty[IndexWithOutList]}',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .title2,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(0, 15, 0, 15),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                InkWell(
+                                  onTap: () async {
+                                    // try {
+                                    //   final getState =
+                                    //       await updateChangdutyCall.call(
+                                    //           token: FFAppState()
+                                    //               .tokenStore,
+                                    //           apporve: true,
+                                    //           chagnId:
+                                    //               '${snapshot.data![indexgetInvite].id}');
+                                    //   if (getState
+                                    //           .statusCode ==
+                                    //       200) {
+                                    //     print(
+                                    //         "getstata ${getState.jsonBody}");
+                                    //     await notifica(
+                                    //         context,
+                                    //         "ส่งคำขอสำเร็จ",
+                                    //         color:
+                                    //             Colors.green);
+                                    //   } else {
+                                    //     print(
+                                    //         "getstata ${getState.jsonBody}");
+                                    //     await notifica(
+                                    //         context,
+                                    //         "ส่งคำขอไม่สำเร็จ");
+                                    //   }
+                                    //   _refresh();
+                                    // } catch (error) {
+                                    //   print(
+                                    //       "เกิดข้อผิดพลาดตอนแลกเวร $error");
+                                    // }
+                                  },
+                                  child: Text(
+                                    'อนุมัติ',
+                                    style: FlutterFlowTheme.of(context)
+                                        .bodyText1
+                                        .override(
+                                          fontFamily: 'Mitr',
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryColor,
+                                        ),
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    // try {
+                                    //   final getState =
+                                    //       await updateChangdutyCall.call(
+                                    //           token: FFAppState()
+                                    //               .tokenStore,
+                                    //           apporve: false,
+                                    //           chagnId:
+                                    //               '${snapshot.data![indexgetInvite].id}');
+                                    //   if (getState
+                                    //           .statusCode ==
+                                    //       200) {
+                                    //     print(
+                                    //         "getstata ${getState.jsonBody}");
+                                    //     await notifica(
+                                    //         context,
+                                    //         "ยกเลิกสำเร็จ",
+                                    //         color:
+                                    //             Colors.green);
+                                    //   } else {
+                                    //     print(
+                                    //         "getstata ${getState.jsonBody}");
+                                    //     await notifica(
+                                    //         context,
+                                    //         "ยกเลิกไม่สำเร็จกรุณากดใหม่อีกครั้ง");
+                                    //   }
+                                    //   _refresh();
+                                    // } catch (error) {
+                                    //   print(
+                                    //       "เกิดข้อผิดพลาดตอนแลกเวร $error");
+                                    // }
+                                  },
+                                  child: Text(
+                                    'ปฏิเสธ',
+                                    style: FlutterFlowTheme.of(context)
+                                        .bodyText1
+                                        .override(
+                                          fontFamily: 'Mitr',
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryRed,
+                                        ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
 
+                    // 3 ตัวนี้เอาคอมเม้นออก
+                    // แสดงเมื่อเชิญเข้ากลุ่ม
                     FutureBuilder<InviteModel>(
                         future: futureInvite,
                         builder: (context, snapshot) {
@@ -1756,6 +2029,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                             child: CircularProgressIndicator(),
                           );
                         }),
+                    // แสดงเมื่อมีการแลกเปลี่ยนเวรอันเก๋า
                     FutureBuilder<List<Datum>>(
                         future: futureGetChangDuty,
                         builder: (context, snapshot) {
@@ -2589,10 +2863,12 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                             );
                           });
                         }),
+                    //  box ว่างให้มันเลื่อนได้
                     Container(
                       height: 50.0,
                       width: 50.0,
                     ),
+
                     // chang my duty graph
                     // Query(
                     //     options: QueryOptions(

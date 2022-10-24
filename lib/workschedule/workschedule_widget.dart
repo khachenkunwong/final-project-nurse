@@ -192,7 +192,8 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
     } catch (error) {
       if (error.toString() ==
           "type 'Null' is not a subtype of type 'List<DutyWithOutModel>' in type cast") {
-        await notifica(context, "ยังไม่ได้อยู่ในกลุ่มเลยไม่แสดงชื่อเพื่อน",color: Colors.yellow,textColor: Colors.black);
+        await notifica(context, "ยังไม่ได้อยู่ในกลุ่มเลยไม่แสดงชื่อเพื่อน",
+            color: Colors.yellow, textColor: Colors.black);
       } else {
         await notifica(context, "เกิดข้อผิดพลายในการเรียกรายการเพื่อนของฉัน");
         print("เกิดข้อผิดพลายในการเรียกรายการเพื่อนของฉัน ${error}");
@@ -933,6 +934,10 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                                                   //   "dutyNumber":
                                                                   //       dutyNumber,
                                                                   // });
+                                                                  // Withoutmetojson
+                                                                  //     reStringtojson =
+                                                                  //     withoutmetojsonFromJson
+                                                                  //         .call("");
                                                                   Me reStringtoClass =
                                                                       Me.fromJson({
                                                                     "id":
@@ -959,7 +964,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                                                                     "dutyString":
                                                                         "${dayDutyEnglist[indexDutyList]}",
                                                                     "dutyNumber":
-                                                                        1,
+                                                                        1
                                                                   });
                                                                   String
                                                                       classtojson =

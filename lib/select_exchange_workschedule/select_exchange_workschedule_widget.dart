@@ -1078,7 +1078,7 @@ class _SelectExchangeWorkscheduleWidgetState
                                                 // เมื่อมีการกดติก
                                                 if (isSelected == true) {
                                                   FFAppState().dutySelectme.add(
-                                                      """{"id": $id,"userID":$userID,"year":$year,"month":$month,"day": $day,"group":$group,"v": $v,"dutyString":$dutyString,"dutyNumber":$dutyNumber}""");
+                                                      """{"id": "$id","userID":"$userID","year":$year,"month":$month,"day": $day,"group":"$group","v": $v,"dutyString":$dutyString,"dutyNumber":$dutyNumber}""");
                                                   print(
                                                       "dutySelectme ${FFAppState().dutySelectme}");
                                                 } else {

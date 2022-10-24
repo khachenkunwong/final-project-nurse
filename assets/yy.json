@@ -1,3 +1,17 @@
 {
-    "AAA": ""
-}
+    "id":
+        "${itemWityOutMeDuty.id}",
+    "userID":
+        "${itemWityOutMeDuty.user}",
+    "year": 2022,
+    "month": 10,
+    "day": 15,
+    "group":
+        "${itemWityOutMeDuty.group.toString()}",
+    "v":
+        0,
+    "dutyString":
+        "${dayDutyEnglist[indexDutyList]}",
+    "dutyNumber":
+        1
+  }
