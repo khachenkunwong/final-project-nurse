@@ -143,8 +143,9 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
 
       final body = convert.json.decode(res.body) as Map<String, dynamic>;
       final _futureWithOut = WithOutCall.fromJson(body);
+      print("_futureWithOut.duty?.length ${_futureWithOut.duty?.length}");
       final futureWithOut = _futureWithOut.duty as List<DutyWithOutModel>;
-      print("res.body11จำนวนวัน ${futureWithOut[1].duty!.length}");
+      // print("res.body11จำนวนวัน ${futureWithOut[1].duty!.length}");
 
       // for (int v = 1; v < futureWithOut.first.duty!.length + 1; v++) {
       //   for (int p = 1; p < futureWithOut[v].duty!.length + 1; p++ )
@@ -153,6 +154,7 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
 
       for (int i = 0; i < futureWithOut.length; i++) {
         for (int c = 0; c < futureWithOut[i].duty!.length; c++) {
+          print("ic $i $c");
           checkboxdaybool.addAll({
             "${futureWithOut[i].duty![c].day}/${futureWithOut[i].duty![c].month}/${futureWithOut[i].duty![c].year} ${futureWithOut[i].user!.id}":
                 [false, false, false]
@@ -188,8 +190,13 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
       // }
       return futureWithOut;
     } catch (error) {
-      await notifica(context, "เกิดข้อผิดพลายในการเรียกรายการเพื่อนของฉัน");
-      print("เกิดข้อผิดพลายในการเรียกรายการเพื่อนของฉัน ${error}");
+      if (error.toString() ==
+          "type 'Null' is not a subtype of type 'List<DutyWithOutModel>' in type cast") {
+        await notifica(context, "ยังไม่ได้อยู่ในกลุ่มเลยไม่แสดงชื่อเพื่อน",color: Colors.yellow,textColor: Colors.black);
+      } else {
+        await notifica(context, "เกิดข้อผิดพลายในการเรียกรายการเพื่อนของฉัน");
+        print("เกิดข้อผิดพลายในการเรียกรายการเพื่อนของฉัน ${error}");
+      }
     }
     return [];
   }
@@ -270,8 +277,8 @@ class _WorkscheduleWidgetState extends State<WorkscheduleWidget> {
                   alignment: AlignmentDirectional(0, 0),
                   child: TextButton(
                     onPressed: () async {
-                      print(
-                          "FFAppState().dutySelectwithoutme ${FFAppState().dutySelectwithoutme.last}");
+                      // print(
+                      //     "FFAppState().dutySelectwithoutme ${FFAppState().dutySelectwithoutme.last}");
                       if (FFAppState().dutySelectwithoutme.isNotEmpty) {
                         Navigator.push(
                           context,

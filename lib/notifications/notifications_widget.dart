@@ -141,6 +141,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
           "x-access-token": "${FFAppState().tokenStore}"
         },
       );
+      print("ตัวนี้เป็นตัวเก่าไม่รู้ว่าเลิกใช้ยัง");
       print("getChangDutyModel code ${res.statusCode}");
       print("getChangDutyModel  body${res.body}");
 
@@ -610,10 +611,12 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                               children: [
                                                 InkWell(
                                                   onTap: () async {
-                                                    apporveLaeve(
+                                                    await apporveLaeve(
                                                         notificationId:
                                                             "${shownotificationLeave[indexGetLeaveMyDuty].id}",
                                                         approve: true);
+                                                    // ตัวนี้ต้องเช็คว่ามันโหลดไหม
+                                                    refetch!.call();
                                                   },
                                                   child: Text(
                                                     'อนุมัติ',

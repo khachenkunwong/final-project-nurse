@@ -114,6 +114,7 @@ class _LeaveWidgetState extends State<LeaveWidget> {
     textController2 = TextEditingController();
     textController3 = TextEditingController();
     textController4 = TextEditingController();
+    print("หน้าลา");
   }
 
   @override
@@ -361,6 +362,7 @@ class _LeaveWidgetState extends State<LeaveWidget> {
                         document: gql(nameAll),
                       ),
                       builder: (QueryResult result, {fetchMore, refetch}) {
+                        
                         if (result.hasException) {
                           return Text(result.exception.toString());
                         }
@@ -369,6 +371,8 @@ class _LeaveWidgetState extends State<LeaveWidget> {
                             child: CircularProgressIndicator(),
                           );
                         }
+                        print("resultresult ${result.data}");
+                        print("ttttt");
                         // final productList = Welcome.fromJson(result.data as Map<String, dynamic>);
                         // print(productList);
                         final nameList = GetListnameAll.fromJson(result.data!);
@@ -585,18 +589,18 @@ class _LeaveWidgetState extends State<LeaveWidget> {
                       ),
                     ),
                   ),
-
-                  // Padding(
-                  //   padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
-                  //   child: Text(
-                  //     'แนบไฟล์ (ถ้ามี)',
-                  //     style: FlutterFlowTheme.of(context).bodyText1.override(
-                  //           fontFamily: 'Mitr',
-                  //           color: FlutterFlowTheme.of(context).primaryGreen,
-                  //         ),
-                  //   ),
-                  // ),
-
+// // มีเลือกเวลาละใส่ เ
+//                   Padding(
+//                     padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
+//                     child: Text(
+//                       'แนบไฟล์ (ถ้ามี)',
+//                       style: FlutterFlowTheme.of(context).bodyText1.override(
+//                             fontFamily: 'Mitr',
+//                             color: FlutterFlowTheme.of(context).primaryGreen,
+//                           ),
+//                     ),
+//                   ),
+// // มีเลือกเวลาละใส่ เ
                   // Row(
                   //   mainAxisSize: MainAxisSize.max,
                   //   crossAxisAlignment: CrossAxisAlignment.center,
@@ -812,18 +816,19 @@ class _LeaveWidgetState extends State<LeaveWidget> {
 
                                         indexSearch = nameList.users!
                                             .indexWhere((element) =>
-                                                (element.fristName!.replaceAll(" ", "") + element.lastName!.replaceAll(" ", "")) ==
-                                                    afterSelectName[t]
-                                                        .label
-                                                        .replaceAll(" ", "")
-
-                                                );
-                                        print("request.body 1111 ${indexSearch}");
+                                                (element.fristName!
+                                                        .replaceAll(" ", "") +
+                                                    element.lastName!
+                                                        .replaceAll(" ", "")) ==
+                                                afterSelectName[t]
+                                                    .label
+                                                    .replaceAll(" ", ""));
+                                        print(
+                                            "request.body 1111 ${indexSearch}");
                                         if (indexSearch >= 0) {
                                           listMemberId.add(
                                               " ${nameList.users![indexSearch].id!} ");
                                         }
-                                        
                                       }
                                       // } else{
                                       //   indexSearch = nameList.users!
@@ -877,6 +882,7 @@ class _LeaveWidgetState extends State<LeaveWidget> {
                           ),
                         );
                       }),
+
                   Container(
                     width: 100.0,
                     height: 100.0,

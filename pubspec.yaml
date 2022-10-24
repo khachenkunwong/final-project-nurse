@@ -49,6 +49,7 @@ dependencies:
   cupertino_icons: ^1.0.0
   flutter_slidable: ^2.0.0
   graphql_flutter: ^5.1.0
+  badges: ^2.0.3
 
 dev_dependencies:
 

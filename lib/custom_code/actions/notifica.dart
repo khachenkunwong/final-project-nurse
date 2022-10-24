@@ -1,4 +1,6 @@
 // Automatic FlutterFlow imports
+import 'package:google_fonts/google_fonts.dart';
+
 import '../../flutter_flow/flutter_flow_theme.dart';
 import '../../flutter_flow/flutter_flow_util.dart';
 import 'index.dart'; // Imports other custom actions
@@ -13,16 +15,20 @@ Future notifica(BuildContext context, String message, {Color? color,Color? textC
         duration: 2,
         position: FlutterToastr.bottom,
         backgroundColor: Colors.red,
-        textStyle: TextStyle(
+        textStyle: GoogleFonts.mitr(
           color: textColor == null? Colors.white:textColor,
           fontSize: 16.0,
         ));
+        // TextStyle(
+        //   color: textColor == null? Colors.white:textColor,
+        //   fontSize: 16.0,
+        // ));
   }else{
     FlutterToastr.show(message, context,
         duration: 2,
         position: FlutterToastr.bottom,
         backgroundColor: color,
-        textStyle: TextStyle(
+        textStyle: GoogleFonts.mitr(
           color: textColor == null? Colors.white:textColor,
           fontSize: 16.0,
         ));

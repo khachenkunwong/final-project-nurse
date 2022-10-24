@@ -127,16 +127,16 @@ class _GroupWidgetState extends State<GroupWidget> {
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       body: SafeArea(
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Align(
-            alignment: AlignmentDirectional(0, -1),
+        child: Align(
+          alignment: AlignmentDirectional(0, -1),
+          child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
             child: FutureBuilder<List<Group>>(
               future: futureMember,
               builder: (context, snapshotGroup) {
                 // Customize what your widget looks like when it's loading.
                 // print("snapshotGroup ${snapshotGroup.data?.length}");
-
+          
                 if (!snapshotGroup.hasData) {
                   print("ไม่มีข้อมูล");
                   return Center(
@@ -175,6 +175,9 @@ class _GroupWidgetState extends State<GroupWidget> {
                 final GetGroupMyMemberResponse = snapshotGroup.data!;
                 return Builder(builder: (context) {
                   return ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    padding: EdgeInsets.zero,
+                                    shrinkWrap: true,
                       itemCount: GetGroupMyMemberResponse.length,
                       itemBuilder: (context, indexGroup) {
                         final ItemGroup = GetGroupMyMemberResponse[indexGroup];
@@ -288,8 +291,9 @@ class _GroupWidgetState extends State<GroupWidget> {
                                 Builder(
                                   builder: (context) {
                                     return ListView.builder(
-                                      padding: EdgeInsets.zero,
-                                      shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    padding: EdgeInsets.zero,
+                                    shrinkWrap: true,
                                       scrollDirection: Axis.vertical,
                                       itemCount: ItemGroup.leader!.length,
                                       itemBuilder: (context, indexLeader) {
@@ -367,86 +371,80 @@ class _GroupWidgetState extends State<GroupWidget> {
                                     //           ''),
                                     //     )?.toList() ??
                                     //     [];
-                                    return RefreshIndicator(
-                                      onRefresh: () async {
-                                        setState(
-                                            () => _apiRequestCompleter = null);
-                                        await waitForApiRequestCompleter();
-                                      },
-                                      child: ListView.builder(
-                                        padding: EdgeInsets.zero,
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.vertical,
-                                        itemCount: ItemGroup.member!.length,
-                                        itemBuilder: (context, indexMember) {
-                                          final itemMember =
-                                              ItemGroup.member![indexMember];
-                                          return Visibility(
-                                            visible:
-                                                indexMember == 0 ? false : true,
-                                            child: InkWell(
-                                              onTap: () {
-                                                print(
-                                                    "คลิกแล้ว item ที่ $indexMember");
-                                                print(itemMember.fristName);
-                                                print(itemMember.lastName);
-                                                print(itemMember.email);
-                                                print(itemMember.location);
-                                                print(itemMember.actor);
-                                              },
-                                              child: Padding(
-                                                padding: EdgeInsetsDirectional
-                                                    .fromSTEB(20, 10, 0, 0),
-                                                child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  children: [
-                                                    Container(
-                                                      width: 45,
-                                                      height: 45,
-                                                      clipBehavior:
-                                                          Clip.antiAlias,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                      child: Image.network(
-                                                        'https://picsum.photos/seed/180/600',
-                                                      ),
+                                    return ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    padding: EdgeInsets.zero,
+                                    shrinkWrap: true,
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: ItemGroup.member!.length,
+                                      itemBuilder: (context, indexMember) {
+                                        final itemMember =
+                                            ItemGroup.member![indexMember];
+                                        return Visibility(
+                                          visible:
+                                              indexMember == 0 ? false : true,
+                                          child: InkWell(
+                                            onTap: () {
+                                              print(
+                                                  "คลิกแล้ว item ที่ $indexMember");
+                                              print(itemMember.fristName);
+                                              print(itemMember.lastName);
+                                              print(itemMember.email);
+                                              print(itemMember.location);
+                                              print(itemMember.actor);
+                                            },
+                                            child: Padding(
+                                              padding: EdgeInsetsDirectional
+                                                  .fromSTEB(20, 10, 0, 0),
+                                              child: Row(
+                                                mainAxisSize:
+                                                    MainAxisSize.max,
+                                                children: [
+                                                  Container(
+                                                    width: 45,
+                                                    height: 45,
+                                                    clipBehavior:
+                                                        Clip.antiAlias,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
                                                     ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  20, 0, 0, 0),
-                                                      child: Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            "${itemMember.fristName} ${itemMember.lastName}",
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .title2,
-                                                          ),
-                                                          Text(
-                                                            '${itemMember.email}',
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .title3,
-                                                          ),
-                                                        ],
-                                                      ),
+                                                    child: Image.network(
+                                                      'https://picsum.photos/seed/180/600',
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsetsDirectional
+                                                            .fromSTEB(
+                                                                20, 0, 0, 0),
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          "${itemMember.fristName} ${itemMember.lastName}",
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .title2,
+                                                        ),
+                                                        Text(
+                                                          '${itemMember.email}',
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .title3,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                          );
-                                        },
-                                      ),
+                                          ),
+                                        );
+                                      },
                                     );
                                   },
                                 ),

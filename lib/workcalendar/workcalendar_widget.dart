@@ -146,7 +146,7 @@ class _WorkcalendarWidgetState extends State<WorkcalendarWidget> {
       final body = convert.json.decode(res.body) as Map<String, dynamic>;
       final _futureWithOut = WithOutCall.fromJson(body);
       final futureWithOut = _futureWithOut.duty as List<DutyWithOutModel>;
-      print("res.body11จำนวนวัน ${futureWithOut[1].duty!.length}");
+      // print("res.body11จำนวนวัน ${futureWithOut[1].duty!.length}");
 
       // for (int v = 1; v < futureWithOut.first.duty!.length + 1; v++) {
       //   for (int p = 1; p < futureWithOut[v].duty!.length + 1; p++ )
@@ -190,8 +190,13 @@ class _WorkcalendarWidgetState extends State<WorkcalendarWidget> {
       // }
       return futureWithOut;
     } catch (error) {
-      await notifica(context, "เกิดข้อผิดพลายในการเรียกรายการเพื่อนของฉัน");
-      print("เกิดข้อผิดพลายในการเรียกรายการเพื่อนของฉัน $error");
+      if (error.toString() ==
+          "type 'Null' is not a subtype of type 'List<DutyWithOutModel>' in type cast") {
+        await notifica(context, "ยังไม่ได้อยู่ในกลุ่มเลยไม่แสดงชื่อเพื่อน",color: Colors.yellow,textColor: Colors.black);
+      } else {
+        await notifica(context, "เกิดข้อผิดพลายในการเรียกรายการเพื่อนของฉัน");
+        print("เกิดข้อผิดพลายในการเรียกรายการเพื่อนของฉัน ${error}");
+      }
     }
     return [];
   }
@@ -272,8 +277,8 @@ class _WorkcalendarWidgetState extends State<WorkcalendarWidget> {
                   alignment: AlignmentDirectional(0, 0),
                   child: TextButton(
                     onPressed: () async {
-                      print(
-                          "FFAppState().dutySelectwithoutme ${FFAppState().dutySelectwithoutme.last}");
+                      // print(
+                      //     "FFAppState().dutySelectwithoutme ${FFAppState().dutySelectwithoutme.last}");
                       if (FFAppState().dutySelectwithoutme.isNotEmpty) {
                         Navigator.push(
                           context,

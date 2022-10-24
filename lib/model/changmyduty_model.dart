@@ -112,7 +112,7 @@ class Duty {
     });
 
     String? user;
-    int? day;
+    var day;
     String? group;
     int? morning;
     int? noon;

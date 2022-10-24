@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -168,11 +169,22 @@ class _NavBarPageState extends State<NavBarPage> {
             customWidget: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  currentIndex == 2 ? Icons.notifications : Icons.notifications,
-                  color:
-                      currentIndex == 2 ? Color(0xFF00A2FD) : Color(0xFF727272),
-                  size: 24,
+                Badge(
+                      badgeContent:Text("1",style: GoogleFonts.mitr(fontSize: 1.0,color: Colors.white),),
+                      showBadge: currentIndex != 2,
+                      shape: BadgeShape.circle,
+                      badgeColor: FlutterFlowTheme.of(context).primaryRed,
+                      elevation: 4,
+                      padding: EdgeInsetsDirectional.fromSTEB(8, 8, 8, 8),
+                      position: BadgePosition.topEnd(),
+                      animationType: BadgeAnimationType.scale,
+                      toAnimate: true,
+                  child: Icon(
+                    currentIndex == 2 ? Icons.notifications : Icons.notifications,
+                    color:
+                        currentIndex == 2 ? Color(0xFF00A2FD) : Color(0xFF727272),
+                    size: 24,
+                  ),
                 ),
                 Text(
                   'แจ้งเตือน',
