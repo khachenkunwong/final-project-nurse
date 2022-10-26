@@ -55,21 +55,21 @@ class Notification {
 class Fields {
     Fields({
         this.createdBy,
-        this.dutyId,
+        this.duty,
         this.shift,
         this.approve,
         this.leader,
     });
 
     CreatedBy? createdBy;
-    Duty? dutyId;
+    Duty? duty;
     Shift? shift;
     bool? approve;
     String? leader;
 
     factory Fields.fromJson(Map<String, dynamic> json) => Fields(
         createdBy: json["createdBy"] == null ? null : CreatedBy.fromJson(json["createdBy"]),
-        dutyId: json["dutyId"] == null ? null : Duty.fromJson(json["dutyId"]),
+        duty: json["duty"] == null ? null : Duty.fromJson(json["duty"]),
         shift: json["shift"] == null ? null : Shift.fromJson(json["shift"]),
         approve: json["approve"] == null ? null : json["approve"],
         leader: json["leader"] == null ? null : json["leader"],
@@ -77,7 +77,7 @@ class Fields {
 
     Map<String, dynamic> toJson() => {
         "createdBy": createdBy == null ? null : createdBy!.toJson(),
-        "duty": dutyId == null ? null : dutyId!.toJson(),
+        "duty": duty == null ? null : duty!.toJson(),
         "shift": shift == null ? null : shift!.toJson(),
         "approve": approve == null ? null : approve,
         "leader": leader == null ? null : leader,

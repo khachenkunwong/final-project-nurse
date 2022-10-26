@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 
 import '../model/changduty_model_get.dart';
 import '../model/changmyduty_model.dart';
+import '../model/getchangduty_v1_model.dart';
 import '../model/invite_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -40,10 +41,38 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
   late String calendarSelectedyearString;
   Map<String, bool> lordinvite = {};
   List dayDuty = ["เช้า", "บ่าย", "ดึก"];
+  Map dayDutyEngtoThai = {"morning": "เช้า", "noon": "บ่าย", "night": "ดึก"};
+  Map dayDutyNumber = {0: "ว่าง", 1: ""};
+  List savaDutyfisrt = [];
+  List savaDutylast = [];
+  Map dayDutymoring = {0: "เช้า", 1: "ว่างเช้า"};
+  Map dayDutynoon = {0: "บ่าย", 1: "ว่างบ่าย"};
+  Map dayDutynight = {0: "ดึก", 1: "ว่างดึก"};
   late String stoteDuty;
   late String stoteDuty2;
   late Future<List<DatumLeave>> futureleave;
   Map<String, bool> lordaddproveGroup = {};
+  apporvechangeduty(
+      {required String idnotification, required bool approve}) async {
+    var headers = {
+      'Authorization': '${FFAppState().tokenStore}',
+      'Content-Type': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse('$url/graphql'));
+
+    request.body =
+        '''{"query":"mutation ApproveSwitchMember(\$input: ApproveSwitchMemberInput!) {\\n  approveSwitchMember(input: \$input)\\n}","variables":{"input":{"notificationID":"$idnotification","approve":$approve}}}''';
+    print("${request.body}");
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
 
   apporveLaeve({required String notificationId, required bool approve}) async {
     var headers = {
@@ -297,273 +326,336 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                 child: Column(
                   children: [
                     // แสดงเมื่อมีการแลกเวรตัวใหม่
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.99,
-                        // height: 400,
-                        color: Colors.white,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/images/noti.svg',
-                                        width: 27.89,
-                                        height: 30.72,
-                                        fit: BoxFit.cover,
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            16, 0, 0, 0),
-                                        child: Text(
-                                          "มีการขอแลกเวร",
-                                          style: GoogleFonts.mitr(
-                                            color: Color(0xff727272),
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    "วันนี้ 07:14 น.",
-                                    style: GoogleFonts.mitr(
-                                      color: Color(0xffbdbdbd),
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(16, 16, 0, 0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "ชื่อกลุ่ม: nameGroup",
-                                    style: GoogleFonts.mitr(
-                                      color: Color(0xff727272),
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(16, 0, 0, 16),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "คนที่ขอแลกเวร: fristName lastName",
-                                    style: GoogleFonts.mitr(
-                                      color: Color(0xff727272),
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.95,
-                                // height: 280,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Color(0xffececec),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "กรุณาเลือกเวร 1 ในนี้",
-                                            style: GoogleFonts.mitr(
-                                              color: Colors.red,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          Text(
-                                            "วันที่ null/null/null ยังไม่ได้ใส่ค่า",
-                                            style: GoogleFonts.mitr(
-                                              color: Color(0xff727272),
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          ListView.builder(
-                                              physics:
-                                                  NeverScrollableScrollPhysics(),
-                                              padding: EdgeInsets.zero,
-                                              shrinkWrap: true,
-                                              scrollDirection: Axis.vertical,
-                                              itemCount: 2,
-                                              itemBuilder:
-                                                  (context, indexduty) {
-                                                return Container(
-                                                  child: Card(
-                                                    clipBehavior: Clip
-                                                        .antiAliasWithSaveLayer,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .secondaryWhite,
-                                                    elevation: 2,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                    child: Padding(
-                                                      padding:
-                                                          EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  5, 5, 5, 5),
-                                                      child: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Container(
-                                                            width: 50,
-                                                            height: 50,
-                                                            clipBehavior:
-                                                                Clip.antiAlias,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              shape: BoxShape
-                                                                  .circle,
-                                                            ),
-                                                            child:
-                                                                Image.network(
-                                                              'https://picsum.photos/seed/260/600',
-                                                            ),
-                                                          ),
-                                                          Row(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            children: [
-                                                              Text(
-                                                                'fristName',
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .title2,
-                                                              ),
-                                                              Text(
-                                                                ' lastName',
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .title2,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Text(
-                                                            "ว่างบ่าย",
-                                                            // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
-                                                            // '${dayDuty[IndexWithOutList]}',
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .title2,
-                                                          ),
-                                                        ],
+                    Query(
+                        options: QueryOptions(
+                            document: gql(getchangduty),
+                            variables: {
+                              "filter": {"type": "SWITCH_DUTY"}
+                            }),
+                        builder: (QueryResult result, {fetchMore, refetch}) {
+                          if (result.hasException) {
+                            return Text(result.exception.toString());
+                          }
+                          if (result.isLoading) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          final shownotificationchang =
+                              GetchangdutyV1.fromJson(result.data!)
+                                  .notifications;
+                          print("result.data ${result.data}");
+                          // if (shownotificationchang == null){
+                          //   return SizedBox();
+                          // }
+                          if (shownotificationchang?.isEmpty == true) {
+                            return ElevatedButton(
+                                onPressed: () {
+                                  refetch?.call();
+                                },
+                                child: Text("reload"));
+                          }
+                          if (shownotificationchang?.first.noift != "1") {
+                            return SizedBox();
+                          }
+                          // แก้ตรงนี้มีค่าคงตัว
+                          return ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              padding: EdgeInsets.zero,
+                              shrinkWrap: true,
+                              scrollDirection: Axis.vertical,
+                              itemCount: shownotificationchang!.length,
+                              itemBuilder: (context, indexLeaderchangduty) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.99,
+                                    // height: 400,
+                                    color: Colors.white,
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  16, 16, 16, 0),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  SvgPicture.asset(
+                                                    'assets/images/noti.svg',
+                                                    width: 27.89,
+                                                    height: 30.72,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsetsDirectional
+                                                            .fromSTEB(
+                                                                16, 0, 0, 0),
+                                                    child: Text(
+                                                      "มีการขอแลกเวร",
+                                                      style: GoogleFonts.mitr(
+                                                        color:
+                                                            Color(0xff727272),
+                                                        fontSize: 18,
                                                       ),
                                                     ),
                                                   ),
-                                                );
-                                              }),
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            0, 15, 0, 15),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            InkWell(
-                                              onTap: () async {
-                                                // await apporveLaeve(
-                                                //     notificationId:
-                                                //         "${shownotificationLeave[indexGetLeaveMyDuty].id}",
-                                                //     approve: true);
-                                                // // ตัวนี้ต้องเช็คว่ามันโหลดไหม
-                                                // refetch!.call();
-                                              },
-                                              child: Text(
-                                                'อนุมัติ',
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyText1
-                                                        .override(
-                                                          fontFamily: 'Mitr',
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .primaryColor,
-                                                        ),
+                                                ],
                                               ),
-                                            ),
-                                            InkWell(
-                                              onTap: () async {
-                                                // apporveLaeve(
-                                                //     notificationId:
-                                                //         "${shownotificationLeave[indexGetLeaveMyDuty].id}",
-                                                //     approve: false);
-                                                // refetch!.call();
-                                              },
-                                              child: Text(
-                                                'ปฏิเสธ',
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyText1
-                                                        .override(
-                                                          fontFamily: 'Mitr',
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .primaryRed,
-                                                        ),
+                                              Text(
+                                                "วันนี้ 07:14 น.",
+                                                style: GoogleFonts.mitr(
+                                                  color: Color(0xffbdbdbd),
+                                                  fontSize: 14,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                        Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  16, 16, 0, 0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "ชื่อกลุ่ม: nameGroup",
+                                                style: GoogleFonts.mitr(
+                                                  color: Color(0xff727272),
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  16, 0, 0, 16),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "คนที่ขอแลกเวร: fristName lastName",
+                                                style: GoogleFonts.mitr(
+                                                  color: Color(0xff727272),
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  0, 0, 0, 16),
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.95,
+                                            // height: 280,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: Color(0xffececec),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(5.0),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.max,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        "กรุณาเลือกเวร 1 ในนี้",
+                                                        style: GoogleFonts.mitr(
+                                                          color: Colors.red,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        "วันที่ ${shownotificationchang?.first.fields?.withoutme?.day}/${shownotificationchang?.first.fields?.withoutme?.month}/${shownotificationchang?.first.fields?.withoutme?.year}",
+                                                        style: GoogleFonts.mitr(
+                                                          color:
+                                                              Color(0xff727272),
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        child: Card(
+                                                          clipBehavior: Clip
+                                                              .antiAliasWithSaveLayer,
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .primaryBlue02,
+                                                          elevation: 2,
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                          ),
+                                                          child: Padding(
+                                                            padding:
+                                                                EdgeInsetsDirectional
+                                                                    .fromSTEB(
+                                                                        5,
+                                                                        5,
+                                                                        5,
+                                                                        5),
+                                                            child: Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .max,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Container(
+                                                                  width: 50,
+                                                                  height: 50,
+                                                                  clipBehavior:
+                                                                      Clip.antiAlias,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                  ),
+                                                                  child: Image
+                                                                      .network(
+                                                                    'https://picsum.photos/seed/260/600',
+                                                                  ),
+                                                                ),
+                                                                Row(
+                                                                  mainAxisSize:
+                                                                      MainAxisSize
+                                                                          .max,
+                                                                  children: [
+                                                                    Text(
+                                                                      '${shownotificationchang?.first.fields?.user?.fristName}',
+                                                                      style: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .title2,
+                                                                    ),
+                                                                    Text(
+                                                                      ' ${shownotificationchang?.first.fields?.user?.lastName}',
+                                                                      style: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .title2,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                Text(
+                                                                  "${dayDutyNumber[shownotificationchang?.first.fields?.withoutme?.dutyNumber]}${dayDutyEngtoThai[shownotificationchang?.first.fields?.withoutme?.dutyString]}",
+                                                                  // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                                                                  // '${dayDuty[IndexWithOutList]}',
+                                                                  style: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .title2,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsetsDirectional
+                                                            .fromSTEB(
+                                                                0, 15, 0, 15),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      children: [
+                                                        InkWell(
+                                                          onTap: () async {
+                                                            await apporvechangeduty(
+                                                                idnotification:
+                                                                    "${shownotificationchang?.first.id}",
+                                                                approve: true);
+                                                            // // ตัวนี้ต้องเช็คว่ามันโหลดไหม
+                                                            refetch!.call();
+                                                          },
+                                                          child: Text(
+                                                            'อนุมัติ',
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Mitr',
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .primaryColor,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                        InkWell(
+                                                          onTap: () async {
+                                                            await apporvechangeduty(
+                                                                idnotification:
+                                                                    "${shownotificationchang?.first.id}",
+                                                                approve: false);
+                                                            refetch!.call();
+                                                          },
+                                                          child: Text(
+                                                            'ปฏิเสธ',
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodyText1
+                                                                .override(
+                                                                  fontFamily:
+                                                                      'Mitr',
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .primaryRed,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                                );
+                              });
+                        }),
 
                     // 2ตัวนี้เอาคอมเม้นออก
                     // แสดงตัวขอลา
@@ -583,11 +675,18 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                             );
                           }
                           // final productList = Welcome.fromJson(result.data as Map<String, dynamic>);
-                          // print(productList);
+                          print("result.data ${result.data}");
                           final shownotificationLeave =
                               ShownotificationLeave.fromJson(result.data!)
                                   .notifications;
-                          print("shownotificationLeave ${result.data}");
+                          if (shownotificationLeave?.isEmpty == true) {
+                            return ElevatedButton(
+                                onPressed: () {
+                                  refetch?.call();
+                                },
+                                child: Text("reload"));
+                          }
+                          // print("shownotificationLeave ${shownotificationLeave?.first.fields?.duty?.day} ${shownotificationLeave?.first.fields?.duty?.month} ${shownotificationLeave?.first.fields?.duty?.year}");
                           return ListView.builder(
                               padding: EdgeInsets.zero,
                               physics: NeverScrollableScrollPhysics(),
@@ -709,7 +808,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                               .start,
                                                       children: [
                                                         Text(
-                                                          "วันที่ ${shownotificationLeave[indexGetLeaveMyDuty].fields?.dutyId?.day}/${shownotificationLeave[indexGetLeaveMyDuty].fields?.dutyId?.month}/${shownotificationLeave[indexGetLeaveMyDuty].fields?.dutyId?.year}",
+                                                          "วันที่ ${shownotificationLeave[indexGetLeaveMyDuty].fields?.duty?.day}/${shownotificationLeave[indexGetLeaveMyDuty].fields?.duty?.month}/${shownotificationLeave[indexGetLeaveMyDuty].fields?.duty?.year}",
                                                           style:
                                                               GoogleFonts.mitr(
                                                             color: Color(
@@ -951,9 +1050,17 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                           }
                           // final productList = Welcome.fromJson(result.data as Map<String, dynamic>);
                           // print(productList);
+
+                          print("result.data222222 ${result.data}");
                           final getChangMyDuty =
                               ChangMyDuty.fromJson(result.data!).notifications!;
-
+                          if (getChangMyDuty.isEmpty == true) {
+                            return ElevatedButton(
+                                onPressed: () {
+                                  refetch?.call();
+                                },
+                                child: Text("reload"));
+                          }
                           return ListView.builder(
                               padding: EdgeInsets.zero,
                               physics: NeverScrollableScrollPhysics(),
@@ -962,6 +1069,26 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                               itemCount: getChangMyDuty.length,
                               itemBuilder: (BuildContext context,
                                   int indexGetChangMyDuty) {
+                                final prev = getChangMyDuty[indexGetChangMyDuty]
+                                    .fields
+                                    ?.prev;
+                                final duty = getChangMyDuty[indexGetChangMyDuty]
+                                    .fields
+                                    ?.duty;
+
+                                if (prev?.morning == duty?.morning &&
+                                    prev?.noon == duty?.noon &&
+                                    prev?.night == duty?.night) {
+                                  return SizedBox();
+                                }
+                                // print(
+                                //     "tytyttr ${dayDutymoring["${getChangMyDuty[indexGetChangMyDuty].fields?.prev?.morning}${getChangMyDuty[indexGetChangMyDuty].fields?.duty?.morning}"]}");
+
+                                //   print("jjj ${getChangMyDuty[indexGetChangMyDuty].fields?.prev?.morning} != ${getChangMyDuty[indexGetChangMyDuty].fields?.duty?.morning}");
+                                // print("jjj ${getChangMyDuty[indexGetChangMyDuty].fields?.prev?.noon} != ${getChangMyDuty[indexGetChangMyDuty].fields?.duty?.noon}");
+                                // print("jjj ${getChangMyDuty[indexGetChangMyDuty].fields?.prev?.night} != ${getChangMyDuty[indexGetChangMyDuty].fields?.duty?.night}");
+                                // if ()
+
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Container(
@@ -1034,24 +1161,24 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                             ],
                                           ),
                                         ),
-                                        Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  16, 0, 0, 16),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "คนที่เปลี่ยนแปลง: ${getChangMyDuty[indexGetChangMyDuty].approveBy?.fristName} ${getChangMyDuty[indexGetChangMyDuty].approveBy?.lastName}",
-                                                style: GoogleFonts.mitr(
-                                                  color: Color(0xff727272),
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                        // Padding(
+                                        //   padding:
+                                        //       EdgeInsetsDirectional.fromSTEB(
+                                        //           16, 0, 0, 16),
+                                        //   child: Row(
+                                        //     mainAxisAlignment:
+                                        //         MainAxisAlignment.start,
+                                        //     children: [
+                                        //       Text(
+                                        //         "คนที่เปลี่ยนแปลง: ${getChangMyDuty[indexGetChangMyDuty].approveBy?.fristName} ${getChangMyDuty[indexGetChangMyDuty].approveBy?.lastName}",
+                                        //         style: GoogleFonts.mitr(
+                                        //           color: Color(0xff727272),
+                                        //           fontSize: 16,
+                                        //         ),
+                                        //       ),
+                                        //     ],
+                                        //   ),
+                                        // ),
                                         Padding(
                                           padding:
                                               EdgeInsetsDirectional.fromSTEB(
@@ -1094,84 +1221,238 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                           fontSize: 16,
                                                         ),
                                                       ),
-                                                      Container(
-                                                        child: Card(
-                                                          clipBehavior: Clip
-                                                              .antiAliasWithSaveLayer,
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .secondaryWhite,
-                                                          elevation: 2,
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                          ),
-                                                          child: Padding(
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        10,
-                                                                        5,
-                                                                        10,
-                                                                        5),
-                                                            child: Row(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .max,
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                Container(
-                                                                  width: 56,
-                                                                  height: 56,
-                                                                  clipBehavior:
-                                                                      Clip.antiAlias,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    shape: BoxShape
-                                                                        .circle,
+                                                      prev?.morning !=
+                                                              duty?.morning
+                                                          ? Container(
+                                                              child: Card(
+                                                                clipBehavior: Clip
+                                                                    .antiAliasWithSaveLayer,
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .secondaryWhite,
+                                                                elevation: 2,
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                ),
+                                                                child: Padding(
+                                                                  padding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10,
+                                                                          5,
+                                                                          10,
+                                                                          5),
+                                                                  child: Row(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .max,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      Container(
+                                                                        width:
+                                                                            56,
+                                                                        height:
+                                                                            56,
+                                                                        clipBehavior:
+                                                                            Clip.antiAlias,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          shape:
+                                                                              BoxShape.circle,
+                                                                        ),
+                                                                        child: Image
+                                                                            .network(
+                                                                          'https://picsum.photos/seed/260/600',
+                                                                        ),
+                                                                      ),
+                                                                      Row(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.max,
+                                                                        children: [
+                                                                          Text(
+                                                                            '${getChangMyDuty[indexGetChangMyDuty].user?.fristName}',
+                                                                            style:
+                                                                                FlutterFlowTheme.of(context).title2,
+                                                                          ),
+                                                                          Text(
+                                                                            ' ${getChangMyDuty[indexGetChangMyDuty].user?.lastName}',
+                                                                            style:
+                                                                                FlutterFlowTheme.of(context).title2,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      Text(
+                                                                        "${dayDutymoring[prev?.morning]}",
+                                                                        // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                                                                        // '${dayDuty[IndexWithOutList]}',
+                                                                        style: FlutterFlowTheme.of(context)
+                                                                            .title2,
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                  child: Image
-                                                                      .network(
-                                                                    'https://picsum.photos/seed/260/600',
+                                                                ),
+                                                              ),
+                                                            )
+                                                          : SizedBox(),
+                                                      prev?.noon != duty?.noon
+                                                          ? Container(
+                                                              child: Card(
+                                                                clipBehavior: Clip
+                                                                    .antiAliasWithSaveLayer,
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .secondaryWhite,
+                                                                elevation: 2,
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                ),
+                                                                child: Padding(
+                                                                  padding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10,
+                                                                          5,
+                                                                          10,
+                                                                          5),
+                                                                  child: Row(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .max,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      Container(
+                                                                        width:
+                                                                            56,
+                                                                        height:
+                                                                            56,
+                                                                        clipBehavior:
+                                                                            Clip.antiAlias,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          shape:
+                                                                              BoxShape.circle,
+                                                                        ),
+                                                                        child: Image
+                                                                            .network(
+                                                                          'https://picsum.photos/seed/260/600',
+                                                                        ),
+                                                                      ),
+                                                                      Row(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.max,
+                                                                        children: [
+                                                                          Text(
+                                                                            '${getChangMyDuty[indexGetChangMyDuty].user?.fristName}',
+                                                                            style:
+                                                                                FlutterFlowTheme.of(context).title2,
+                                                                          ),
+                                                                          Text(
+                                                                            ' ${getChangMyDuty[indexGetChangMyDuty].user?.lastName}',
+                                                                            style:
+                                                                                FlutterFlowTheme.of(context).title2,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      Text(
+                                                                        "${dayDutynoon[prev?.noon]}",
+                                                                        // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                                                                        // '${dayDuty[IndexWithOutList]}',
+                                                                        style: FlutterFlowTheme.of(context)
+                                                                            .title2,
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 ),
-                                                                Row(
-                                                                  mainAxisSize:
-                                                                      MainAxisSize
-                                                                          .max,
-                                                                  children: [
-                                                                    Text(
-                                                                      '${getChangMyDuty[indexGetChangMyDuty].user?.fristName}',
-                                                                      style: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .title2,
-                                                                    ),
-                                                                    Text(
-                                                                      ' ${getChangMyDuty[indexGetChangMyDuty].user?.lastName}',
-                                                                      style: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .title2,
-                                                                    ),
-                                                                  ],
+                                                              ),
+                                                            )
+                                                          : SizedBox(),
+                                                      prev?.night != duty?.night
+                                                          ? Container(
+                                                              child: Card(
+                                                                clipBehavior: Clip
+                                                                    .antiAliasWithSaveLayer,
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .secondaryWhite,
+                                                                elevation: 2,
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
                                                                 ),
-                                                                Text(
-                                                                  "ว่างบ่าย",
-                                                                  // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
-                                                                  // '${dayDuty[IndexWithOutList]}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .title2,
+                                                                child: Padding(
+                                                                  padding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10,
+                                                                          5,
+                                                                          10,
+                                                                          5),
+                                                                  child: Row(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .max,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      Container(
+                                                                        width:
+                                                                            56,
+                                                                        height:
+                                                                            56,
+                                                                        clipBehavior:
+                                                                            Clip.antiAlias,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          shape:
+                                                                              BoxShape.circle,
+                                                                        ),
+                                                                        child: Image
+                                                                            .network(
+                                                                          'https://picsum.photos/seed/260/600',
+                                                                        ),
+                                                                      ),
+                                                                      Row(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.max,
+                                                                        children: [
+                                                                          Text(
+                                                                            '${getChangMyDuty[indexGetChangMyDuty].user?.fristName}',
+                                                                            style:
+                                                                                FlutterFlowTheme.of(context).title2,
+                                                                          ),
+                                                                          Text(
+                                                                            ' ${getChangMyDuty[indexGetChangMyDuty].user?.lastName}',
+                                                                            style:
+                                                                                FlutterFlowTheme.of(context).title2,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      Text(
+                                                                        "${dayDutynight[prev?.night]}",
+                                                                        // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                                                                        // '${dayDuty[IndexWithOutList]}',
+                                                                        style: FlutterFlowTheme.of(context)
+                                                                            .title2,
+                                                                      ),
+                                                                    ],
+                                                                  ),
                                                                 ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
+                                                              ),
+                                                            )
+                                                          : SizedBox(),
                                                     ],
                                                   ),
                                                   SizedBox(height: 9.50),
@@ -1203,84 +1484,238 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      Container(
-                                                        child: Card(
-                                                          clipBehavior: Clip
-                                                              .antiAliasWithSaveLayer,
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .secondaryWhite,
-                                                          elevation: 2,
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                          ),
-                                                          child: Padding(
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        10,
-                                                                        5,
-                                                                        10,
-                                                                        5),
-                                                            child: Row(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .max,
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                Container(
-                                                                  width: 56,
-                                                                  height: 56,
-                                                                  clipBehavior:
-                                                                      Clip.antiAlias,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    shape: BoxShape
-                                                                        .circle,
+                                                      prev?.morning !=
+                                                              duty?.morning
+                                                          ? Container(
+                                                              child: Card(
+                                                                clipBehavior: Clip
+                                                                    .antiAliasWithSaveLayer,
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .secondaryWhite,
+                                                                elevation: 2,
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                ),
+                                                                child: Padding(
+                                                                  padding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10,
+                                                                          5,
+                                                                          10,
+                                                                          5),
+                                                                  child: Row(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .max,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      Container(
+                                                                        width:
+                                                                            56,
+                                                                        height:
+                                                                            56,
+                                                                        clipBehavior:
+                                                                            Clip.antiAlias,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          shape:
+                                                                              BoxShape.circle,
+                                                                        ),
+                                                                        child: Image
+                                                                            .network(
+                                                                          'https://picsum.photos/seed/260/600',
+                                                                        ),
+                                                                      ),
+                                                                      Row(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.max,
+                                                                        children: [
+                                                                          Text(
+                                                                            '${getChangMyDuty[indexGetChangMyDuty].user?.fristName}',
+                                                                            style:
+                                                                                FlutterFlowTheme.of(context).title2,
+                                                                          ),
+                                                                          Text(
+                                                                            ' ${getChangMyDuty[indexGetChangMyDuty].user?.lastName}',
+                                                                            style:
+                                                                                FlutterFlowTheme.of(context).title2,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      Text(
+                                                                        "${dayDutymoring[duty?.morning]}",
+                                                                        // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                                                                        // '${dayDuty[IndexWithOutList]}',
+                                                                        style: FlutterFlowTheme.of(context)
+                                                                            .title2,
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                  child: Image
-                                                                      .network(
-                                                                    'https://picsum.photos/seed/260/600',
+                                                                ),
+                                                              ),
+                                                            )
+                                                          : SizedBox(),
+                                                      prev?.noon != duty?.noon
+                                                          ? Container(
+                                                              child: Card(
+                                                                clipBehavior: Clip
+                                                                    .antiAliasWithSaveLayer,
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .secondaryWhite,
+                                                                elevation: 2,
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                ),
+                                                                child: Padding(
+                                                                  padding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10,
+                                                                          5,
+                                                                          10,
+                                                                          5),
+                                                                  child: Row(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .max,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      Container(
+                                                                        width:
+                                                                            56,
+                                                                        height:
+                                                                            56,
+                                                                        clipBehavior:
+                                                                            Clip.antiAlias,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          shape:
+                                                                              BoxShape.circle,
+                                                                        ),
+                                                                        child: Image
+                                                                            .network(
+                                                                          'https://picsum.photos/seed/260/600',
+                                                                        ),
+                                                                      ),
+                                                                      Row(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.max,
+                                                                        children: [
+                                                                          Text(
+                                                                            '${getChangMyDuty[indexGetChangMyDuty].user?.fristName}',
+                                                                            style:
+                                                                                FlutterFlowTheme.of(context).title2,
+                                                                          ),
+                                                                          Text(
+                                                                            ' ${getChangMyDuty[indexGetChangMyDuty].user?.lastName}',
+                                                                            style:
+                                                                                FlutterFlowTheme.of(context).title2,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      Text(
+                                                                        "${dayDutynoon[duty?.noon]}",
+                                                                        // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                                                                        // '${dayDuty[IndexWithOutList]}',
+                                                                        style: FlutterFlowTheme.of(context)
+                                                                            .title2,
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 ),
-                                                                Row(
-                                                                  mainAxisSize:
-                                                                      MainAxisSize
-                                                                          .max,
-                                                                  children: [
-                                                                    Text(
-                                                                      '${getChangMyDuty[indexGetChangMyDuty].user?.fristName}',
-                                                                      style: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .title2,
-                                                                    ),
-                                                                    Text(
-                                                                      ' ${getChangMyDuty[indexGetChangMyDuty].user?.lastName}',
-                                                                      style: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .title2,
-                                                                    ),
-                                                                  ],
+                                                              ),
+                                                            )
+                                                          : SizedBox(),
+                                                      prev?.night != duty?.night
+                                                          ? Container(
+                                                              child: Card(
+                                                                clipBehavior: Clip
+                                                                    .antiAliasWithSaveLayer,
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .secondaryWhite,
+                                                                elevation: 2,
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
                                                                 ),
-                                                                Text(
-                                                                  "บ่าย",
-                                                                  // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
-                                                                  // '${dayDuty[IndexWithOutList]}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .title2,
+                                                                child: Padding(
+                                                                  padding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10,
+                                                                          5,
+                                                                          10,
+                                                                          5),
+                                                                  child: Row(
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .max,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      Container(
+                                                                        width:
+                                                                            56,
+                                                                        height:
+                                                                            56,
+                                                                        clipBehavior:
+                                                                            Clip.antiAlias,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          shape:
+                                                                              BoxShape.circle,
+                                                                        ),
+                                                                        child: Image
+                                                                            .network(
+                                                                          'https://picsum.photos/seed/260/600',
+                                                                        ),
+                                                                      ),
+                                                                      Row(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.max,
+                                                                        children: [
+                                                                          Text(
+                                                                            '${getChangMyDuty[indexGetChangMyDuty].user?.fristName}',
+                                                                            style:
+                                                                                FlutterFlowTheme.of(context).title2,
+                                                                          ),
+                                                                          Text(
+                                                                            ' ${getChangMyDuty[indexGetChangMyDuty].user?.lastName}',
+                                                                            style:
+                                                                                FlutterFlowTheme.of(context).title2,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      Text(
+                                                                        "${dayDutynight[duty?.night]}",
+                                                                        // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                                                                        // '${dayDuty[IndexWithOutList]}',
+                                                                        style: FlutterFlowTheme.of(context)
+                                                                            .title2,
+                                                                      ),
+                                                                    ],
+                                                                  ),
                                                                 ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
+                                                              ),
+                                                            )
+                                                          : SizedBox(),
                                                     ],
                                                   ),
                                                 ],
@@ -1295,359 +1730,359 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                               });
                         }),
 
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.99,
-                      color: Colors.white,
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/images/noti.svg',
-                                      width: 27.89,
-                                      height: 30.72,
-                                      fit: BoxFit.cover,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          16, 0, 0, 0),
-                                      child: Text(
-                                        "มีการเปลี่ยนแปลงเวร",
-                                        style: GoogleFonts.mitr(
-                                          color: Color(0xff727272),
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  "วันนี้ 07:14 น.",
-                                  style: GoogleFonts.mitr(
-                                    color: Color(0xffbdbdbd),
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "ชื่อกลุ่ม: โรงพยาบาลบ้านดุง",
-                                  style: GoogleFonts.mitr(
-                                    color: Color(0xff727272),
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.95,
-                            height: 280,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Color(0xffececec),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "วันที่ 11/10/2565",
-                                        style: GoogleFonts.mitr(
-                                          color: Color(0xff727272),
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      Container(
-                                        child: Card(
-                                          clipBehavior:
-                                              Clip.antiAliasWithSaveLayer,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryWhite,
-                                          elevation: 2,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    10, 5, 10, 5),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Container(
-                                                  width: 56,
-                                                  height: 56,
-                                                  clipBehavior: Clip.antiAlias,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: Image.network(
-                                                    'https://picsum.photos/seed/260/600',
-                                                  ),
-                                                ),
-                                                Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  children: [
-                                                    Text(
-                                                      'นาย Anohan',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .title2,
-                                                    ),
-                                                    Text(
-                                                      ' kai',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .title2,
-                                                    ),
-                                                  ],
-                                                ),
-                                                Text(
-                                                  "ว่างบ่าย",
-                                                  // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
-                                                  // '${dayDuty[IndexWithOutList]}',
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .title2,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 9.50),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.arrow_downward_outlined,
-                                        size: 20,
-                                        color: Colors.black,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 9.50),
-                                  Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "วันที่ 11/10/2565",
-                                        style: GoogleFonts.mitr(
-                                          color: Color(0xff727272),
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      Container(
-                                        child: Card(
-                                          clipBehavior:
-                                              Clip.antiAliasWithSaveLayer,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryWhite,
-                                          elevation: 2,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    10, 5, 10, 5),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Container(
-                                                  width: 56,
-                                                  height: 56,
-                                                  clipBehavior: Clip.antiAlias,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: Image.network(
-                                                    'https://picsum.photos/seed/260/600',
-                                                  ),
-                                                ),
-                                                Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.max,
-                                                  children: [
-                                                    Text(
-                                                      'นาย Anohan',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .title2,
-                                                    ),
-                                                    Text(
-                                                      ' kai',
-                                                      style:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .title2,
-                                                    ),
-                                                  ],
-                                                ),
-                                                Text(
-                                                  "บ่าย",
-                                                  // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
-                                                  // '${dayDuty[IndexWithOutList]}',
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .title2,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(0, 15, 0, 15),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                InkWell(
-                                  onTap: () async {
-                                    // try {
-                                    //   final getState =
-                                    //       await updateChangdutyCall.call(
-                                    //           token: FFAppState()
-                                    //               .tokenStore,
-                                    //           apporve: true,
-                                    //           chagnId:
-                                    //               '${snapshot.data![indexgetInvite].id}');
-                                    //   if (getState
-                                    //           .statusCode ==
-                                    //       200) {
-                                    //     print(
-                                    //         "getstata ${getState.jsonBody}");
-                                    //     await notifica(
-                                    //         context,
-                                    //         "ส่งคำขอสำเร็จ",
-                                    //         color:
-                                    //             Colors.green);
-                                    //   } else {
-                                    //     print(
-                                    //         "getstata ${getState.jsonBody}");
-                                    //     await notifica(
-                                    //         context,
-                                    //         "ส่งคำขอไม่สำเร็จ");
-                                    //   }
-                                    //   _refresh();
-                                    // } catch (error) {
-                                    //   print(
-                                    //       "เกิดข้อผิดพลาดตอนแลกเวร $error");
-                                    // }
-                                  },
-                                  child: Text(
-                                    'อนุมัติ',
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyText1
-                                        .override(
-                                          fontFamily: 'Mitr',
-                                          color: FlutterFlowTheme.of(context)
-                                              .primaryColor,
-                                        ),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () async {
-                                    // try {
-                                    //   final getState =
-                                    //       await updateChangdutyCall.call(
-                                    //           token: FFAppState()
-                                    //               .tokenStore,
-                                    //           apporve: false,
-                                    //           chagnId:
-                                    //               '${snapshot.data![indexgetInvite].id}');
-                                    //   if (getState
-                                    //           .statusCode ==
-                                    //       200) {
-                                    //     print(
-                                    //         "getstata ${getState.jsonBody}");
-                                    //     await notifica(
-                                    //         context,
-                                    //         "ยกเลิกสำเร็จ",
-                                    //         color:
-                                    //             Colors.green);
-                                    //   } else {
-                                    //     print(
-                                    //         "getstata ${getState.jsonBody}");
-                                    //     await notifica(
-                                    //         context,
-                                    //         "ยกเลิกไม่สำเร็จกรุณากดใหม่อีกครั้ง");
-                                    //   }
-                                    //   _refresh();
-                                    // } catch (error) {
-                                    //   print(
-                                    //       "เกิดข้อผิดพลาดตอนแลกเวร $error");
-                                    // }
-                                  },
-                                  child: Text(
-                                    'ปฏิเสธ',
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyText1
-                                        .override(
-                                          fontFamily: 'Mitr',
-                                          color: FlutterFlowTheme.of(context)
-                                              .primaryRed,
-                                        ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // Container(
+                    //   width: MediaQuery.of(context).size.width * 0.99,
+                    //   color: Colors.white,
+                    //   child: Column(
+                    //     children: [
+                    //       Padding(
+                    //         padding:
+                    //             EdgeInsetsDirectional.fromSTEB(16, 16, 16, 0),
+                    //         child: Row(
+                    //           mainAxisSize: MainAxisSize.max,
+                    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //           crossAxisAlignment: CrossAxisAlignment.start,
+                    //           children: [
+                    //             Row(
+                    //               children: [
+                    //                 SvgPicture.asset(
+                    //                   'assets/images/noti.svg',
+                    //                   width: 27.89,
+                    //                   height: 30.72,
+                    //                   fit: BoxFit.cover,
+                    //                 ),
+                    //                 Padding(
+                    //                   padding: EdgeInsetsDirectional.fromSTEB(
+                    //                       16, 0, 0, 0),
+                    //                   child: Text(
+                    //                     "มีการเปลี่ยนแปลงเวร",
+                    //                     style: GoogleFonts.mitr(
+                    //                       color: Color(0xff727272),
+                    //                       fontSize: 18,
+                    //                     ),
+                    //                   ),
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //             Text(
+                    //               "วันนี้ 07:14 น.",
+                    //               style: GoogleFonts.mitr(
+                    //                 color: Color(0xffbdbdbd),
+                    //                 fontSize: 14,
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //       Padding(
+                    //         padding: const EdgeInsets.all(16.0),
+                    //         child: Row(
+                    //           mainAxisAlignment: MainAxisAlignment.start,
+                    //           children: [
+                    //             Text(
+                    //               "ชื่อกลุ่ม: โรงพยาบาลบ้านดุง",
+                    //               style: GoogleFonts.mitr(
+                    //                 color: Color(0xff727272),
+                    //                 fontSize: 16,
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //       Container(
+                    //         width: MediaQuery.of(context).size.width * 0.95,
+                    //         height: 280,
+                    //         decoration: BoxDecoration(
+                    //           borderRadius: BorderRadius.circular(10),
+                    //           color: Color(0xffececec),
+                    //         ),
+                    //         child: Padding(
+                    //           padding: const EdgeInsets.all(16.0),
+                    //           child: Column(
+                    //             mainAxisSize: MainAxisSize.max,
+                    //             mainAxisAlignment: MainAxisAlignment.start,
+                    //             crossAxisAlignment: CrossAxisAlignment.start,
+                    //             children: [
+                    //               Column(
+                    //                 mainAxisSize: MainAxisSize.max,
+                    //                 mainAxisAlignment: MainAxisAlignment.start,
+                    //                 crossAxisAlignment:
+                    //                     CrossAxisAlignment.start,
+                    //                 children: [
+                    //                   Text(
+                    //                     "วันที่ 11/10/2565",
+                    //                     style: GoogleFonts.mitr(
+                    //                       color: Color(0xff727272),
+                    //                       fontSize: 16,
+                    //                     ),
+                    //                   ),
+                    //                   Container(
+                    //                     child: Card(
+                    //                       clipBehavior:
+                    //                           Clip.antiAliasWithSaveLayer,
+                    //                       color: FlutterFlowTheme.of(context)
+                    //                           .secondaryWhite,
+                    //                       elevation: 2,
+                    //                       shape: RoundedRectangleBorder(
+                    //                         borderRadius:
+                    //                             BorderRadius.circular(10),
+                    //                       ),
+                    //                       child: Padding(
+                    //                         padding:
+                    //                             EdgeInsetsDirectional.fromSTEB(
+                    //                                 10, 5, 10, 5),
+                    //                         child: Row(
+                    //                           mainAxisSize: MainAxisSize.max,
+                    //                           mainAxisAlignment:
+                    //                               MainAxisAlignment
+                    //                                   .spaceBetween,
+                    //                           children: [
+                    //                             Container(
+                    //                               width: 56,
+                    //                               height: 56,
+                    //                               clipBehavior: Clip.antiAlias,
+                    //                               decoration: BoxDecoration(
+                    //                                 shape: BoxShape.circle,
+                    //                               ),
+                    //                               child: Image.network(
+                    //                                 'https://picsum.photos/seed/260/600',
+                    //                               ),
+                    //                             ),
+                    //                             Row(
+                    //                               mainAxisSize:
+                    //                                   MainAxisSize.max,
+                    //                               children: [
+                    //                                 Text(
+                    //                                   'นาย Anohan',
+                    //                                   style:
+                    //                                       FlutterFlowTheme.of(
+                    //                                               context)
+                    //                                           .title2,
+                    //                                 ),
+                    //                                 Text(
+                    //                                   ' kai',
+                    //                                   style:
+                    //                                       FlutterFlowTheme.of(
+                    //                                               context)
+                    //                                           .title2,
+                    //                                 ),
+                    //                               ],
+                    //                             ),
+                    //                             Text(
+                    //                               "ว่างบ่าย",
+                    //                               // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                    //                               // '${dayDuty[IndexWithOutList]}',
+                    //                               style: FlutterFlowTheme.of(
+                    //                                       context)
+                    //                                   .title2,
+                    //                             ),
+                    //                           ],
+                    //                         ),
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                 ],
+                    //               ),
+                    //               SizedBox(height: 9.50),
+                    //               Row(
+                    //                 mainAxisSize: MainAxisSize.max,
+                    //                 mainAxisAlignment: MainAxisAlignment.center,
+                    //                 crossAxisAlignment:
+                    //                     CrossAxisAlignment.center,
+                    //                 children: [
+                    //                   Icon(
+                    //                     Icons.arrow_downward_outlined,
+                    //                     size: 20,
+                    //                     color: Colors.black,
+                    //                   ),
+                    //                 ],
+                    //               ),
+                    //               SizedBox(height: 9.50),
+                    //               Column(
+                    //                 mainAxisSize: MainAxisSize.max,
+                    //                 mainAxisAlignment: MainAxisAlignment.start,
+                    //                 crossAxisAlignment:
+                    //                     CrossAxisAlignment.start,
+                    //                 children: [
+                    //                   Text(
+                    //                     "วันที่ 11/10/2565",
+                    //                     style: GoogleFonts.mitr(
+                    //                       color: Color(0xff727272),
+                    //                       fontSize: 16,
+                    //                     ),
+                    //                   ),
+                    //                   Container(
+                    //                     child: Card(
+                    //                       clipBehavior:
+                    //                           Clip.antiAliasWithSaveLayer,
+                    //                       color: FlutterFlowTheme.of(context)
+                    //                           .secondaryWhite,
+                    //                       elevation: 2,
+                    //                       shape: RoundedRectangleBorder(
+                    //                         borderRadius:
+                    //                             BorderRadius.circular(10),
+                    //                       ),
+                    //                       child: Padding(
+                    //                         padding:
+                    //                             EdgeInsetsDirectional.fromSTEB(
+                    //                                 10, 5, 10, 5),
+                    //                         child: Row(
+                    //                           mainAxisSize: MainAxisSize.max,
+                    //                           mainAxisAlignment:
+                    //                               MainAxisAlignment
+                    //                                   .spaceBetween,
+                    //                           children: [
+                    //                             Container(
+                    //                               width: 56,
+                    //                               height: 56,
+                    //                               clipBehavior: Clip.antiAlias,
+                    //                               decoration: BoxDecoration(
+                    //                                 shape: BoxShape.circle,
+                    //                               ),
+                    //                               child: Image.network(
+                    //                                 'https://picsum.photos/seed/260/600',
+                    //                               ),
+                    //                             ),
+                    //                             Row(
+                    //                               mainAxisSize:
+                    //                                   MainAxisSize.max,
+                    //                               children: [
+                    //                                 Text(
+                    //                                   'นาย Anohan',
+                    //                                   style:
+                    //                                       FlutterFlowTheme.of(
+                    //                                               context)
+                    //                                           .title2,
+                    //                                 ),
+                    //                                 Text(
+                    //                                   ' kai',
+                    //                                   style:
+                    //                                       FlutterFlowTheme.of(
+                    //                                               context)
+                    //                                           .title2,
+                    //                                 ),
+                    //                               ],
+                    //                             ),
+                    //                             Text(
+                    //                               "บ่าย",
+                    //                               // IndexWithOutDay เพราะ กรองindexที่จะเข้ามา
+                    //                               // '${dayDuty[IndexWithOutList]}',
+                    //                               style: FlutterFlowTheme.of(
+                    //                                       context)
+                    //                                   .title2,
+                    //                             ),
+                    //                           ],
+                    //                         ),
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                 ],
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       Padding(
+                    //         padding:
+                    //             EdgeInsetsDirectional.fromSTEB(0, 15, 0, 15),
+                    //         child: Row(
+                    //           mainAxisSize: MainAxisSize.max,
+                    //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //           children: [
+                    //             InkWell(
+                    //               onTap: () async {
+                    //                 // try {
+                    //                 //   final getState =
+                    //                 //       await updateChangdutyCall.call(
+                    //                 //           token: FFAppState()
+                    //                 //               .tokenStore,
+                    //                 //           apporve: true,
+                    //                 //           chagnId:
+                    //                 //               '${snapshot.data![indexgetInvite].id}');
+                    //                 //   if (getState
+                    //                 //           .statusCode ==
+                    //                 //       200) {
+                    //                 //     print(
+                    //                 //         "getstata ${getState.jsonBody}");
+                    //                 //     await notifica(
+                    //                 //         context,
+                    //                 //         "ส่งคำขอสำเร็จ",
+                    //                 //         color:
+                    //                 //             Colors.green);
+                    //                 //   } else {
+                    //                 //     print(
+                    //                 //         "getstata ${getState.jsonBody}");
+                    //                 //     await notifica(
+                    //                 //         context,
+                    //                 //         "ส่งคำขอไม่สำเร็จ");
+                    //                 //   }
+                    //                 //   _refresh();
+                    //                 // } catch (error) {
+                    //                 //   print(
+                    //                 //       "เกิดข้อผิดพลาดตอนแลกเวร $error");
+                    //                 // }
+                    //               },
+                    //               child: Text(
+                    //                 'อนุมัติ',
+                    //                 style: FlutterFlowTheme.of(context)
+                    //                     .bodyText1
+                    //                     .override(
+                    //                       fontFamily: 'Mitr',
+                    //                       color: FlutterFlowTheme.of(context)
+                    //                           .primaryColor,
+                    //                     ),
+                    //               ),
+                    //             ),
+                    //             InkWell(
+                    //               onTap: () async {
+                    //                 // try {
+                    //                 //   final getState =
+                    //                 //       await updateChangdutyCall.call(
+                    //                 //           token: FFAppState()
+                    //                 //               .tokenStore,
+                    //                 //           apporve: false,
+                    //                 //           chagnId:
+                    //                 //               '${snapshot.data![indexgetInvite].id}');
+                    //                 //   if (getState
+                    //                 //           .statusCode ==
+                    //                 //       200) {
+                    //                 //     print(
+                    //                 //         "getstata ${getState.jsonBody}");
+                    //                 //     await notifica(
+                    //                 //         context,
+                    //                 //         "ยกเลิกสำเร็จ",
+                    //                 //         color:
+                    //                 //             Colors.green);
+                    //                 //   } else {
+                    //                 //     print(
+                    //                 //         "getstata ${getState.jsonBody}");
+                    //                 //     await notifica(
+                    //                 //         context,
+                    //                 //         "ยกเลิกไม่สำเร็จกรุณากดใหม่อีกครั้ง");
+                    //                 //   }
+                    //                 //   _refresh();
+                    //                 // } catch (error) {
+                    //                 //   print(
+                    //                 //       "เกิดข้อผิดพลาดตอนแลกเวร $error");
+                    //                 // }
+                    //               },
+                    //               child: Text(
+                    //                 'ปฏิเสธ',
+                    //                 style: FlutterFlowTheme.of(context)
+                    //                     .bodyText1
+                    //                     .override(
+                    //                       fontFamily: 'Mitr',
+                    //                       color: FlutterFlowTheme.of(context)
+                    //                           .primaryRed,
+                    //                     ),
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
 
                     // 3 ตัวนี้เอาคอมเม้นออก
                     // แสดงเมื่อเชิญเข้ากลุ่ม
@@ -1694,7 +2129,6 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
                             return ListView.builder(
                               padding: EdgeInsets.zero,
                               physics: NeverScrollableScrollPhysics(),
-                              // scrollDirection: Axis.vertical,
                               shrinkWrap: true,
                               itemCount: listview.length,
                               itemBuilder:

@@ -1,4 +1,4 @@
-final url = "https://2e21-2403-6200-8858-f0-c361-9441-5497-5597.ap.ngrok.io";
+final url = "https://47c2-2001-44c8-45c3-9d2f-792f-287d-be0-f783.ap.ngrok.io";
 const productsGraphQL = """
 query ExampleQuery {
   notifications {
@@ -52,3 +52,24 @@ query Notifications($filter: JSON) {
   }
 }
 """;
+
+const getchangduty = r"""
+query Query($filter: JSON) {
+  notifications(filter: $filter) {
+    _id
+    type
+    fields
+    approve_by {
+      frist_name
+      last_name
+      actor
+    }
+    noift
+    user {
+      frist_name
+      last_name
+    }
+  }
+}
+""";
+

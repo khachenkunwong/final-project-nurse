@@ -69,6 +69,30 @@ class _SelectExchangeWorkscheduleWidgetState
 
   /// ใช้สำหรับจำนวนจุด even บนปฎิทิน
   Map<int, List<dynamic>> numberPointEven = {};
+  changDutysend({required String body}) async {
+    var headers = {
+      'Authorization': '${FFAppState().tokenStore}',
+      'Content-Type': 'application/json'
+    };
+
+    var request = http.Request('POST', Uri.parse('$url/graphql'));
+    request.body =
+        '''{"query":"mutation Mutation(\$input: ChangeDutyInput!) {\\n  changeDuty(input: \$input)\\n}","variables":{"input":$body}}''';
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+    print("api ทำงาน");
+
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      await notifica(context, "ส่งคำขอแลกเวรแล้ว", color: Colors.green);
+      Navigator.pop(context);
+    } else {
+      print(response.reasonPhrase);
+      await notifica(context, "ส่งคำขอแลกเวรไม่สำเร็จ", color: Colors.green);
+    }
+  }
 
   Future<List<DutyPresent>> getPresentModel({required String token}) async {
     try {
@@ -191,7 +215,7 @@ class _SelectExchangeWorkscheduleWidgetState
                         // for ()
                         final body =
                             '''{"me":${FFAppState().dutySelectme},"withoutme":${FFAppState().dutySelectwithoutme}}''';
-
+                        await changDutysend(body: body);
                         // var test = cheagedutyallFromJson(body);
 
                         print("body1111 $body");
@@ -856,7 +880,7 @@ class _SelectExchangeWorkscheduleWidgetState
 
                                                 print("รอส่งค่าไปยัง api");
                                                 FFAppState().dutySelectme.add(
-                                                    """{"id": ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].id},"userID":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.id},"year":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].year},"month":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month},"day": ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].day},"group":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].group},"v": ${int.parse("${listViewPresent[int.parse(calendarSelectedDayString) - 1].v}")},"dutyString":${dayDutyEnglist[indexPresent]},"dutyNumber":0}""");
+                                                    """{"id": ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].id},"userID":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].user!.id},"year":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].year},"month":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].month},"day": ${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].day},"group":${listViewPresent[int.parse(calendarSelectedDayString.toString()) - 1].group},"v": ${int.parse("${listViewPresent[int.parse(calendarSelectedDayString) - 1].v}")},"dutyString":"${dayDutyEnglist[indexPresent]}","dutyNumber":0}""");
                                                 print(
                                                     "dutySelectwithoutme ${FFAppState().dutySelectme.length}");
                                                 if (FFAppState()
@@ -1078,7 +1102,7 @@ class _SelectExchangeWorkscheduleWidgetState
                                                 // เมื่อมีการกดติก
                                                 if (isSelected == true) {
                                                   FFAppState().dutySelectme.add(
-                                                      """{"id": "$id","userID":"$userID","year":$year,"month":$month,"day": $day,"group":"$group","v": $v,"dutyString":$dutyString,"dutyNumber":$dutyNumber}""");
+                                                      """{"id": "$id","userID":"$userID","year":$year,"month":$month,"day": $day,"group":"$group","v": $v,"dutyString":"$dutyString","dutyNumber":$dutyNumber}""");
                                                   print(
                                                       "dutySelectme ${FFAppState().dutySelectme}");
                                                 } else {

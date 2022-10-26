@@ -202,10 +202,10 @@ class _LeaveWidgetState extends State<LeaveWidget> {
                       options: [
                         ChipData('ลาป่วย'),
                         ChipData('ลากิจส่วนตัว'),
-                        ChipData('ลาคลอดบุตร'),
-                        ChipData('ลาไปช่วยภริยาคลอดบุตร'),
+                        // ChipData('ลาคลอดบุตร'),
+                        // ChipData('ลาไปช่วยภริยาคลอดบุตร'),
                         ChipData('ลาไปศึกษา,ฝึกอบรม,ปฎิบัติการวิจัย,หรือดูงาน'),
-                        ChipData('ลาคัดเลือกทหาร')
+                        // ChipData('ลาคัดเลือกทหาร')
                       ],
                       onChanged: (val) =>
                           setState(() => choiceChipsValue = val?.first),
@@ -269,13 +269,15 @@ class _LeaveWidgetState extends State<LeaveWidget> {
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(10, 5, 10, 0),
                     child: TextFormField(
+                      
+        
                       controller: textController1,
                       onChanged: (_) => EasyDebounce.debounce(
                         'textController1',
                         Duration(milliseconds: 2000),
                         () => setState(() {}),
                       ),
-                      autofocus: true,
+                      autofocus: false,
                       obscureText: false,
                       decoration: InputDecoration(
                         hintText: 'กรุณากรอกลายละเอียด',
