@@ -30,8 +30,8 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   void initState() {
     super.initState();
-    textController1 = TextEditingController(text: 'member1@gmail.com');
-    textController2 = TextEditingController(text: 'member1');
+    textController1 = TextEditingController(text: 'a1@gmail.com');
+    textController2 = TextEditingController(text: 'a1');
     passwordVisibility = false;
   }
 

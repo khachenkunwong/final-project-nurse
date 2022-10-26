@@ -1,4 +1,4 @@
-final url = "https://47c2-2001-44c8-45c3-9d2f-792f-287d-be0-f783.ap.ngrok.io";
+final url = "https://373a-2403-6200-8958-4ca2-8850-bb85-f976-490e.ap.ngrok.io";
 const productsGraphQL = """
 query ExampleQuery {
   notifications {
